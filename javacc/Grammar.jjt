@@ -1,0 +1,80 @@
+options
+{
+    LOOKAHEAD=4;
+}
+PARSER_BEGIN(Grammar)
+
+public class Grammar
+{
+    public static void main(String args[]) throws ParseException {
+      	System.out.println("Starting Grammar:");
+		Grammar myGrammar = new Grammar(System.in);
+		SimpleNode root = myGrammar.Goal(); // returns reference to root node
+
+		//root.dump(""); // prints the tree on the screen
+
+		System.out.println("HERE");
+    }
+}
+
+PARSER_END(Grammar)
+
+SKIP :
+{
+	" " | "\r" | "\t" | "\n"
+}
+
+TOKEN:
+{
+        < LETTER: ["a"-"z","A"-"Z"] >
+    |   < DIGIT: ["0"-"9"] >
+    |   < UNDERSCORE: "_" >
+
+    |   < IDENTIFIER: <LETTER> (<LETTER> | <DIGIT> | <UNDERSCORE>)* >
+    |   < INTEGERLITERAL: (<DIGIT>)+ >
+    |   < VARDECLARATION: (<TYPE> | <IDENTIFIER> | ";") >
+
+    |   < TYPE: ("int[]" | <INT> | <BOOLEAN> | <IDENTIFIER> ) >
+    |   < INT: "int" >
+    |   < BOOLEAN: "boolean" >
+    |   < STRING: "String">
+
+    |   < COMMA: "," >
+    |   < DOT: ".">
+    |   < COLON: ":" >
+    |   < SEMICOLON: ";" >
+    |   < OPENSQUAREBRACKET: "[">
+    |   < CLOSESQUAREBRACKET: "]">
+    |   < OPENBRACKET: "{">
+    |   < CLOSEBRACKET: "}">
+
+    |   < CLASS: "class">
+    |   < PUBLIC: "public">
+    |   < STATIC: "static">
+    |   < VOID: "void">
+    |   < MAIN: "main">
+    |   < PRINTLN: "System.out.println" >
+    |   < THIS: "this" >
+    |   < EXTENDS: "extends" >
+    |   < RETURN: "return" >
+    |   < LENGTH: "length">
+    |   < NEW: "new">
+
+    |   < TRUE: "true">
+    |   < FALSE: "false">
+    |   < NOT: "!">
+    |   < AND: "&&">
+    |   < LESS: "<" >
+    |   < SUM: "+">
+    |   < SUB: "-">
+    |   < MULT: "*">
+    |   < EQUALS: "=">
+    |   < IF: "if">
+    |   < ELSE: "else">
+}
+
+
+SimpleNode Goal(): {}
+{
+    <EOF>  {return jjtThis;} // Java code inside brackets
+}

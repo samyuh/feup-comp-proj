@@ -3,3 +3,16 @@
 /build/
 /generated/
 comp2021-*.jar
+.idea/
+
+.settings/
+
+gradle/
+
+.classpath
+
+.project
+
+gradlew
+
+gradlew.bat
