@@ -98,7 +98,7 @@ void VarDeclaration() #void:{}
     // arguments
     <OPENCURVEBRACKET> [Type() <IDENTIFIER> (<COMMA> Type() <IDENTIFIER>)*] <CLOSECURVEBRACKET>
     // body
-    <OPENSQUAREBRACKET> (VarDeclaration())* (Statement())* <RETURN> Expression() <SEMICOLON> <CLOSESQUAREBRACKET>
+    <OPENBRACKET> (VarDeclaration())* (Statement())* <RETURN> Expression() <SEMICOLON> <CLOSEBRACKET>
 
     | <PUBLIC> <STATIC> <VOID> <MAIN> <OPENCURVEBRACKET> <STRING> <OPENSQUAREBRACKET> <CLOSESQUAREBRACKET>
     <IDENTIFIER> <CLOSECURVEBRACKET> <OPENBRACKET> (VarDeclaration())* (Statement())* <CLOSEBRACKET>
