@@ -1,0 +1,13 @@
+import ioPlus;
+class HelloWorld {
+	public static void main(String[] args) {
+		while (i < arr.length) {
+			value = arr[i];
+			if (maximum < value) {
+                maximum = value;
+                } else {
+                }
+            i = i + 1;
+        }
+    }
+}

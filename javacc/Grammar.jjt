@@ -133,7 +133,7 @@ void Expression1() #void: {}
 
 void Statement() #void: {}
 {
-    <OPENBRACKET> Statement() <CLOSEBRACKET>
+    <OPENBRACKET> (Statement())* <CLOSEBRACKET>
     | <IF> <OPENCURVEBRACKET> Expression() <CLOSECURVEBRACKET> Statement() <ELSE> Statement()
     | <WHILE> <OPENCURVEBRACKET> Expression() <CLOSECURVEBRACKET> Statement()
     | <IDENTIFIER> <EQUALS> Expression() <SEMICOLON>
