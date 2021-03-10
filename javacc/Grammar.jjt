@@ -10,6 +10,8 @@ public class Grammar{
 
 PARSER_END(Grammar)
 
+// See https://javacc.github.io/javacc/tutorials/token-manager.html
+// Special tokens are like tokens, except that they are permitted to appear anywhere in the input file.
 SPECIAL_TOKEN :
 {
   <SINGLE_LINE_COMMENT:"//" (~["\n","\r"])* ("\n"|"\r"|"\r\n") >
@@ -17,7 +19,16 @@ SPECIAL_TOKEN :
 
 SKIP :
 {
-	" " | "\r" | "\t"  | "\n"
+	" " | "\r" | "\t"  | "\n" | "/*" : WithinComment
+}
+
+<WithinComment> SKIP:
+{
+    "*/": DEFAULT
+}
+
+<WithinComment> MORE : {
+    <~[]>
 }
 
 TOKEN:

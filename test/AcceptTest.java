@@ -31,6 +31,13 @@ public class AcceptTest {
         assertEquals("Program", TestUtils.parse(jmmCode).getRootNode().getKind());
     }
 
+    @Test
+    public void Life(){
+        String jmmCode = SpecsIo.getResource("fixtures/public/Life.jmm");
+        assertEquals("Program", TestUtils.parse(jmmCode).getRootNode().getKind());
+    }
+
+
 
 
 }
