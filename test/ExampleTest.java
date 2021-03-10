@@ -1,4 +1,5 @@
 import static org.junit.Assert.*;
+
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -12,8 +13,8 @@ public class ExampleTest {
 
 
     @Test
-    public void testExpression() {		
-		assertEquals("Expression", TestUtils.parse("2+3\n").getRootNode().getKind());		
-	}
+    public void testExpression() {
+        assertEquals("Goal", TestUtils.parse("test/bla").getRootNode().getKind());
+    }
 
 }

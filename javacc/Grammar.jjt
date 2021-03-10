@@ -1,6 +1,6 @@
 options
 {
-    LOOKAHEAD=4;
+    LOOKAHEAD=2;
 }
 PARSER_BEGIN(Grammar)
 
@@ -8,12 +8,7 @@ public class Grammar
 {
     public static void main(String args[]) throws ParseException {
       	System.out.println("Starting Grammar:");
-		Grammar myGrammar = new Grammar(System.in);
-		SimpleNode root = myGrammar.Goal(); // returns reference to root node
 
-		root.dump(""); // prints the tree on the screen
-
-		System.out.println("HERE");
     }
 }
 
@@ -21,23 +16,15 @@ PARSER_END(Grammar)
 
 SKIP :
 {
-	" " | "\r" | "\t" | "\n"
+	" " | "\r" | "\t"  | "\n"
 }
 
 TOKEN:
 {
-        < LETTER: ["a"-"z","A"-"Z"] >
-    |   < DIGIT: ["0"-"9"] >
-    |   < UNDERSCORE: "_" >
-
-    |   < IDENTIFIER: <LETTER> (<LETTER> | <DIGIT> | <UNDERSCORE>)* >
-    |   < INTEGERLITERAL: (<DIGIT>)+ >
-    |   < VARDECLARATION: (<TYPE> | <IDENTIFIER> | ";") >
-
-    |   < TYPE: ("int[]" | <INT> | <BOOLEAN> | <IDENTIFIER> ) >
-    |   < INT: "int" >
+        < INT: "int" >
     |   < BOOLEAN: "boolean" >
-    |   < STRING: "String">
+    |   < INTBRACKETS: "int[]">
+    |   < STRING: "String" >
 
     |   < COMMA: "," >
     |   < DOT: ".">
@@ -71,26 +58,39 @@ TOKEN:
     |   < SUB: "-">
     |   < MULT: "*">
     |   < EQUALS: "=">
+
     |   < IF: "if">
     |   < ELSE: "else">
+    |   < WHILE: "while">
+
+    |   < IDENTIFIER: <LETTER> (<LETTER> | <DIGIT> | <UNDERSCORE>)*>
+    |   < LETTER: ["a"-"z","A"-"Z"] >
+    |   < UNDERSCORE: "_" >
+    |   < INTEGERLITERAL: (<DIGIT>)+ >
+    |   < DIGIT: ["0"-"9"] >
+
 }
-
-
-
 
 SimpleNode Goal(): {}
 {
-    <EOF>  {return jjtThis;} // Java code inside brackets
+    <CLASS> <IDENTIFIER> <OPENBRACKET>
+        <PUBLIC> <STATIC> <VOID> <MAIN> <OPENCURVEBRACKET> <STRING> <OPENSQUAREBRACKET> <CLOSESQUAREBRACKET> <IDENTIFIER> <CLOSECURVEBRACKET>
+            <OPENBRACKET>
+                Statement()
+            <CLOSEBRACKET>
+            <PUBLIC> Type() <IDENTIFIER> <OPENCURVEBRACKET> [Type() <IDENTIFIER> (<COMMA> Type() <IDENTIFIER>)*] <CLOSECURVEBRACKET>
+       <CLOSEBRACKET>
+
+    <EOF> {return jjtThis;} /*(ClassDeclaration())* <LF>  {return jjtThis;} // Java code inside brackets*/
 }
 
-// TODO
-void ClassDeclarations(): {}
+
+void ClassDeclaration() #void: {}
 {
     <CLASS> <IDENTIFIER> [<EXTENDS> <IDENTIFIER>] <OPENBRACKET> (VarDeclaration())* (MethodDeclaration())* <CLOSEBRACKET>
-
 }
 
-void MainClass(): {}
+void MainClass() #void: {}
 {
     <CLASS> <IDENTIFIER> <OPENBRACKET>
     <PUBLIC> <STATIC> <VOID> <MAIN> <OPENCURVEBRACKET> <STRING> <OPENSQUAREBRACKET> <CLOSESQUAREBRACKET> <IDENTIFIER> <CLOSECURVEBRACKET>
@@ -100,40 +100,54 @@ void MainClass(): {}
    <CLOSEBRACKET>
 }
 
-void VarDeclaration():{}
+void VarDeclaration() #void:{}
 {
-    <TYPE> <IDENTIFIER> <SEMICOLON>
+    Type() <IDENTIFIER> <SEMICOLON>
 }
 
-// MethodDeclaration	=	"public", Type, Identifier,cr
-// , "(", [ Type, Identifier, { ",", Type, Identifier }, ], ")",
-// "{", { VarDeclaration }, { Statement }, "return", Expression, ";", "}";
- void MethodDeclaration():{}
+ void MethodDeclaration() #void:{}
  {
-    <PUBLIC> <TYPE> <IDENTIFIER>  ()
-
-  // ARGUMENTS
-    // method body
-    <OPENSQUAREBRACKET> <CLOSESQUAREBRACKET>
+    <PUBLIC> Type() <IDENTIFIER>
+    // arguments
+    <OPENCURVEBRACKET> [Type() <IDENTIFIER> (<COMMA> Type() <IDENTIFIER>)*] <CLOSECURVEBRACKET>
+    // body
+    <OPENSQUAREBRACKET> (VarDeclaration())* (Statement())* <RETURN> Expression() <SEMICOLON> <CLOSESQUAREBRACKET>
  }
 
-
-void Type(): {}
+void Type() #void: {}
 {
-    <TYPE> | <IDENTIFIER>
+    <INTBRACKETS> | <BOOLEAN> | <INT> | <STRING> | <IDENTIFIER>
 }
 
-// TODO
-void Expression(): {}
+void Expression() #void: {}
 {
-
+     <INTEGERLITERAL>  Expression1()
+    | <TRUE> Expression1()
+    | <FALSE> Expression1()
+    | <IDENTIFIER> Expression1()
+    | <THIS> Expression1()
+    | <NEW> <INT> <OPENSQUAREBRACKET> Expression() <CLOSESQUAREBRACKET> Expression1()
+    | <NEW> <IDENTIFIER> <OPENCURVEBRACKET> <CLOSECURVEBRACKET> Expression1()
+    | <NOT> Expression() Expression1()
+    | <OPENCURVEBRACKET> Expression() <CLOSECURVEBRACKET> Expression1()
 }
 
-
-//TODO
-void Statement(): {}
+void Expression1() #void: {}
 {
-    <OPENBRACKET> Statement() <CLOSEBRACKET> |
-    | <IF> <OPENCURVEBRACKET> Expression() <CLOSECURVEBRACKET>
+    (<AND> | <LESS> | <SUM> | <SUB> | <MULT>) Expression() Expression1()
+    | <OPENSQUAREBRACKET> Expression() <CLOSESQUAREBRACKET> Expression1()
+    | <DOT> <LENGTH> Expression1()
+    | <DOT> <IDENTIFIER> <OPENCURVEBRACKET> [Expression() (<COMMA> Expression())*] <CLOSECURVEBRACKET> Expression1()
+    | {}
+}
+
+void Statement() #void: {}
+{
+    <OPENBRACKET> Statement() <CLOSEBRACKET>
+    | <IF> <OPENCURVEBRACKET> Expression() <CLOSECURVEBRACKET> Statement() <ELSE> Statement()
+    | <WHILE> <OPENCURVEBRACKET> Expression() <CLOSECURVEBRACKET> Statement()
+    | <PRINTLN> <OPENCURVEBRACKET> Expression() <CLOSECURVEBRACKET> <SEMICOLON>
+    | <IDENTIFIER> <EQUALS> Expression() <SEMICOLON>
+    | <IDENTIFIER> <OPENSQUAREBRACKET> Expression() <CLOSESQUAREBRACKET> <EQUALS> Expression() <SEMICOLON>
 }
 
