@@ -4,7 +4,9 @@ options
 }
 PARSER_BEGIN(Grammar)
 
-public class Grammar{}
+public class Grammar{
+
+}
 
 PARSER_END(Grammar)
 
@@ -15,7 +17,9 @@ SKIP :
 
 TOKEN:
 {
-        < INT: "int" >
+    <IMPORT: "import">
+
+    |   < INT: "int" >
     |   < BOOLEAN: "boolean" >
     |   < INTBRACKETS: "int[]">
     |   < STRING: "String" >
@@ -65,11 +69,15 @@ TOKEN:
 
 }
 
-SimpleNode Goal(): {}
-{
-    MainClass()
 
-    <EOF> {return jjtThis;} /*(ClassDeclaration())* <LF>  {return jjtThis;} // Java code inside brackets*/
+SimpleNode Program(): {}
+{
+    ImportDeclaration() ClassDeclaration() <EOF> { return jjtThis; }
+}
+
+void ImportDeclaration() #void: {}
+{
+    (<IMPORT> [<STATIC>] <IDENTIFIER> (<DOT> <IDENTIFIER>)* [<DOT> <MULT>] <SEMICOLON> )*
 }
 
 
@@ -78,15 +86,6 @@ void ClassDeclaration() #void: {}
     <CLASS> <IDENTIFIER> [<EXTENDS> <IDENTIFIER>] <OPENBRACKET> (VarDeclaration())* (MethodDeclaration())* <CLOSEBRACKET>
 }
 
-void MainClass() #void: {}
-{
-    <CLASS> <IDENTIFIER> <OPENBRACKET>
-    <PUBLIC> <STATIC> <VOID> <MAIN> <OPENCURVEBRACKET> <STRING> <OPENSQUAREBRACKET> <CLOSESQUAREBRACKET> <IDENTIFIER> <CLOSECURVEBRACKET>
-        <OPENBRACKET>
-            Statement()
-        <CLOSEBRACKET>
-   <CLOSEBRACKET>
-}
 
 void VarDeclaration() #void:{}
 {
@@ -100,6 +99,9 @@ void VarDeclaration() #void:{}
     <OPENCURVEBRACKET> [Type() <IDENTIFIER> (<COMMA> Type() <IDENTIFIER>)*] <CLOSECURVEBRACKET>
     // body
     <OPENSQUAREBRACKET> (VarDeclaration())* (Statement())* <RETURN> Expression() <SEMICOLON> <CLOSESQUAREBRACKET>
+
+    | <PUBLIC> <STATIC> <VOID> <MAIN> <OPENCURVEBRACKET> <STRING> <OPENSQUAREBRACKET> <CLOSESQUAREBRACKET>
+    <IDENTIFIER> <CLOSECURVEBRACKET> <OPENBRACKET> (VarDeclaration())* (Statement())* <CLOSEBRACKET>
  }
 
 void Type() #void: {}
@@ -134,8 +136,8 @@ void Statement() #void: {}
     <OPENBRACKET> Statement() <CLOSEBRACKET>
     | <IF> <OPENCURVEBRACKET> Expression() <CLOSECURVEBRACKET> Statement() <ELSE> Statement()
     | <WHILE> <OPENCURVEBRACKET> Expression() <CLOSECURVEBRACKET> Statement()
-    | <PRINTLN> <OPENCURVEBRACKET> Expression() <CLOSECURVEBRACKET> <SEMICOLON>
     | <IDENTIFIER> <EQUALS> Expression() <SEMICOLON>
     | <IDENTIFIER> <OPENSQUAREBRACKET> Expression() <CLOSESQUAREBRACKET> <EQUALS> Expression() <SEMICOLON>
+    | Expression() <SEMICOLON>
 }
 

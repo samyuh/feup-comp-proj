@@ -15,7 +15,7 @@ public class Main implements JmmParser {
 
 		try {
 		    Grammar grammar = new Grammar(new StringReader(jmmCode));
-    		SimpleNode root = grammar.Goal(); // returns reference to root node
+    		SimpleNode root = grammar.Program(); // returns reference to root node
 
     		root.dump(""); // prints the tree on the screen
 

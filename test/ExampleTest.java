@@ -13,8 +13,8 @@ import pt.up.fe.specs.util.SpecsIo;
 public class ExampleTest {
     @Test
     public void testExpression() {
-        String jmmCode = SpecsIo.getResource("fixtures/public/test.jmm");
-        assertEquals("Goal", TestUtils.parse(jmmCode).getRootNode().getKind());
+        String jmmCode = SpecsIo.getResource("fixtures/public/HelloWorld.jmm");
+        assertEquals("Program", TestUtils.parse(jmmCode).getRootNode().getKind());
     }
 
 }
