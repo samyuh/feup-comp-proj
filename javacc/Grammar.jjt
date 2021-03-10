@@ -10,6 +10,11 @@ public class Grammar{
 
 PARSER_END(Grammar)
 
+SPECIAL_TOKEN :
+{
+  <SINGLE_LINE_COMMENT:"//" (~["\n","\r"])* ("\n"|"\r"|"\r\n") >
+}
+
 SKIP :
 {
 	" " | "\r" | "\t"  | "\n"
