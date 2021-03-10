@@ -1,16 +1,11 @@
 import static org.junit.Assert.*;
 
-import org.junit.After;
-import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.Properties;
-import java.io.StringReader;
 
 import pt.up.fe.comp.TestUtils;
 import pt.up.fe.specs.util.SpecsIo;
 
-public class AcceptTess {
+public class AcceptTest {
     // Hello World, Simple
     @Test
     public void HelloWorld() {
@@ -29,10 +24,13 @@ public class AcceptTess {
         String jmmCode = SpecsIo.getResource("fixtures/public/FindMaximum.jmm");
         assertEquals("Program", TestUtils.parse(jmmCode).getRootNode().getKind());
     }
+
     @Test
-    public void TestConflict1(){
-        String jmmCode = SpecsIo.getResource("fixtures/personalized/test1");
+    public void Lazysort(){
+        String jmmCode = SpecsIo.getResource("fixtures/public/Lazysort.jmm");
         assertEquals("Program", TestUtils.parse(jmmCode).getRootNode().getKind());
     }
+
+
 
 }

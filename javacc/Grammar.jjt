@@ -60,13 +60,15 @@ TOKEN:
     |   < SUM: "+">
     |   < SUB: "-">
     |   < MULT: "*">
+    |   < DIV: "/">
     |   < EQUALS: "=">
+
 
     |   < IF: "if">
     |   < ELSE: "else">
     |   < WHILE: "while">
 
-    |   < IDENTIFIER: <LETTER> (<LETTER> | <DIGIT> | <UNDERSCORE>)*>
+    |   < IDENTIFIER: ("$"| "_"| <LETTER>) (<LETTER> | <DIGIT> | <UNDERSCORE>)*>
     |   < LETTER: ["a"-"z","A"-"Z"] >
     |   < UNDERSCORE: "_" >
     |   < INTEGERLITERAL: (<DIGIT>)+ >
@@ -129,7 +131,7 @@ void Expression() #void: {}
 
 void Expression1() #void: {}
 {
-    (<AND> | <LESS> | <SUM> | <SUB> | <MULT>) Expression() Expression1()
+    (<AND> | <LESS> | <SUM> | <SUB> | <MULT> | <DIV>) Expression() Expression1()
     | <OPENSQUAREBRACKET> Expression() <CLOSESQUAREBRACKET> Expression1()
     | <DOT> <LENGTH> Expression1()
     | <DOT> <IDENTIFIER> <OPENCURVEBRACKET> [Expression() (<COMMA> Expression())*] <CLOSECURVEBRACKET> Expression1()
