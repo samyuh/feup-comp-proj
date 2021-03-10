@@ -11,7 +11,7 @@ public class Grammar
 		Grammar myGrammar = new Grammar(System.in);
 		SimpleNode root = myGrammar.Goal(); // returns reference to root node
 
-		//root.dump(""); // prints the tree on the screen
+		root.dump(""); // prints the tree on the screen
 
 		System.out.println("HERE");
     }
@@ -45,6 +45,8 @@ TOKEN:
     |   < SEMICOLON: ";" >
     |   < OPENSQUAREBRACKET: "[">
     |   < CLOSESQUAREBRACKET: "]">
+    |   < OPENCURVEBRACKET: "(">
+    |   < CLOSECURVEBRACKET: ")">
     |   < OPENBRACKET: "{">
     |   < CLOSEBRACKET: "}">
 
@@ -74,7 +76,64 @@ TOKEN:
 }
 
 
+
+
 SimpleNode Goal(): {}
 {
     <EOF>  {return jjtThis;} // Java code inside brackets
 }
+
+// TODO
+void ClassDeclarations(): {}
+{
+    <CLASS> <IDENTIFIER> [<EXTENDS> <IDENTIFIER>] <OPENBRACKET> (VarDeclaration())* (MethodDeclaration())* <CLOSEBRACKET>
+
+}
+
+void MainClass(): {}
+{
+    <CLASS> <IDENTIFIER> <OPENBRACKET>
+    <PUBLIC> <STATIC> <VOID> <MAIN> <OPENCURVEBRACKET> <STRING> <OPENSQUAREBRACKET> <CLOSESQUAREBRACKET> <IDENTIFIER> <CLOSECURVEBRACKET>
+        <OPENBRACKET>
+            Statement()
+        <CLOSEBRACKET>
+   <CLOSEBRACKET>
+}
+
+void VarDeclaration():{}
+{
+    <TYPE> <IDENTIFIER> <SEMICOLON>
+}
+
+// MethodDeclaration	=	"public", Type, Identifier,cr
+// , "(", [ Type, Identifier, { ",", Type, Identifier }, ], ")",
+// "{", { VarDeclaration }, { Statement }, "return", Expression, ";", "}";
+ void MethodDeclaration():{}
+ {
+    <PUBLIC> <TYPE> <IDENTIFIER>  ()
+
+  // ARGUMENTS
+    // method body
+    <OPENSQUAREBRACKET> <CLOSESQUAREBRACKET>
+ }
+
+
+void Type(): {}
+{
+    <TYPE> | <IDENTIFIER>
+}
+
+// TODO
+void Expression(): {}
+{
+
+}
+
+
+//TODO
+void Statement(): {}
+{
+    <OPENBRACKET> Statement() <CLOSEBRACKET> |
+    | <IF> <OPENCURVEBRACKET> Expression() <CLOSECURVEBRACKET>
+}
+
