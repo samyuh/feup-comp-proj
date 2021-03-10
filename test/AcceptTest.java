@@ -37,6 +37,29 @@ public class AcceptTest {
         assertEquals("Program", TestUtils.parse(jmmCode).getRootNode().getKind());
     }
 
+    @Test
+    public void MonteCarloPi(){
+        String jmmCode = SpecsIo.getResource("fixtures/public/MonteCarloPi.jmm");
+        assertEquals("Program", TestUtils.parse(jmmCode).getRootNode().getKind());
+    }
+
+    @Test
+    public void QuickSort(){
+        String jmmCode = SpecsIo.getResource("fixtures/public/QuickSort.jmm");
+        assertEquals("Program", TestUtils.parse(jmmCode).getRootNode().getKind());
+    }
+
+    @Test
+    public void TicTacToe(){
+        String jmmCode = SpecsIo.getResource("fixtures/public/TicTacToe.jmm");
+        assertEquals("Program", TestUtils.parse(jmmCode).getRootNode().getKind());
+    }
+
+    @Test
+    public void WhileAndIF(){
+        String jmmCode = SpecsIo.getResource("fixtures/public/WhileAndIF.jmm");
+        assertEquals("Program", TestUtils.parse(jmmCode).getRootNode().getKind());
+    }
 
 
 

@@ -19,14 +19,17 @@ SPECIAL_TOKEN :
 
 SKIP :
 {
-	" " | "\r" | "\t"  | "\n" | "/*" : WithinComment
+	" " | "\r" | "\t"  | "\n"
+	| "/*" : WithinComment
 }
 
+// Goes to the withinComment state.
 <WithinComment> SKIP:
 {
-    "*/": DEFAULT
+    "*/": DEFAULT   // Exiting the skip state.
 }
 
+// Continues on the WithinState while...
 <WithinComment> MORE : {
     <~[]>
 }
