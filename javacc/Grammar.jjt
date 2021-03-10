@@ -4,13 +4,7 @@ options
 }
 PARSER_BEGIN(Grammar)
 
-public class Grammar
-{
-    public static void main(String args[]) throws ParseException {
-      	System.out.println("Starting Grammar:");
-
-    }
-}
+public class Grammar{}
 
 PARSER_END(Grammar)
 

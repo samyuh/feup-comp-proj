@@ -11,12 +11,15 @@ import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.ArrayList;
 
+/**
+ * This file is the main of the Grammar.jjt.
+ */
 public class Main implements JmmParser {
-	public JmmParserResult parse(String jmmCode) {
+	public JmmParserResult parse(String filePath) {
 
 		try {
-		    Grammar grammar = new Grammar(new FileInputStream(new File(jmmCode)));
-    		SimpleNode root = grammar.Goal(); // returns reference to root node
+		    Grammar grammar = new Grammar(new FileInputStream(new File(filePath)));
+    		SimpleNode root = grammar.Goal();
             	
     		root.dump(""); // prints the tree on the screen
     	
