@@ -9,11 +9,8 @@ import java.io.StringReader;
 import pt.up.fe.comp.TestUtils;
 
 public class ExampleTest {
-
-
     @Test
-    public void testExpression() {		
-		assertEquals("Expression", TestUtils.parse("2+3\n").getRootNode().getKind());		
-	}
-
+    public void testExpressionGrammar() {
+        assertEquals("Goal", TestUtils.parse("class").getRootNode().getKind());
+    }
 }

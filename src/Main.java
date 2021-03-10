@@ -3,15 +3,13 @@ import pt.up.fe.comp.jmm.JmmParser;
 import pt.up.fe.comp.jmm.JmmParserResult;
 import pt.up.fe.comp.jmm.report.Report;
 
+import java.io.StringReader;
 import java.util.Arrays;
 import java.util.ArrayList;
-import java.io.StringReader;
 
 public class Main implements JmmParser {
-
-
 	public JmmParserResult parse(String jmmCode) {
-		
+		/*
 		try {
 		    Calculator myCalc = new Calculator(new StringReader(jmmCode));
     		SimpleNode root = myCalc.Expression(); // returns reference to root node
@@ -21,7 +19,19 @@ public class Main implements JmmParser {
     		return new JmmParserResult(root, new ArrayList<Report>());
 		} catch(ParseException e) {
 			throw new RuntimeException("Error while parsing", e);
+		}*/
+
+		try {
+			Grammar myGrammar = new Grammar(new StringReader(jmmCode));
+			SimpleNode root = myGrammar.Goal(); // returns reference to root node
+
+			root.dump(""); // prints the tree on the screen
+
+			return new JmmParserResult(root, new ArrayList<Report>());
+		} catch(ParseException e) {
+			throw new RuntimeException("Error while parsing Grammar", e);
 		}
+
 	}
 
     public static void main(String[] args) {
