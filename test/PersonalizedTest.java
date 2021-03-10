@@ -10,4 +10,7 @@ public class PersonalizedTest {
         String jmmCode = SpecsIo.getResource("fixtures/personalized/test1");
         assertEquals("Program", TestUtils.parse(jmmCode).getRootNode().getKind());
     }
+
+    // TODO: test for the comments
+
 }
