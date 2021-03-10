@@ -140,4 +140,3 @@ void Statement() #void: {}
     | <IDENTIFIER> <OPENSQUAREBRACKET> Expression() <CLOSESQUAREBRACKET> <EQUALS> Expression() <SEMICOLON>
     | Expression() <SEMICOLON>
 }
-
