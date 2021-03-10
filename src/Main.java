@@ -2,29 +2,25 @@
 import pt.up.fe.comp.jmm.JmmParser;
 import pt.up.fe.comp.jmm.JmmParserResult;
 import pt.up.fe.comp.jmm.report.Report;
-
-
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.io.StringReader;
 
-/**
- * This file is the main of the Grammar.jjt.
- */
 public class Main implements JmmParser {
-	public JmmParserResult parse(String filePath) {
+
+
+	public JmmParserResult parse(String jmmCode) {
 
 		try {
-		    Grammar grammar = new Grammar(new FileInputStream(new File(filePath)));
-    		SimpleNode root = grammar.Goal();
-            	
+		    Grammar grammar = new Grammar(new StringReader(jmmCode));
+    		SimpleNode root = grammar.Goal(); // returns reference to root node
+
     		root.dump(""); // prints the tree on the screen
-    	
+
     		return new JmmParserResult(root, new ArrayList<Report>());
-		} catch(ParseException | FileNotFoundException e) {
+		} catch(ParseException e) {
 			throw new RuntimeException("Error while parsing", e);
 		}
 	}

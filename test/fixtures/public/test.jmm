@@ -7,6 +7,5 @@ class Hello{
             System.out.println(false);
         }
     }
-
-    public int hello(int a, String b)
 }
+

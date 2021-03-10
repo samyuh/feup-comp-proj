@@ -67,13 +67,7 @@ TOKEN:
 
 SimpleNode Goal(): {}
 {
-    <CLASS> <IDENTIFIER> <OPENBRACKET>
-        <PUBLIC> <STATIC> <VOID> <MAIN> <OPENCURVEBRACKET> <STRING> <OPENSQUAREBRACKET> <CLOSESQUAREBRACKET> <IDENTIFIER> <CLOSECURVEBRACKET>
-            <OPENBRACKET>
-                Statement()
-            <CLOSEBRACKET>
-            <PUBLIC> Type() <IDENTIFIER> <OPENCURVEBRACKET> [Type() <IDENTIFIER> (<COMMA> Type() <IDENTIFIER>)*] <CLOSECURVEBRACKET>
-       <CLOSEBRACKET>
+    MainClass()
 
     <EOF> {return jjtThis;} /*(ClassDeclaration())* <LF>  {return jjtThis;} // Java code inside brackets*/
 }
