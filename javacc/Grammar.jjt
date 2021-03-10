@@ -82,7 +82,8 @@ TOKEN:
     |   < ELSE: "else">
     |   < WHILE: "while">
 
-    |   < IDENTIFIER: ("$"| "_"| <LETTER>) (<LETTER> | <DIGIT> | <UNDERSCORE>)*>
+    |   < IDENTIFIER:  ("$" | <LETTER>) ("_" | "$" | <LETTER> | <DIGIT> | <UNDERSCORE>)*
+                     | ("_" ("_" | "$" | <LETTER> | <DIGIT> | <UNDERSCORE>)+) >
     |   < LETTER: ["a"-"z","A"-"Z"] >
     |   < UNDERSCORE: "_" >
     |   < INTEGERLITERAL: (<DIGIT>)+ >
@@ -151,7 +152,7 @@ void Expression1() #void: {}
     | <DOT> <IDENTIFIER> <OPENCURVEBRACKET> [Expression() (<COMMA> Expression())*] <CLOSECURVEBRACKET> Expression1()
     | {}
 }
-
+// TODO: do we have a conflict here of <id> [ expr() ] ?
 void Statement() #void: {}
 {
     <OPENBRACKET> (Statement())* <CLOSEBRACKET>

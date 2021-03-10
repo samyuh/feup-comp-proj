@@ -7,6 +7,7 @@ import static org.junit.Assert.assertEquals;
 public class PersonalizedTest {
     @Test
     public void TestConflict1(){
+
         String jmmCode = SpecsIo.getResource("fixtures/personalized/test1");
         assertEquals("Program", TestUtils.parse(jmmCode).getRootNode().getKind());
     }
