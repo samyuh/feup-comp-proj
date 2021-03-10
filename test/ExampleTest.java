@@ -10,8 +10,6 @@ import java.io.StringReader;
 import pt.up.fe.comp.TestUtils;
 
 public class ExampleTest {
-
-
     @Test
     public void testExpression() {
         assertEquals("Goal", TestUtils.parse("test/bla").getRootNode().getKind());
