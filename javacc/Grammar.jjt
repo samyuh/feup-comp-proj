@@ -103,7 +103,7 @@ SimpleNode Program(): {}
     ImportDeclaration() ClassDeclaration() <EOF> { return jjtThis; }
 }
 
-void ImportDeclaration() : {}
+void ImportDeclaration() #void: {}
 {
     (<IMPORT> [<STATIC>] <IDENTIFIER> (LOOKAHEAD(2) <DOT> <IDENTIFIER>)* [<DOT> <MULT>] <SEMICOLON> )*
 }
@@ -117,7 +117,7 @@ void ClassDeclaration() #void: {}
 
 void VarDeclaration() #void:{}
 {
-    Type() <IDENTIFIER> <SEMICOLON>
+    Type() <IDENTIFIER> #identifier <SEMICOLON>
 }
 
  void MethodDeclaration() #void:{}
@@ -125,6 +125,7 @@ void VarDeclaration() #void:{}
 
     <PUBLIC> (Type() <IDENTIFIER>
     // arguments
+    // TODO: separate into a new function.
     <OPENCURVEBRACKET> [Type() <IDENTIFIER> (<COMMA> Type() <IDENTIFIER>)*] <CLOSECURVEBRACKET>
     // body
     <OPENBRACKET> (LOOKAHEAD(2) VarDeclaration())* (Statement())* <RETURN> Expression() <SEMICOLON> <CLOSEBRACKET>

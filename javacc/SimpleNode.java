@@ -33,7 +33,8 @@ class SimpleNode implements Node, JmmNode {
   public String getKind() {
 	  return toString();
   }
-  
+
+  // TODO: implement.
   public List<String> getAttributes() {
 	throw new RuntimeException("Not implemented yet");
   }
