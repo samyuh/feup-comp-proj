@@ -1,6 +1,6 @@
 options
 {
-    LOOKAHEAD=2;
+    LOOKAHEAD = 1;
 }
 PARSER_BEGIN(Grammar)
 
@@ -97,9 +97,9 @@ SimpleNode Program(): {}
     ImportDeclaration() ClassDeclaration() <EOF> { return jjtThis; }
 }
 
-void ImportDeclaration() #void: {}
+void ImportDeclaration() : {}
 {
-    (<IMPORT> [<STATIC>] <IDENTIFIER> (<DOT> <IDENTIFIER>)* [<DOT> <MULT>] <SEMICOLON> )*
+    (<IMPORT> [<STATIC>] <IDENTIFIER> (LOOKAHEAD(2) <DOT> <IDENTIFIER>)* [<DOT> <MULT>] <SEMICOLON> )*
 }
 
 
@@ -116,14 +116,15 @@ void VarDeclaration() #void:{}
 
  void MethodDeclaration() #void:{}
  {
-    <PUBLIC> Type() <IDENTIFIER>
+
+    <PUBLIC> (Type() <IDENTIFIER>
     // arguments
     <OPENCURVEBRACKET> [Type() <IDENTIFIER> (<COMMA> Type() <IDENTIFIER>)*] <CLOSECURVEBRACKET>
     // body
-    <OPENBRACKET> (VarDeclaration())* (Statement())* <RETURN> Expression() <SEMICOLON> <CLOSEBRACKET>
+    <OPENBRACKET> (LOOKAHEAD(2) VarDeclaration())* (Statement())* <RETURN> Expression() <SEMICOLON> <CLOSEBRACKET>
 
-    | <PUBLIC> <STATIC> <VOID> <MAIN> <OPENCURVEBRACKET> <STRING> <OPENSQUAREBRACKET> <CLOSESQUAREBRACKET>
-    <IDENTIFIER> <CLOSECURVEBRACKET> <OPENBRACKET> (VarDeclaration())* (Statement())* <CLOSEBRACKET>
+    | <STATIC> <VOID> <MAIN> <OPENCURVEBRACKET> <STRING> <OPENSQUAREBRACKET> <CLOSESQUAREBRACKET>
+    <IDENTIFIER> <CLOSECURVEBRACKET> <OPENBRACKET> (LOOKAHEAD(2) VarDeclaration())* (Statement())* <CLOSEBRACKET>)
  }
 
 void Type() #void: {}
@@ -138,8 +139,7 @@ void Expression() #void: {}
     | <FALSE> Expression1()
     | <IDENTIFIER> Expression1()
     | <THIS> Expression1()
-    | <NEW> <INT> <OPENSQUAREBRACKET> Expression() <CLOSESQUAREBRACKET> Expression1()
-    | <NEW> <IDENTIFIER> <OPENCURVEBRACKET> <CLOSECURVEBRACKET> Expression1()
+    | <NEW> ( <INT> <OPENSQUAREBRACKET> Expression() <CLOSESQUAREBRACKET> Expression1() | <IDENTIFIER> <OPENCURVEBRACKET> <CLOSECURVEBRACKET> Expression1())
     | <NOT> Expression() Expression1()
     | <OPENCURVEBRACKET> Expression() <CLOSECURVEBRACKET> Expression1()
 }
@@ -148,17 +148,16 @@ void Expression1() #void: {}
 {
     (<AND> | <LESS> | <SUM> | <SUB> | <MULT> | <DIV>) Expression() Expression1()
     | <OPENSQUAREBRACKET> Expression() <CLOSESQUAREBRACKET> Expression1()
-    | <DOT> <LENGTH> Expression1()
-    | <DOT> <IDENTIFIER> <OPENCURVEBRACKET> [Expression() (<COMMA> Expression())*] <CLOSECURVEBRACKET> Expression1()
+    | <DOT> ( <LENGTH> Expression1() | <IDENTIFIER> <OPENCURVEBRACKET> [Expression() (<COMMA> Expression())*] <CLOSECURVEBRACKET> Expression1())
     | {}
+
 }
-// TODO: do we have a conflict here of <id> [ expr() ] ?
+
 void Statement() #void: {}
 {
     <OPENBRACKET> (Statement())* <CLOSEBRACKET>
     | <IF> <OPENCURVEBRACKET> Expression() <CLOSECURVEBRACKET> Statement() <ELSE> Statement()
     | <WHILE> <OPENCURVEBRACKET> Expression() <CLOSECURVEBRACKET> Statement()
-    | <IDENTIFIER> <EQUALS> Expression() <SEMICOLON>
-    | <IDENTIFIER> <OPENSQUAREBRACKET> Expression() <CLOSESQUAREBRACKET> <EQUALS> Expression() <SEMICOLON>
-    | Expression() <SEMICOLON>
+    |  LOOKAHEAD(2) <IDENTIFIER> (<EQUALS> Expression() <SEMICOLON> | <OPENSQUAREBRACKET> Expression() <CLOSESQUAREBRACKET> <EQUALS> Expression() <SEMICOLON>)
+    | LOOKAHEAD(2) Expression() <SEMICOLON>
 }

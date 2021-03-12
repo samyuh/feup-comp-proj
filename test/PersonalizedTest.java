@@ -12,6 +12,5 @@ public class PersonalizedTest {
         assertEquals("Program", TestUtils.parse(jmmCode).getRootNode().getKind());
     }
 
-    // TODO: test for the comments
 
 }
