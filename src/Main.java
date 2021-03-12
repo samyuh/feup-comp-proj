@@ -5,12 +5,12 @@ import pt.up.fe.comp.jmm.report.Report;
 
 import java.io.FileInputStream;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.io.StringReader;
 
 public class Main implements JmmParser {
-
 
     public JmmParserResult parse(String jmmCode) {
 

@@ -4,7 +4,7 @@ import pt.up.fe.specs.util.SpecsIo;
 
 import static org.junit.Assert.assertEquals;
 
-public class PersonalizedTest {
+public class PersonalizedAccept {
     @Test
     public void TestConflict1(){
 

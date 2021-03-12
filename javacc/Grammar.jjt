@@ -4,8 +4,14 @@ options
 }
 PARSER_BEGIN(Grammar)
 
-public class Grammar{
+import pt.up.fe.comp.jmm.report.Report;
+// TODO: import.
 
+public class Grammar{
+    private List<Report> report = new ArrayList<>();
+    // TODO: get report
+    List<Report> getReport(){
+    }
 }
 
 PARSER_END(Grammar)
@@ -132,6 +138,7 @@ void Type() #void: {}
     <INTBRACKETS> | <BOOLEAN> | <INT> | <STRING> | <IDENTIFIER>
 }
 
+// TODO: rewrite this expression to support trees and order expressions. Use java precedence.
 void Expression() #void: {}
 {
      <INTEGERLITERAL>  Expression1()
@@ -150,14 +157,51 @@ void Expression1() #void: {}
     | <OPENSQUAREBRACKET> Expression() <CLOSESQUAREBRACKET> Expression1()
     | <DOT> ( <LENGTH> Expression1() | <IDENTIFIER> <OPENCURVEBRACKET> [Expression() (<COMMA> Expression())*] <CLOSECURVEBRACKET> Expression1())
     | {}
-
 }
 
 void Statement() #void: {}
 {
     <OPENBRACKET> (Statement())* <CLOSEBRACKET>
     | <IF> <OPENCURVEBRACKET> Expression() <CLOSECURVEBRACKET> Statement() <ELSE> Statement()
-    | <WHILE> <OPENCURVEBRACKET> Expression() <CLOSECURVEBRACKET> Statement()
     |  LOOKAHEAD(2) <IDENTIFIER> (<EQUALS> Expression() <SEMICOLON> | <OPENSQUAREBRACKET> Expression() <CLOSESQUAREBRACKET> <EQUALS> Expression() <SEMICOLON>)
     | LOOKAHEAD(2) Expression() <SEMICOLON>
+    | WhileStatment()
 }
+
+// TODO: in the future improve. Access the report.
+void WhileStatment() #void : {}
+{
+    try{
+        <WHILE> <OPENCURVEBRACKET> Expression() <CLOSECURVEBRACKET>
+    } catch(ParseException e){
+        System.out.println(e.toString()) ;
+        Token t;
+       do {
+           t = getNextToken();
+           // TODO: add new report.
+           System.out.println(t);
+        } while (t.kind != CLOSECURVEBRACKET);
+    }
+    Statement()
+}
+
+/*
+* void Stm() :
+  {}
+  {
+    try {
+      (
+        IfStm()
+      |
+        WhileStm()
+      )
+    }
+    catch (ParseException e) {
+      System.out.println(e.toString());
+      Token t;
+      do {
+        t = getNextToken();
+      } while (t.kind != SEMICOLON);
+    }
+  }
+* */
