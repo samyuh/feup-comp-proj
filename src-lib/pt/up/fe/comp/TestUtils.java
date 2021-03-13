@@ -8,10 +8,14 @@ import java.io.OutputStream;
 import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.util.Properties;
+import java.util.List;
 
 
 import pt.up.fe.comp.jmm.JmmParserResult;
 import pt.up.fe.comp.jmm.JmmParser;
+import pt.up.fe.comp.jmm.report.Report;
+import pt.up.fe.comp.jmm.report.ReportType;
+
 
 import pt.up.fe.specs.util.SpecsIo;
 
@@ -48,6 +52,42 @@ public class TestUtils {
 			throw new RuntimeException("Could not parse code", e);
         }		
 		
+	}
+
+	/**
+	 * Checks if there are no Error reports. Throws exception if there is at least one Report of type Error.
+	 */
+	public static void noErrors(List<Report> reports) {
+		reports.stream()
+			.filter(report -> report.getType() == ReportType.ERROR)
+			.findFirst()
+			.ifPresent(report -> {
+				throw new RuntimeException("Found at least one error report: " + report);
+			});
+	}
+	
+	/**
+	 * Checks if there are Error reports. Throws exception is there are no reports of type Error.
+	 */
+	public static void mustFail(List<Report> reports) {	
+		boolean noReports = reports.stream()
+			.filter(report -> report.getType() == ReportType.ERROR)
+			.findFirst()
+			.isEmpty();
+			
+		if(noReports) {
+			throw new RuntimeException("Could not find any Error report");			
+		}			
+	}
+	
+	public static long getNumReports(List<Report> reports, ReportType type) {	
+		return reports.stream()
+			.filter(report -> report.getType() == type)
+			.count();
+	}
+	
+	public static long getNumErrors(List<Report> reports) {	
+		return getNumReports(reports, ReportType.ERROR);
 	}
 
 }
