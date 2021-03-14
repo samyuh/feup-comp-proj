@@ -12,5 +12,17 @@ public class PersonalizedAccept {
         assertEquals("Program", TestUtils.parse(jmmCode).getRootNode().getKind());
     }
 
+    @Test
+    public void DotPersonalized(){
+
+        String jmmCode = SpecsIo.getResource("fixtures/personalized/DotPrecendence.jmm");
+        assertEquals("Program", TestUtils.parse(jmmCode).getRootNode().getKind());
+    }
+
+    @Test
+    public void NotPersonalized(){
+        String jmmCode = SpecsIo.getResource("fixtures/personalized/NotTest.jmm");
+        assertEquals("Program", TestUtils.parse(jmmCode).getRootNode().getKind());
+    }
 
 }
