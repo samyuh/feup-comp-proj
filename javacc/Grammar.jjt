@@ -8,10 +8,10 @@ import pt.up.fe.comp.jmm.report.Report;
 // TODO: import.
 
 public class Grammar{
-    private List<Report> report = new ArrayList<>();
+    //private List<Report> report = new ArrayList<>();
     // TODO: get report
-    List<Report> getReport(){
-    }
+    /* List<Report> getReport(){
+    }*/
 }
 
 PARSER_END(Grammar)
@@ -122,17 +122,46 @@ void VarDeclaration() #void:{}
 
  void MethodDeclaration() #void:{}
  {
-
-    <PUBLIC> (Type() <IDENTIFIER>
-    // arguments
-    // TODO: separate into a new function.
-    <OPENCURVEBRACKET> [Type() <IDENTIFIER> (<COMMA> Type() <IDENTIFIER>)*] <CLOSECURVEBRACKET>
-    // body
-    <OPENBRACKET> (LOOKAHEAD(2) VarDeclaration())* (Statement())* <RETURN> Expression() <SEMICOLON> <CLOSEBRACKET>
-
-    | <STATIC> <VOID> <MAIN> <OPENCURVEBRACKET> <STRING> <OPENSQUAREBRACKET> <CLOSESQUAREBRACKET>
-    <IDENTIFIER> <CLOSECURVEBRACKET> <OPENBRACKET> (LOOKAHEAD(2) VarDeclaration())* (Statement())* <CLOSEBRACKET>)
+    <PUBLIC> ( MethodGeneric() | MethodMain())
  }
+
+ void MethodBody() #void : {}
+{
+    (LOOKAHEAD(2) VarDeclaration())* (Statement())*
+}
+
+void MethodMain() #void: {}
+{
+    <STATIC> <VOID> <MAIN> <OPENCURVEBRACKET> StringArray() <CLOSECURVEBRACKET>
+    <OPENBRACKET>
+        MethodBody()
+    <CLOSEBRACKET>
+
+}
+
+void StringArray() #void: {}
+{
+    <STRING> <OPENSQUAREBRACKET> <CLOSESQUAREBRACKET> <IDENTIFIER>
+}
+
+void MethodGeneric() #void: {}
+{
+    Type() <IDENTIFIER> <OPENCURVEBRACKET> [Arguments()] <CLOSECURVEBRACKET>
+    <OPENBRACKET>
+        MethodBody()
+        Return()
+    <CLOSEBRACKET>
+}
+
+void Arguments() #void: {}
+{
+    Type() <IDENTIFIER> (<COMMA> Type() <IDENTIFIER>)*
+}
+
+void Return() #void: {}
+{
+    <RETURN> Expression() <SEMICOLON>
+}
 
 void Type() #void: {}
 {
