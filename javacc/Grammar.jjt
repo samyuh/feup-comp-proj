@@ -198,6 +198,9 @@ void ExpressionOthers() #void : {}
      <IDENTIFIER> #Identifier
      | <INTEGERLITERAL> #Number
      | <TRUE>
+     | <FALSE>
+     | <THIS>
+     | <OPENCURVEBRACKET> AndExpression() <CLOSECURVEBRACKET>
 }
 
 /*
