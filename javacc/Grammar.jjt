@@ -103,34 +103,34 @@ SimpleNode Program(): {}
     ImportDeclaration() ClassDeclaration() <EOF> { return jjtThis; }
 }
 
-void ImportDeclaration() #void: {}
+void ImportDeclaration(): {}
 {
     (<IMPORT> [<STATIC>] <IDENTIFIER> (LOOKAHEAD(2) <DOT> <IDENTIFIER>)* [<DOT> <MULT>] <SEMICOLON> )*
 }
 
 
-void ClassDeclaration() #void: {}
+void ClassDeclaration(): {}
 {
     <CLASS> <IDENTIFIER> [<EXTENDS> <IDENTIFIER>] <OPENBRACKET> (VarDeclaration())* (MethodDeclaration())* <CLOSEBRACKET>
 }
 
 
-void VarDeclaration() #void:{}
+void VarDeclaration() :{}
 {
     Type() <IDENTIFIER> #identifier <SEMICOLON>
 }
 
- void MethodDeclaration() #void:{}
+ void MethodDeclaration():{}
  {
     <PUBLIC> ( MethodGeneric() | MethodMain())
  }
 
- void MethodBody() #void : {}
+ void MethodBody() : {}
 {
     (LOOKAHEAD(2) VarDeclaration())* (Statement())*
 }
 
-void MethodMain() #void: {}
+void MethodMain(): {}
 {
     <STATIC> <VOID> <MAIN> <OPENCURVEBRACKET> StringArray() <CLOSECURVEBRACKET>
     <OPENBRACKET>
@@ -139,12 +139,12 @@ void MethodMain() #void: {}
 
 }
 
-void StringArray() #void: {}
+void StringArray() : {}
 {
     <STRING> <OPENSQUAREBRACKET> <CLOSESQUAREBRACKET> <IDENTIFIER>
 }
 
-void MethodGeneric() #void: {}
+void MethodGeneric(): {}
 {
     Type() <IDENTIFIER> <OPENCURVEBRACKET> [Arguments()] <CLOSECURVEBRACKET>
     <OPENBRACKET>
@@ -153,63 +153,63 @@ void MethodGeneric() #void: {}
     <CLOSEBRACKET>
 }
 
-void Arguments() #void: {}
+void Arguments() : {}
 {
     Type() <IDENTIFIER> (<COMMA> Type() <IDENTIFIER>)*
 }
 
-void Return() #void: {}
+void Return() : {}
 {
     <RETURN> RootExpression() <SEMICOLON>
 }
 
-void Type() #void: {}
+void Type(): {}
 {
     <INTBRACKETS> | <BOOLEAN> | <INT> | <STRING> | <IDENTIFIER>
 }
 
-void RootExpression() #void :{}
+void RootExpression() #RootExpression :{}
 {
     ExpressionNext1() AndExpression()
 }
 
-void AndExpression() #void :{}
+void AndExpression():{}
 {
     <AND> ExpressionNext1() AndExpression()
     | {}
 }
 
-void ExpressionNext1() #void: {}
+void ExpressionNext1(): {}
 {
     ExpressionNext2() LessExpression()
 }
 
-void LessExpression() #void: {}
+void LessExpression(): {}
 {
     <LESS> ExpressionNext2() LessExpression()
     | {}
 }
 
-void ExpressionNext2() #void : {}
+void ExpressionNext2(): {}
 {
     ExpressionNext3() AddSubExpression()
 }
 
-void AddSubExpression() #void: {}
+void AddSubExpression(): {}
 {
     <SUM> ExpressionNext3() AddSubExpression()
     |<SUB> ExpressionNext3() AddSubExpression()
     | {}
 }
 
-void ExpressionNext3() #void : {}
+void ExpressionNext3()  : {}
 {
     ExpressionNext4()
 
     MultDivExpression()
 }
 
-void MultDivExpression()#void: {}
+void MultDivExpression(): {}
 {
     <MULT> ExpressionNext4() MultDivExpression()
     | <DIV> ExpressionNext4() MultDivExpression()
@@ -217,34 +217,30 @@ void MultDivExpression()#void: {}
 }
 
 /* Se estiver mal é a partir de aqui */
-void ExpressionNext4() #void : {}
+void ExpressionNext4() : {}
 {
     NotExpression() ExpressionNext5()
 }
 
-void NotExpression() #void: {}
+void NotExpression() : {}
 {
     <NOT> NotExpression()
     | {}
 }
 
-void ExpressionNext5() #void : {}
+void ExpressionNext5() #Expression5 : {}
 {
     EndExpression() DotArrayExpression()
 }
 
 /* Perguntar da prioridade do ponto e do array */
-void DotArrayExpression() #void: {}
+void DotArrayExpression() : {}
 {
-try{
+
      <DOT> DotMethod() DotArrayExpression() #DOT
     | ArrayAccess()  DotArrayExpression() #ARRAY
     | {}
-    }
-    catch(Exception e){
-        System.out.println("Here1");
 
-    }
 }
 
 void DotMethod() #DotMethod: {}
@@ -257,25 +253,19 @@ void DotMethod() #DotMethod: {}
         <CLOSECURVEBRACKET>
 }
 
-void ArrayAccess() #ArrayAccess: {Token b; }
+void ArrayAccess() #ArrayAccess: {}
 {
-try{
-    <OPENSQUAREBRACKET> EndExpression()  <CLOSESQUAREBRACKET>
-    }
-    catch(Exception a){
-        System.out.println("Here");
-
-    }
+    <OPENSQUAREBRACKET> RootExpression() <CLOSESQUAREBRACKET>
 }
 
-void EndExpression() #void: {}
+void EndExpression() #EndExpression: {}
 {
     EndValue()
     | NewExpression()
     | ParentesisExpression()
 }
 
-void EndValue() #void: {}
+void EndValue() #EndValue: {}
 {
     <INTEGERLITERAL>
     | <TRUE>
@@ -284,51 +274,80 @@ void EndValue() #void: {}
     | <THIS>
 }
 
-void NewExpression() #void: {}
+void NewExpression() #NewValue: {}
 {
     <NEW> (<INT> <OPENSQUAREBRACKET> RootExpression() <CLOSESQUAREBRACKET>
         | <IDENTIFIER> <OPENCURVEBRACKET> <CLOSECURVEBRACKET>)
 }
 
-void ParentesisExpression() #void: {}
+void ParentesisExpression() #ParentesisExpression: {}
 {
     <OPENCURVEBRACKET> RootExpression() <CLOSECURVEBRACKET>
 }
 
-void Statement() #void: {}
+void Statement() #Statment: {}
 {
     <OPENBRACKET> (Statement())* <CLOSEBRACKET>
     | IfElseStatement()
     | WhileStatment()
     // TODO: error with a[2] = a.length; or a = a[2].length;
+    /*
+    | Expression , ";"
+    | Identifier , "=" , Expression , ";"
+    | Identifier , "[" , Expression , "]" , "=" , Expression , ";"
+     */
+    | RootExpression() (Assignment())? <SEMICOLON>
+    /*
     | LOOKAHEAD(2) RootExpression() <SEMICOLON>
-    | LOOKAHEAD(2) <IDENTIFIER> (Assignment() <SEMICOLON> | <OPENSQUAREBRACKET> RootExpression() <CLOSESQUAREBRACKET> <EQUALS> RootExpression() <SEMICOLON>)
+    | LOOKAHEAD(2) <IDENTIFIER> <OPENSQUAREBRACKET> RootExpression() <CLOSESQUAREBRACKET> Assignment() <SEMICOLON>
+    | LOOKAHEAD(2) <IDENTIFIER> Assignment() <SEMICOLON>
+     */
 
 }
 
-void IfElseStatement() #void: {}
+void temp(): {}
+{
+    <IDENTIFIER> ArrayAccess()(
+        Assignment() <SEMICOLON>
+        | <DOT> DotMethod() DotArrayExpression()
+        | <SEMICOLON>
+    )
+
+}
+
+void IfElseStatement() #IfElse: {}
 {
     <IF> <OPENCURVEBRACKET> RootExpression() <CLOSECURVEBRACKET> Statement() <ELSE> Statement()
 }
 
-void Assignment() #void: {}
+void Assignment() #Assignment: {}
 {
     <EQUALS> RootExpression()
 }
 
 // TODO: in the future improve. Access the report.
-void WhileStatment() #void : {}
+void WhileStatment() #WhileStatment : {}
 {
+    <WHILE> <OPENCURVEBRACKET>
     try{
-        <WHILE> <OPENCURVEBRACKET> RootExpression() <CLOSECURVEBRACKET>
+         RootExpression() <CLOSECURVEBRACKET>
     } catch(ParseException e){
         System.out.println(e.toString()) ;
         Token t;
-       do {
-           t = getNextToken();
-           // TODO: add new report.
-           System.out.println(t);
-        } while (t.kind != CLOSECURVEBRACKET);
+        int counter = 0;
+        int openCurvedCounter = 1, closeCurvedCounter= 0;
+        Boolean NotMatch = false;
+
+        do {
+           t = getToken(1);
+
+           if (t.kind != OPENBRACKET) getNextToken();
+           else break;
+           if (t.kind == OPENCURVEBRACKET) openCurvedCounter++;
+           else if (t.kind == CLOSECURVEBRACKET) closeCurvedCounter++;
+
+
+        } while (openCurvedCounter != closeCurvedCounter && t.kind != EOF);
     }
     Statement()
 }

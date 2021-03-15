@@ -60,7 +60,4 @@ public class AcceptTest {
         String jmmCode = SpecsIo.getResource("fixtures/public/WhileAndIF.jmm");
         assertEquals("Program", TestUtils.parse(jmmCode).getRootNode().getKind());
     }
-
-
-
 }

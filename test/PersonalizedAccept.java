@@ -5,6 +5,7 @@ import pt.up.fe.specs.util.SpecsIo;
 import static org.junit.Assert.assertEquals;
 
 public class PersonalizedAccept {
+
     @Test
     public void TestConflict1(){
 
@@ -24,5 +25,4 @@ public class PersonalizedAccept {
         String jmmCode = SpecsIo.getResource("fixtures/personalized/NotTest.jmm");
         assertEquals("Program", TestUtils.parse(jmmCode).getRootNode().getKind());
     }
-
 }

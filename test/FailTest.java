@@ -6,6 +6,7 @@ import static org.junit.Assert.assertEquals;
 
 // TODO: for the while loop tests generated error recovery
 public class FailTest {
+
     @Test
     public void BlowUp(){
         String jmmCode = SpecsIo.getResource("fixtures/public/fail/syntactical/BlowUp.jmm");
