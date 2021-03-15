@@ -117,7 +117,7 @@ void ClassDeclaration(): {}
 
 void VarDeclaration() :{}
 {
-    Type() <IDENTIFIER> #identifier <SEMICOLON>
+    Type() <IDENTIFIER> #IDENTIFIER <SEMICOLON>
 }
 
  void MethodDeclaration():{}
@@ -168,45 +168,23 @@ void Type(): {}
     <INTBRACKETS> | <BOOLEAN> | <INT> | <STRING> | <IDENTIFIER>
 }
 
-
-void Expression() #void: {}
+void Expression() : {}
 {
-     <INTEGERLITERAL> Expression1()
-    | <TRUE> Expression1()
-    | <FALSE> Expression1()
-    | <IDENTIFIER> Expression1()
-    | <THIS> Expression1()
-    | <NEW> ( <INT> <OPENSQUAREBRACKET> Expression() <CLOSESQUAREBRACKET> Expression1() | <IDENTIFIER> <OPENCURVEBRACKET> <CLOSECURVEBRACKET> Expression1())
-    | <NOT> Expression() Expression1()
-    | <OPENCURVEBRACKET> Expression() <CLOSECURVEBRACKET> Expression1()
+    ExpressionOthers() [<AND> Expression() #AND(2)]
 }
 
+void ExpressionOthers(): {}
+{
+    <INTEGERLITERAL>
+}
+/*
 void Expression1() #void: {}
 {
     (<AND> | <LESS> | <SUM> | <SUB> | <MULT> | <DIV>) Expression() Expression1()
     | <OPENSQUAREBRACKET> Expression() <CLOSESQUAREBRACKET> Expression1()
     | <DOT> (<LENGTH> Expression1() | <IDENTIFIER> <OPENCURVEBRACKET> [Expression() (<COMMA> Expression())*] <CLOSECURVEBRACKET> Expression1())
     | {}
-}
-
-/*
-void Statement() #Statment: {}
-{
-    <OPENBRACKET> (Statement())* <CLOSEBRACKET>
-    | IfElseStatement()
-    | WhileStatment()
-    // TODO: error with a[2] = a.length; or a = a[2].length;
-
-    | Expression , ";"
-    | Identifier , "=" , Expression , ";"
-    | Identifier , "[" , Expression , "]" , "=" , Expression , ";"
-
-
-    | LOOKAHEAD(2) Expression() <SEMICOLON>
-    | LOOKAHEAD(2) <IDENTIFIER> <OPENSQUAREBRACKET> Expression() <CLOSESQUAREBRACKET> Assignment() <SEMICOLON>
-    | LOOKAHEAD(2) <IDENTIFIER> Assignment() <SEMICOLON>
-}
-*/
+}*/
 
 void Statement() #void: {}
 {
@@ -216,8 +194,6 @@ void Statement() #void: {}
     | LOOKAHEAD(2) Expression() <SEMICOLON>
     | WhileStatment()
 }
-
-
 
 void IfElseStatement() #IfElse: {}
 {
