@@ -1,6 +1,6 @@
 import ioPlus;
 class HelloWorld {
 	public static void main(String[] args) {
-		555554 && 727727;
+		4 * 3 && 34 + 7 * 6 * 6 < 3;
     }
 }

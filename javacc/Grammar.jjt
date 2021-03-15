@@ -160,7 +160,7 @@ void Arguments() : {}
 
 void Return() : {}
 {
-    <RETURN> Expression() <SEMICOLON>
+    <RETURN> AndExpression() <SEMICOLON>
 }
 
 void Type(): {}
@@ -168,41 +168,56 @@ void Type(): {}
     <INTBRACKETS> | <BOOLEAN> | <INT> | <STRING> | <IDENTIFIER>
 }
 
-void Expression() : {}
+void AndExpression() #void : {}
 {
-    ExpressionOthers() [<AND> Expression() #AND(2)]
+   LessExpression () [<AND> AndExpression() #And(2)]
 }
 
-void ExpressionOthers(): {}
+void LessExpression() #void : {}
 {
-    <INTEGERLITERAL>
+    AddSubExpression() [<LESS> LessExpression() #Less(2)]
+}
+
+void AddSubExpression() #void : {}
+{
+    MultDivExpression() [(<SUM> AddSubExpression() #Add(2) | <SUB> AddSubExpression() #Sub(2))]
+}
+
+void MultDivExpression() #void : {}
+{
+    ExpressionOthers() [(<MULT> MultDivExpression() #Mult(2) | <DIV> MultDivExpression() #Div(2))]
+}
+
+void ExpressionOthers() #void : {Token t;}
+{
+     t = <INTEGERLITERAL> {  jjtThis.val = Integer.parseInt(t.image); } #Term
 }
 /*
 void Expression1() #void: {}
 {
-    (<AND> | <LESS> | <SUM> | <SUB> | <MULT> | <DIV>) Expression() Expression1()
-    | <OPENSQUAREBRACKET> Expression() <CLOSESQUAREBRACKET> Expression1()
-    | <DOT> (<LENGTH> Expression1() | <IDENTIFIER> <OPENCURVEBRACKET> [Expression() (<COMMA> Expression())*] <CLOSECURVEBRACKET> Expression1())
+    ( <SUM> | <SUB> | <MULT> | <DIV>) AndExpression() Expression1()
+    | <OPENSQUAREBRACKET> AndExpression() <CLOSESQUAREBRACKET> Expression1()
+    | <DOT> (<LENGTH> Expression1() | <IDENTIFIER> <OPENCURVEBRACKET> [Expression() (<COMMA> AndExpression())*] <CLOSECURVEBRACKET> Expression1())
     | {}
 }*/
 
 void Statement() #void: {}
 {
     <OPENBRACKET> (Statement())* <CLOSEBRACKET>
-    | <IF> <OPENCURVEBRACKET> Expression() <CLOSECURVEBRACKET> Statement() <ELSE> Statement()
-    | LOOKAHEAD(2) <IDENTIFIER> (<EQUALS> Expression() <SEMICOLON> | <OPENSQUAREBRACKET> Expression() <CLOSESQUAREBRACKET> <EQUALS> Expression() <SEMICOLON>)
-    | LOOKAHEAD(2) Expression() <SEMICOLON>
+    | <IF> <OPENCURVEBRACKET> AndExpression() <CLOSECURVEBRACKET> Statement() <ELSE> Statement()
+    | LOOKAHEAD(2) <IDENTIFIER> (<EQUALS> AndExpression() <SEMICOLON> | <OPENSQUAREBRACKET> AndExpression() <CLOSESQUAREBRACKET> <EQUALS> AndExpression() <SEMICOLON>)
+    | LOOKAHEAD(2) AndExpression() <SEMICOLON>
     | WhileStatment()
 }
 
 void IfElseStatement() #IfElse: {}
 {
-    <IF> <OPENCURVEBRACKET> Expression() <CLOSECURVEBRACKET> Statement() <ELSE> Statement()
+    <IF> <OPENCURVEBRACKET> AndExpression() <CLOSECURVEBRACKET> Statement() <ELSE> Statement()
 }
 
 void Assignment() #Assignment: {}
 {
-    <EQUALS> Expression()
+    <EQUALS> AndExpression()
 }
 
 // TODO: in the future improve. Access the report.
@@ -210,7 +225,7 @@ void WhileStatment() #WhileStatment : {}
 {
     <WHILE> <OPENCURVEBRACKET>
     try{
-         Expression() <CLOSECURVEBRACKET>
+         AndExpression() <CLOSECURVEBRACKET>
     } catch(ParseException e){
         System.out.println(e.toString()) ;
         Token t;
