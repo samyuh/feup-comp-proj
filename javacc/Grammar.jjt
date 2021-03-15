@@ -190,8 +190,24 @@ void MultDivExpression() #void : {}
 
 void NotExpression() #void : {}
 {
-    (<NOT>)* ExpressionOthers()
+    (<NOT> #NOT(1))* DotExpression()
 }
+
+void DotExpression() #void : {}
+{
+     ExpressionOthers() [<DOT> ( <LENGTH> #Length(1)
+        | <IDENTIFIER> ObjectMethodParameters() #ObjectMethod(2) ) ]
+}
+void ObjectMethodParameters() : {}
+{
+    <OPENCURVEBRACKET> [AndExpression() (<COMMA> AndExpression())*] <CLOSECURVEBRACKET>
+}
+
+/*
+Expression , "." , "length"
+| Expression , "." , Identifier , "(" , [ Expression { "," , Expres-
+sion } ], ")"
+*/
 
 void ExpressionOthers() #void : {}
 {
@@ -200,7 +216,14 @@ void ExpressionOthers() #void : {}
      | <TRUE>
      | <FALSE>
      | <THIS>
+     | NewExpression()
      | <OPENCURVEBRACKET> AndExpression() <CLOSECURVEBRACKET>
+}
+
+void NewExpression() : {}
+{
+    <NEW> (<INT> <OPENSQUAREBRACKET> AndExpression() <CLOSESQUAREBRACKET>
+        | <IDENTIFIER> <OPENCURVEBRACKET> <CLOSECURVEBRACKET>)
 }
 
 /*

@@ -1,6 +1,6 @@
 import ioPlus;
 class HelloWorld {
 	public static void main(String[] args) {
-	    5 + (5 + 6 * 9) < 67 + 7;
+	    a.lsetValue(5,ola,ba);
     }
 }
