@@ -170,7 +170,7 @@ void Type(): {}
 
 void AndExpression() #void : {}
 {
-   LessExpression () [<AND> AndExpression() #And(2)]
+   LessExpression() [<AND> AndExpression() #And(2)]
 }
 
 void LessExpression() #void : {}
@@ -185,13 +185,21 @@ void AddSubExpression() #void : {}
 
 void MultDivExpression() #void : {}
 {
-    ExpressionOthers() [(<MULT> MultDivExpression() #Mult(2) | <DIV> MultDivExpression() #Div(2))]
+    NotExpression() [(<MULT> MultDivExpression() #Mult(2) | <DIV> MultDivExpression() #Div(2))]
 }
 
-void ExpressionOthers() #void : {Token t;}
+void NotExpression() #void : {}
 {
-     t = <INTEGERLITERAL> {  jjtThis.val = Integer.parseInt(t.image); } #Term
+    (<NOT>)* ExpressionOthers()
 }
+
+void ExpressionOthers() #void : {}
+{
+     <IDENTIFIER> #Identifier
+     | <INTEGERLITERAL> #Number
+     | <TRUE>
+}
+
 /*
 void Expression1() #void: {}
 {
@@ -200,6 +208,7 @@ void Expression1() #void: {}
     | <DOT> (<LENGTH> Expression1() | <IDENTIFIER> <OPENCURVEBRACKET> [Expression() (<COMMA> AndExpression())*] <CLOSECURVEBRACKET> Expression1())
     | {}
 }*/
+
 
 void Statement() #void: {}
 {
