@@ -1,6 +1,7 @@
 import ioPlus;
 class HelloWorld {
 	public static void main(String[] args) {
-	    a.lsetValue(5,ola,ba);
+	    int b;
+	    b = a.getValue().length.length;
     }
 }

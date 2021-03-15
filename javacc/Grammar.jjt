@@ -195,19 +195,14 @@ void NotExpression() #void : {}
 
 void DotExpression() #void : {}
 {
-     ExpressionOthers() [<DOT> ( <LENGTH> #Length(1)
-        | <IDENTIFIER> ObjectMethodParameters() #ObjectMethod(2) ) ]
+     ExpressionOthers() (<DOT> ( <LENGTH> #Length(1)
+        | <IDENTIFIER> ObjectMethodParameters() #ObjectMethod(2)))*
 }
+
 void ObjectMethodParameters() : {}
 {
     <OPENCURVEBRACKET> [AndExpression() (<COMMA> AndExpression())*] <CLOSECURVEBRACKET>
 }
-
-/*
-Expression , "." , "length"
-| Expression , "." , Identifier , "(" , [ Expression { "," , Expres-
-sion } ], ")"
-*/
 
 void ExpressionOthers() #void : {}
 {
