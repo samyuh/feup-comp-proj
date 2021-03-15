@@ -160,7 +160,7 @@ void Arguments() : {}
 
 void Return() : {}
 {
-    <RETURN> RootExpression() <SEMICOLON>
+    <RETURN> Expression() <SEMICOLON>
 }
 
 void Type(): {}
@@ -168,161 +168,65 @@ void Type(): {}
     <INTBRACKETS> | <BOOLEAN> | <INT> | <STRING> | <IDENTIFIER>
 }
 
-void RootExpression() #RootExpression :{}
+
+void Expression() #void: {}
 {
-    ExpressionNext1() AndExpression()
+     <INTEGERLITERAL> Expression1()
+    | <TRUE> Expression1()
+    | <FALSE> Expression1()
+    | <IDENTIFIER> Expression1()
+    | <THIS> Expression1()
+    | <NEW> ( <INT> <OPENSQUAREBRACKET> Expression() <CLOSESQUAREBRACKET> Expression1() | <IDENTIFIER> <OPENCURVEBRACKET> <CLOSECURVEBRACKET> Expression1())
+    | <NOT> Expression() Expression1()
+    | <OPENCURVEBRACKET> Expression() <CLOSECURVEBRACKET> Expression1()
 }
 
-void AndExpression():{}
+void Expression1() #void: {}
 {
-    <AND> ExpressionNext1() AndExpression()
+    (<AND> | <LESS> | <SUM> | <SUB> | <MULT> | <DIV>) Expression() Expression1()
+    | <OPENSQUAREBRACKET> Expression() <CLOSESQUAREBRACKET> Expression1()
+    | <DOT> (<LENGTH> Expression1() | <IDENTIFIER> <OPENCURVEBRACKET> [Expression() (<COMMA> Expression())*] <CLOSECURVEBRACKET> Expression1())
     | {}
 }
 
-void ExpressionNext1(): {}
-{
-    ExpressionNext2() LessExpression()
-}
-
-void LessExpression(): {}
-{
-    <LESS> ExpressionNext2() LessExpression()
-    | {}
-}
-
-void ExpressionNext2(): {}
-{
-    ExpressionNext3() AddSubExpression()
-}
-
-void AddSubExpression(): {}
-{
-    <SUM> ExpressionNext3() AddSubExpression()
-    |<SUB> ExpressionNext3() AddSubExpression()
-    | {}
-}
-
-void ExpressionNext3()  : {}
-{
-    ExpressionNext4()
-
-    MultDivExpression()
-}
-
-void MultDivExpression(): {}
-{
-    <MULT> ExpressionNext4() MultDivExpression()
-    | <DIV> ExpressionNext4() MultDivExpression()
-    | {}
-}
-
-/* Se estiver mal é a partir de aqui */
-void ExpressionNext4() : {}
-{
-    NotExpression() ExpressionNext5()
-}
-
-void NotExpression() : {}
-{
-    <NOT> NotExpression()
-    | {}
-}
-
-void ExpressionNext5() #Expression5 : {}
-{
-    EndExpression() DotArrayExpression()
-}
-
-/* Perguntar da prioridade do ponto e do array */
-void DotArrayExpression() : {}
-{
-
-     <DOT> DotMethod() DotArrayExpression() #DOT
-    | ArrayAccess()  DotArrayExpression() #ARRAY
-    | {}
-
-}
-
-void DotMethod() #DotMethod: {}
-{
-    <LENGTH>
-    | <IDENTIFIER>
-        <OPENCURVEBRACKET>
-            [RootExpression()
-            (<COMMA> RootExpression())*]
-        <CLOSECURVEBRACKET>
-}
-
-void ArrayAccess() #ArrayAccess: {}
-{
-    <OPENSQUAREBRACKET> RootExpression() <CLOSESQUAREBRACKET>
-}
-
-void EndExpression() #EndExpression: {}
-{
-    EndValue()
-    | NewExpression()
-    | ParentesisExpression()
-}
-
-void EndValue() #EndValue: {}
-{
-    <INTEGERLITERAL>
-    | <TRUE>
-    | <FALSE>
-    | <IDENTIFIER>
-    | <THIS>
-}
-
-void NewExpression() #NewValue: {}
-{
-    <NEW> (<INT> <OPENSQUAREBRACKET> RootExpression() <CLOSESQUAREBRACKET>
-        | <IDENTIFIER> <OPENCURVEBRACKET> <CLOSECURVEBRACKET>)
-}
-
-void ParentesisExpression() #ParentesisExpression: {}
-{
-    <OPENCURVEBRACKET> RootExpression() <CLOSECURVEBRACKET>
-}
-
+/*
 void Statement() #Statment: {}
 {
     <OPENBRACKET> (Statement())* <CLOSEBRACKET>
     | IfElseStatement()
     | WhileStatment()
     // TODO: error with a[2] = a.length; or a = a[2].length;
-    /*
+
     | Expression , ";"
     | Identifier , "=" , Expression , ";"
     | Identifier , "[" , Expression , "]" , "=" , Expression , ";"
-     */
-    | RootExpression() (Assignment())? <SEMICOLON>
-    /*
-    | LOOKAHEAD(2) RootExpression() <SEMICOLON>
-    | LOOKAHEAD(2) <IDENTIFIER> <OPENSQUAREBRACKET> RootExpression() <CLOSESQUAREBRACKET> Assignment() <SEMICOLON>
+
+
+    | LOOKAHEAD(2) Expression() <SEMICOLON>
+    | LOOKAHEAD(2) <IDENTIFIER> <OPENSQUAREBRACKET> Expression() <CLOSESQUAREBRACKET> Assignment() <SEMICOLON>
     | LOOKAHEAD(2) <IDENTIFIER> Assignment() <SEMICOLON>
-     */
-
 }
+*/
 
-void temp(): {}
+void Statement() #void: {}
 {
-    <IDENTIFIER> ArrayAccess()(
-        Assignment() <SEMICOLON>
-        | <DOT> DotMethod() DotArrayExpression()
-        | <SEMICOLON>
-    )
-
+    <OPENBRACKET> (Statement())* <CLOSEBRACKET>
+    | <IF> <OPENCURVEBRACKET> Expression() <CLOSECURVEBRACKET> Statement() <ELSE> Statement()
+    | LOOKAHEAD(2) <IDENTIFIER> (<EQUALS> Expression() <SEMICOLON> | <OPENSQUAREBRACKET> Expression() <CLOSESQUAREBRACKET> <EQUALS> Expression() <SEMICOLON>)
+    | LOOKAHEAD(2) Expression() <SEMICOLON>
+    | WhileStatment()
 }
+
+
 
 void IfElseStatement() #IfElse: {}
 {
-    <IF> <OPENCURVEBRACKET> RootExpression() <CLOSECURVEBRACKET> Statement() <ELSE> Statement()
+    <IF> <OPENCURVEBRACKET> Expression() <CLOSECURVEBRACKET> Statement() <ELSE> Statement()
 }
 
 void Assignment() #Assignment: {}
 {
-    <EQUALS> RootExpression()
+    <EQUALS> Expression()
 }
 
 // TODO: in the future improve. Access the report.
@@ -330,7 +234,7 @@ void WhileStatment() #WhileStatment : {}
 {
     <WHILE> <OPENCURVEBRACKET>
     try{
-         RootExpression() <CLOSECURVEBRACKET>
+         Expression() <CLOSECURVEBRACKET>
     } catch(ParseException e){
         System.out.println(e.toString()) ;
         Token t;

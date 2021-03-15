@@ -1,8 +1,7 @@
 import ioPlus;
 class HelloWorld {
 	public static void main(String[] args) {
-
-        (2+2) = 4;
-
+        a[a] = 4;
+        a[a].length;
 	}
 }
