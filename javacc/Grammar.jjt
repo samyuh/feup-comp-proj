@@ -190,18 +190,28 @@ void MultDivExpression() #void : {}
 
 void NotExpression() #void : {}
 {
-    (<NOT> #NOT(1))* DotExpression()
+    (<NOT> #NOT)* DotArrayExpression()
+}
+
+void DotArrayExpression() : {}
+{
+    ExpressionOthers() (DotExpression() | ArrayExpression())*
 }
 
 void DotExpression() #void : {}
 {
-     ExpressionOthers() (<DOT> ( <LENGTH> #Length(1)
-        | <IDENTIFIER> ObjectMethodParameters() #ObjectMethod(2)))*
+     <DOT> ( <LENGTH>
+        | <IDENTIFIER> ObjectMethodParameters() )
 }
 
 void ObjectMethodParameters() : {}
 {
     <OPENCURVEBRACKET> [AndExpression() (<COMMA> AndExpression())*] <CLOSECURVEBRACKET>
+}
+
+void ArrayExpression() : {}
+{
+    <OPENSQUAREBRACKET> AndExpression() <CLOSESQUAREBRACKET>
 }
 
 void ExpressionOthers() #void : {}
@@ -221,34 +231,37 @@ void NewExpression() : {}
         | <IDENTIFIER> <OPENCURVEBRACKET> <CLOSECURVEBRACKET>)
 }
 
-/*
-void Expression1() #void: {}
-{
-    ( <SUM> | <SUB> | <MULT> | <DIV>) AndExpression() Expression1()
-    | <OPENSQUAREBRACKET> AndExpression() <CLOSESQUAREBRACKET> Expression1()
-    | <DOT> (<LENGTH> Expression1() | <IDENTIFIER> <OPENCURVEBRACKET> [Expression() (<COMMA> AndExpression())*] <CLOSECURVEBRACKET> Expression1())
-    | {}
-}*/
-
-
+// a[2].length ; <==
 void Statement() #void: {}
 {
     <OPENBRACKET> (Statement())* <CLOSEBRACKET>
-    | <IF> <OPENCURVEBRACKET> AndExpression() <CLOSECURVEBRACKET> Statement() <ELSE> Statement()
-    | LOOKAHEAD(2) <IDENTIFIER> (<EQUALS> AndExpression() <SEMICOLON> | <OPENSQUAREBRACKET> AndExpression() <CLOSESQUAREBRACKET> <EQUALS> AndExpression() <SEMICOLON>)
+    | IfElseStatement()
+    | LOOKAHEAD(2) Assignment()
     | LOOKAHEAD(2) AndExpression() <SEMICOLON>
+    /*
+    | LOOKAHEAD(2) (<IDENTIFIER> Assignment() <SEMICOLON>  |
+                ArrayExpression() <EQUALS> AndExpression() <SEMICOLON>)
+    | LOOKAHEAD(2) AndExpression() <SEMICOLON>*/
     | WhileStatment()
 }
+
+
+void Assignment() : {}
+{
+     IdOrArrayAccess() <EQUALS> AndExpression() <SEMICOLON>
+}
+
+void IdOrArrayAccess() : {}
+{
+    <IDENTIFIER> [ArrayExpression()]
+}
+
 
 void IfElseStatement() #IfElse: {}
 {
     <IF> <OPENCURVEBRACKET> AndExpression() <CLOSECURVEBRACKET> Statement() <ELSE> Statement()
 }
 
-void Assignment() #Assignment: {}
-{
-    <EQUALS> AndExpression()
-}
 
 // TODO: in the future improve. Access the report.
 void WhileStatment() #WhileStatment : {}
@@ -262,7 +275,7 @@ void WhileStatment() #WhileStatment : {}
         int counter = 0;
         int openCurvedCounter = 1, closeCurvedCounter= 0;
         Boolean NotMatch = false;
-
+        // TODO: condição de parangem: abrir { e depois de ) não é ).
         do {
            t = getToken(1);
 
@@ -271,8 +284,8 @@ void WhileStatment() #WhileStatment : {}
            if (t.kind == OPENCURVEBRACKET) openCurvedCounter++;
            else if (t.kind == CLOSECURVEBRACKET) closeCurvedCounter++;
 
-
         } while (openCurvedCounter != closeCurvedCounter && t.kind != EOF);
     }
-    Statement()
+
+     Statement()
 }
