@@ -190,8 +190,10 @@ void MultDivExpression() #void : {}
 
 void NotExpression() #void : {}
 {
-    (<NOT> #NOT)* DotArrayExpression()
+    (<NOT> #NOT)* DotArrayExpression() // Arranjar a árvore do Not
 }
+
+// Remover casos que não são possíveis ( a[3].lenght, a[5] no inicio da linha e coisas do genero não dá!)
 
 void DotArrayExpression() : {}
 {
@@ -201,7 +203,7 @@ void DotArrayExpression() : {}
 void DotExpression() #void : {}
 {
      <DOT> ( <LENGTH>
-        | <IDENTIFIER> ObjectMethodParameters() )
+        | <IDENTIFIER> ObjectMethodParameters() ) // Arranjar a árvore
 }
 
 void ObjectMethodParameters() : {}
