@@ -117,7 +117,7 @@ void ClassDeclaration(): {}
 
 void VarDeclaration() :{}
 {
-    Type() <IDENTIFIER> #IDENTIFIER <SEMICOLON>
+    Type() <IDENTIFIER> #Identifier <SEMICOLON>
 }
 
  void MethodDeclaration():{}
@@ -190,20 +190,17 @@ void MultDivExpression() #void : {}
 
 void NotExpression() #void : {}
 {
-    (<NOT> #NOT)* DotArrayExpression() // Arranjar a árvore do Not
+    (<NOT> NotExpression() #NOT(1)) | DotArrayExpression()
 }
 
-// Remover casos que não são possíveis ( a[3].lenght, a[5] no inicio da linha e coisas do genero não dá!)
-
-void DotArrayExpression() : {}
+void DotArrayExpression() #void : {}
 {
-    ExpressionOthers() (DotExpression() | ArrayExpression())*
+    ExpressionOthers() (<DOT> DotExpression() #Dot(2) | ArrayExpression())*
 }
 
 void DotExpression() #void : {}
 {
-     <DOT> ( <LENGTH>
-        | <IDENTIFIER> ObjectMethodParameters() ) // Arranjar a árvore
+     <LENGTH> #Length | <IDENTIFIER> ObjectMethodParameters() // Arranjar a árvore
 }
 
 void ObjectMethodParameters() : {}
@@ -211,18 +208,45 @@ void ObjectMethodParameters() : {}
     <OPENCURVEBRACKET> [AndExpression() (<COMMA> AndExpression())*] <CLOSECURVEBRACKET>
 }
 
-void ArrayExpression() : {}
+void ArrayExpression() #void : {}
 {
     <OPENSQUAREBRACKET> AndExpression() <CLOSESQUAREBRACKET>
+}
+
+/*
+void LessExpression() #void : {}
+{
+    AddSubExpression() [<LESS> LessExpression() #Less(2)]
+}
+
+| Identifier , "=" , Expression , ";"
+| Identifier , "[" , Expression , "]" , "=" , Expression , ";"
+
+ */
+
+void Assignment() #void : {}
+{
+     IdOrArrayAccess() <EQUALS> AndExpression() #Assignment(2) <SEMICOLON>
+}
+
+void IdOrArrayAccess() #void: {}
+{
+    LOOKAHEAD(2) testExp() |
+    LOOKAHEAD(2) <IDENTIFIER> #Identifier
+}
+
+void testExp() : {}
+{
+    <IDENTIFIER> #Identifier ArrayExpression() #ArrayExpression
 }
 
 void ExpressionOthers() #void : {}
 {
      <IDENTIFIER> #Identifier
      | <INTEGERLITERAL> #Number
-     | <TRUE>
-     | <FALSE>
-     | <THIS>
+     | <TRUE> #True
+     | <FALSE> #False
+     | <THIS> #This
      | NewExpression()
      | <OPENCURVEBRACKET> AndExpression() <CLOSECURVEBRACKET>
 }
@@ -240,30 +264,16 @@ void Statement() #void: {}
     | IfElseStatement()
     | LOOKAHEAD(2) Assignment()
     | LOOKAHEAD(2) AndExpression() <SEMICOLON>
-    /*
-    | LOOKAHEAD(2) (<IDENTIFIER> Assignment() <SEMICOLON>  |
-                ArrayExpression() <EQUALS> AndExpression() <SEMICOLON>)
-    | LOOKAHEAD(2) AndExpression() <SEMICOLON>*/
     | WhileStatment()
 }
 
 
-void Assignment() : {}
-{
-     IdOrArrayAccess() <EQUALS> AndExpression() <SEMICOLON>
-}
-
-void IdOrArrayAccess() : {}
-{
-    <IDENTIFIER> [ArrayExpression()]
-}
 
 
 void IfElseStatement() #IfElse: {}
 {
     <IF> <OPENCURVEBRACKET> AndExpression() <CLOSECURVEBRACKET> Statement() <ELSE> Statement()
 }
-
 
 // TODO: in the future improve. Access the report.
 void WhileStatment() #WhileStatment : {}

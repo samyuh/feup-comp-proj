@@ -2,6 +2,5 @@ import ioPlus;
 class HelloWorld {
 	public static void main(String[] args) {
 	    a[5] = 4;
-	    a[4].getValue().length.length; // Não aceitar isto
     }
 }
