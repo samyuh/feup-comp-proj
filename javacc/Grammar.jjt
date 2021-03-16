@@ -103,21 +103,26 @@ SimpleNode Program(): {}
     ImportDeclaration() ClassDeclaration() <EOF> { return jjtThis; }
 }
 
+
 void ImportDeclaration(): {}
 {
-    (<IMPORT> [<STATIC>] <IDENTIFIER> (LOOKAHEAD(2) <DOT> <IDENTIFIER>)* [<DOT> <MULT>] <SEMICOLON> )*
+    (<IMPORT> ImportName() <SEMICOLON> )*
+}
+
+void ImportName() #void : {Token t1, t2;}
+{
+    t1 = <IDENTIFIER> {  jjtThis.put("name", t1.image); } #Identifier(true) (<DOT> t2 = <IDENTIFIER> {  jjtThis.put("name", t2.image); } #Identifier)*
+}
+
+void ClassDeclaration(): {Token t1, t2;}
+{
+    <CLASS> t1 = <IDENTIFIER> {  jjtThis.put("name", t1.image); } #Identifier [<EXTENDS> t2 = <IDENTIFIER> {  jjtThis.put("name", t2.image); } #Identifier] <OPENBRACKET> (VarDeclaration())* (MethodDeclaration())* <CLOSEBRACKET>
 }
 
 
-void ClassDeclaration(): {}
+void VarDeclaration() :{Token t;}
 {
-    <CLASS> <IDENTIFIER> [<EXTENDS> <IDENTIFIER>] <OPENBRACKET> (VarDeclaration())* (MethodDeclaration())* <CLOSEBRACKET>
-}
-
-
-void VarDeclaration() :{}
-{
-    Type() <IDENTIFIER> #Identifier <SEMICOLON>
+    Type() t = <IDENTIFIER> {  jjtThis.put("name", t.image); } #Identifier <SEMICOLON>
 }
 
  void MethodDeclaration():{}
@@ -139,23 +144,23 @@ void MethodMain(): {}
 
 }
 
-void StringArray() : {}
+void StringArray() : {Token t;}
 {
-    <STRING> <OPENSQUAREBRACKET> <CLOSESQUAREBRACKET> <IDENTIFIER>
+    <STRING> <OPENSQUAREBRACKET> <CLOSESQUAREBRACKET> t = <IDENTIFIER> { jjtThis.put("name", t.image); } #Identifier
 }
 
-void MethodGeneric(): {}
+void MethodGeneric(): {Token t;}
 {
-    Type() <IDENTIFIER> <OPENCURVEBRACKET> [Arguments()] <CLOSECURVEBRACKET>
+    Type() t = <IDENTIFIER> {  jjtThis.put("name", t.image); } #Identifier <OPENCURVEBRACKET> [Arguments()] <CLOSECURVEBRACKET>
     <OPENBRACKET>
         MethodBody()
         Return()
     <CLOSEBRACKET>
 }
 
-void Arguments() : {}
+void Arguments() : {Token t;}
 {
-    Type() <IDENTIFIER> (<COMMA> Type() <IDENTIFIER>)*
+     Type() t = <IDENTIFIER> {jjtThis.put("name", t.image);} #Identifier(true) (<COMMA> Type() <IDENTIFIER> {jjtThis.put("name", t.image);} #Identifier )*
 }
 
 void Return() : {}
@@ -163,9 +168,13 @@ void Return() : {}
     <RETURN> AndExpression() <SEMICOLON>
 }
 
-void Type(): {}
+void Type(): {Token t; }
 {
-    <INTBRACKETS> | <BOOLEAN> | <INT> | <STRING> | <IDENTIFIER>
+     t = <INTBRACKETS> { jjtThis.put("type", t.image); }
+     | t = <BOOLEAN> { jjtThis.put("type", t.image); }
+     | t = <INT> { jjtThis.put("type", t.image); }
+     | t = <STRING> { jjtThis.put("type", t.image); }
+     | t = <IDENTIFIER> { jjtThis.put("type", t.image); }
 }
 
 void AndExpression() #void : {}
@@ -198,9 +207,9 @@ void DotArrayExpression() #void : {}
     ExpressionOthers() (<DOT> DotExpression() #Dot(2) | ArrayExpression())*
 }
 
-void DotExpression() #void : {}
+void DotExpression() #void : {Token t;}
 {
-     <LENGTH> #Length | <IDENTIFIER> ObjectMethodParameters() // Arranjar a árvore
+     <LENGTH> #Length | t = <IDENTIFIER>  {  jjtThis.put("name", t.image); } #Identifier  ObjectMethodParameters() // Arranjar a árvore
 }
 
 void ObjectMethodParameters() : {}
@@ -213,48 +222,37 @@ void ArrayExpression() #void : {}
     <OPENSQUAREBRACKET> AndExpression() <CLOSESQUAREBRACKET>
 }
 
-/*
-void LessExpression() #void : {}
-{
-    AddSubExpression() [<LESS> LessExpression() #Less(2)]
-}
-
-| Identifier , "=" , Expression , ";"
-| Identifier , "[" , Expression , "]" , "=" , Expression , ";"
-
- */
-
 void Assignment() #void : {}
 {
      IdOrArrayAccess() <EQUALS> AndExpression() #Assignment(2) <SEMICOLON>
 }
 
-void IdOrArrayAccess() #void: {}
+void IdOrArrayAccess() #void: {Token t;}
 {
-    LOOKAHEAD(2) testExp() |
-    LOOKAHEAD(2) <IDENTIFIER> #Identifier
+    LOOKAHEAD(2) ArrayAssignment() |
+    LOOKAHEAD(2) t = <IDENTIFIER> {  jjtThis.put("name", t.image); } #Identifier
 }
 
-void testExp() : {}
+void ArrayAssignment() : {Token t;}
 {
-    <IDENTIFIER> #Identifier ArrayExpression() #ArrayExpression
+    t = <IDENTIFIER> { jjtThis.put("name", t.image); }  #Identifier  ArrayExpression() #ArrayExpression
 }
 
-void ExpressionOthers() #void : {}
+void ExpressionOthers() #void : {Token t;}
 {
-     <IDENTIFIER> #Identifier
-     | <INTEGERLITERAL> #Number
+     t = <IDENTIFIER> {  jjtThis.put("name", t.image); } #Identifier
+     | t = <INTEGERLITERAL> { jjtThis.put("value", t.image); } #Number
      | <TRUE> #True
-     | <FALSE> #False
-     | <THIS> #This
+     | <FALSE>  #False
+     | <THIS>  #This
      | NewExpression()
      | <OPENCURVEBRACKET> AndExpression() <CLOSECURVEBRACKET>
 }
 
-void NewExpression() : {}
+void NewExpression() : {Token t;}
 {
     <NEW> (<INT> <OPENSQUAREBRACKET> AndExpression() <CLOSESQUAREBRACKET>
-        | <IDENTIFIER> <OPENCURVEBRACKET> <CLOSECURVEBRACKET>)
+        | t = <IDENTIFIER> {  jjtThis.put("name", t.image); } #Identifier  <OPENCURVEBRACKET> <CLOSECURVEBRACKET>)
 }
 
 // a[2].length ; <==
@@ -266,9 +264,6 @@ void Statement() #void: {}
     | LOOKAHEAD(2) AndExpression() <SEMICOLON>
     | WhileStatment()
 }
-
-
-
 
 void IfElseStatement() #IfElse: {}
 {

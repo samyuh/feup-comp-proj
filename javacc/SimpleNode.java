@@ -6,7 +6,8 @@ import java.lang.RuntimeException;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Map;
+import java.util.HashMap;
 
 public
 class SimpleNode implements Node, JmmNode {
@@ -16,12 +17,14 @@ class SimpleNode implements Node, JmmNode {
   protected int id;
   protected Object value;
   protected Grammar parser;
+  protected Map<String, String> attrs;
 
-    // added
+  // added
     public int val;
 
   public SimpleNode(int i) {
     id = i;
+    attrs = new HashMap<>();
   }
 
   public SimpleNode(Grammar p, int i) {
@@ -36,21 +39,24 @@ class SimpleNode implements Node, JmmNode {
 
   // TODO: implement.
   public List<String> getAttributes() {
+    /*for ( String key : team1.keySet() ) {
 	List<String> a = new ArrayList<>();
 	String asd = new String("blah");
 	a.add(asd);
 	return a;
-    //throw new RuntimeException("Not implemented yet");
+    //throw new RuntimeException("Not implemented yet");*/
+    return new ArrayList<>(attrs.keySet());
   }
 
   // TODO: implement.
   public void put(String attribute, String value) {
+    attrs.put(attribute, value);
 	//throw new RuntimeException("Not implemented yet");
   }
 
   // TODO: implement.
   public String get(String attribute) {
-	return "a";
+	return attrs.get(attribute);
     //throw new RuntimeException("Not implemented yet");
   }
   
