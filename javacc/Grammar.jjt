@@ -5,13 +5,16 @@ options
 PARSER_BEGIN(Grammar)
 
 import pt.up.fe.comp.jmm.report.Report;
-// TODO: import.
+import pt.up.fe.comp.jmm.report.ReportType;
+import pt.up.fe.comp.jmm.report.Stage;
+import java.util.*;
 
 public class Grammar{
-    //private List<Report> report = new ArrayList<>();
-    // TODO: get report
-    /* List<Report> getReport(){
-    }*/
+    private List<Report> reportList = new ArrayList<Report>();
+
+    List<Report> getReportList(){
+        return this.reportList;
+    }
 }
 
 PARSER_END(Grammar)
@@ -277,7 +280,10 @@ void WhileStatment() #WhileStatment : {}
     try{
          AndExpression() <CLOSECURVEBRACKET>
     } catch(ParseException e){
-        System.out.println(e.toString()) ;
+        int lineError = e.getStackTrace()[0].getLineNumber();
+        String message = e.getMessage();
+        reportList.add(new Report(ReportType.ERROR, Stage.SYNTATIC, lineError, message));
+
         Token t;
         int counter = 0;
 

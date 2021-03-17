@@ -3,14 +3,13 @@ import pt.up.fe.comp.jmm.JmmParser;
 import pt.up.fe.comp.jmm.JmmParserResult;
 import pt.up.fe.comp.jmm.report.Report;
 
-import java.io.FileInputStream;
-
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.io.StringReader;
+import java.util.List;
 
 public class Main implements JmmParser {
+
 
     public JmmParserResult parse(String jmmCode) {
 
@@ -18,8 +17,12 @@ public class Main implements JmmParser {
             Grammar grammar = new Grammar(new StringReader(jmmCode));
             SimpleNode root = grammar.Program(); // returns reference to root node
 
-            root.dump("");
+            List<Report> reportList  = grammar.getReportList();
+            System.out.println(reportList);
 
+            if (reportList.size() == 0){
+                root.dump("");
+            }
             // TODO: PARSE JSON ON SIMPLENODE
             //System.out.println(root.toJson());
 
