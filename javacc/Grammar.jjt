@@ -280,19 +280,24 @@ void WhileStatment() #WhileStatment : {}
         System.out.println(e.toString()) ;
         Token t;
         int counter = 0;
-        int openCurvedCounter = 1, closeCurvedCounter= 0;
-        Boolean NotMatch = false;
-        // TODO: condição de parangem: abrir { e depois de ) não é ).
-        do {
+
+        while(true) {
            t = getToken(1);
 
            if (t.kind != OPENBRACKET) getNextToken();
-           else break;
-           if (t.kind == OPENCURVEBRACKET) openCurvedCounter++;
-           else if (t.kind == CLOSECURVEBRACKET) closeCurvedCounter++;
+           else break;  // found a {
 
-        } while (openCurvedCounter != closeCurvedCounter && t.kind != EOF);
+           // Consecutives ). Init new while.
+           if (t.kind == CLOSECURVEBRACKET) break;
+        }
+
+        // Consume all consecutives ) if exists.
+        while(t.kind == CLOSECURVEBRACKET){
+            t = getToken(1);
+            if (t.kind == CLOSECURVEBRACKET) t = getNextToken();
+        }
+
     }
-
      Statement()
+
 }

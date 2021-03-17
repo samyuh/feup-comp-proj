@@ -18,10 +18,10 @@ public class Main implements JmmParser {
             Grammar grammar = new Grammar(new StringReader(jmmCode));
             SimpleNode root = grammar.Program(); // returns reference to root node
 
-            //root.dump("");
+            root.dump("");
 
             // TODO: PARSE JSON ON SIMPLENODE
-            System.out.println(root.toJson());
+            //System.out.println(root.toJson());
 
             return new JmmParserResult(root, new ArrayList<Report>());
         } catch (ParseException e) {
