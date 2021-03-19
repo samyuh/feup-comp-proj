@@ -11,9 +11,13 @@ import java.util.*;
 
 public class Grammar{
     private List<Report> reportList = new ArrayList<Report>();
-
-    List<Report> getReportList(){
+    private Boolean hasError = false ;
+    public List<Report> getReportList(){
         return this.reportList;
+    }
+
+    public Boolean getHasError(){
+        return this.hasError;
     }
 }
 
@@ -107,12 +111,12 @@ SimpleNode Program(): {}
 }
 
 
-void ImportDeclaration(): {}
+void ImportDeclaration() #void: {}
 {
-    (<IMPORT> ImportName() <SEMICOLON> )*
+    (<IMPORT> #Import ImportName() <SEMICOLON> )*
 }
 
-void ImportName() #void : {Token t1, t2;}
+void ImportName() #void: {Token t1, t2;}
 {
     t1 = <IDENTIFIER> {  jjtThis.put("name", t1.image); } #Identifier(true) (<DOT> t2 = <IDENTIFIER> {  jjtThis.put("name", t2.image); } #Identifier)*
 }
@@ -212,7 +216,7 @@ void DotArrayExpression() #void : {}
 
 void DotExpression() #void : {Token t;}
 {
-     <LENGTH> #Length | t = <IDENTIFIER>  {  jjtThis.put("name", t.image); } #Identifier  ObjectMethodParameters() // Arranjar a árvore
+     <LENGTH> #Length | t = <IDENTIFIER>  {  jjtThis.put("name", t.image); } #Identifier  ObjectMethodParameters()
 }
 
 void ObjectMethodParameters() : {}
@@ -280,13 +284,13 @@ void WhileStatment() #WhileStatment : {}
     try{
          AndExpression() <CLOSECURVEBRACKET>
     } catch(ParseException e){
+        hasError = true;
         int lineError = e.getStackTrace()[0].getLineNumber();
         String message = e.getMessage();
         reportList.add(new Report(ReportType.ERROR, Stage.SYNTATIC, lineError, message));
 
         Token t;
         int counter = 0;
-
         while(true) {
            t = getToken(1);
 

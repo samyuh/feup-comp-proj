@@ -114,10 +114,21 @@ class SimpleNode implements Node, JmmNode {
      toString(String), otherwise overriding toString() is probably all
      you need to do. */
 
+  // TODO: print the type.
   public String toString() {
     return GrammarTreeConstants.jjtNodeName[id];
   }
-  public String toString(String prefix) { return prefix + toString(); }
+  public String toString(String prefix) {
+    String temp = "";
+    if (this.getAttributes().size() == 0){
+      return prefix + toString();
+    }
+
+    for (String attr : this.getAttributes()) {
+      temp += this.get(attr) + " ";
+    }
+    return prefix + toString() + " :: " + temp;
+  }
 
   /* Override this method if you want to customize how the node dumps
      out its children. */
