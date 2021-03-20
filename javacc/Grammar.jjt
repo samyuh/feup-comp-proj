@@ -206,7 +206,7 @@ void MultDivExpression() #void : {}
 
 void NotExpression() #void : {}
 {
-    (<NOT> NotExpression() #NOT(1)) | DotArrayExpression()
+    (<NOT> NotExpression() #Not(1)) | DotArrayExpression()
 }
 
 void DotArrayExpression() #void : {}
@@ -262,7 +262,6 @@ void NewExpression() : {Token t;}
         | t = <IDENTIFIER> {  jjtThis.put("name", t.image); } #Identifier  <OPENCURVEBRACKET> <CLOSECURVEBRACKET>)
 }
 
-// a[2].length ; <==
 void Statement() #void: {}
 {
     <OPENBRACKET> (Statement())* <CLOSEBRACKET>
@@ -277,7 +276,6 @@ void IfElseStatement() #IfElse: {}
     <IF> <OPENCURVEBRACKET> AndExpression() <CLOSECURVEBRACKET> Statement() <ELSE> Statement()
 }
 
-// TODO: in the future improve. Access the report.
 void WhileStatment() #WhileStatment : {}
 {
     <WHILE> <OPENCURVEBRACKET>

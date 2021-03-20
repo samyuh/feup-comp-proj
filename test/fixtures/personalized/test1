@@ -1,7 +1,0 @@
-import ioPlus.tuddc.hhvvg;
-class HelloWorld extends Farta {
-	public int add(int a, int b){
-	    int a;
-        return a.ola();
-    }
-}
