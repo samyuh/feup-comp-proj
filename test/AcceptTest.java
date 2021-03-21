@@ -1,11 +1,8 @@
-import static org.junit.Assert.*;
 
 import org.junit.Test;
 
 import pt.up.fe.comp.TestUtils;
-import pt.up.fe.comp.jmm.JmmNode;
 import pt.up.fe.comp.jmm.JmmParserResult;
-import pt.up.fe.comp.jmm.report.ReportType;
 import pt.up.fe.specs.util.SpecsIo;
 
 public class AcceptTest {

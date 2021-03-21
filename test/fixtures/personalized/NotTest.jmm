@@ -1,5 +1,6 @@
 import ioPlus;
-class HelloWorld {
+// This is a test to check if the ! is working correctly.
+class NotTest {
 	public static void main(String[] args) {
 		x = 2;
 		!true;
@@ -7,5 +8,6 @@ class HelloWorld {
 		!new int[1+2];
         !true[false];
         !!(2+4*3/2);
+        a = !true + !true;
 	}
 }

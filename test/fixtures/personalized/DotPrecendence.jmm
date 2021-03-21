@@ -1,6 +1,0 @@
-import ioPlus;
-class HelloWorld {
-	public static void main(String[] args) {
-        a[4+4] = 3;
-	}
-}
