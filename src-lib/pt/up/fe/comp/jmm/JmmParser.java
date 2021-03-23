@@ -1,6 +1,5 @@
 package pt.up.fe.comp.jmm;
 
-
 /**
  * Parses J-- code.
  * 
@@ -10,4 +9,5 @@ package pt.up.fe.comp.jmm;
 public interface JmmParser {
 	
 	JmmParserResult parse(String jmmCode);
+	
 }
