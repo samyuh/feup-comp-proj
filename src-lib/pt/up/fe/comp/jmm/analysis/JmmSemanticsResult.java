@@ -12,7 +12,7 @@ import pt.up.fe.specs.util.SpecsCollections;
  * A semantic analysis returns the analysed tree and the generated symbol table.
  */
 public class JmmSemanticsResult {
-
+    // TODO: we must implement the symbol table.
     private final JmmNode rootNode;
     private final SymbolTable symbolTable;
     private final List<Report> reports;

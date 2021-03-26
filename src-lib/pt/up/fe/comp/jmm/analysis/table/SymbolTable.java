@@ -2,6 +2,7 @@ package pt.up.fe.comp.jmm.analysis.table;
 
 import java.util.List;
 
+// TODO: we must implement this methods and create a class that implment this.
 public interface SymbolTable {
     /** 
      * @return a list of fully qualified names of imports

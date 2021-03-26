@@ -15,7 +15,8 @@ import pt.up.fe.comp.jmm.ast.examples.ExampleVisitor;
 import pt.up.fe.comp.jmm.report.Report;
 import pt.up.fe.comp.jmm.report.ReportType;
 import pt.up.fe.comp.jmm.report.Stage;
-
+// TODO: example of the new step.
+// TODO: declare and build symbol table here.
 public class AnalysisStage implements JmmAnalysis {
 
     @Override
@@ -34,7 +35,7 @@ public class AnalysisStage implements JmmAnalysis {
         }
 
         JmmNode node = parserResult.getRootNode();
-
+/*
         System.out.println("Dump tree with Visitor where you control tree traversal");
         ExampleVisitor visitor = new ExampleVisitor("Identifier", "id");
         System.out.println(visitor.visit(node, ""));
@@ -42,7 +43,7 @@ public class AnalysisStage implements JmmAnalysis {
         System.out.println("Dump tree with Visitor that automatically performs preorder tree traversal");
         var preOrderVisitor = new ExamplePreorderVisitor("Identifier", "id");
         System.out.println(preOrderVisitor.visit(node, ""));
-
+*/
         System.out.println(
                 "Create histogram of node kinds with Visitor that automatically performs postorder tree traversal");
         var postOrderVisitor = new ExamplePostorderVisitor();
