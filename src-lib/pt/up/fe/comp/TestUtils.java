@@ -47,7 +47,7 @@ public class TestUtils {
         }
 
     }
-    //TODO: this is the new parser.
+
     public static JmmSemanticsResult analyse(JmmParserResult parserResult) {
         try {
 
@@ -66,6 +66,12 @@ public class TestUtils {
             throw new RuntimeException("Could not parse code", e);
         }
 
+    }
+
+    public static JmmSemanticsResult analyse(String code) {
+        var parseResults = TestUtils.parse(code);
+        noErrors(parseResults.getReports());
+        return analyse(parseResults);
     }
 
     /**
