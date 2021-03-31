@@ -107,7 +107,7 @@ TOKEN:
 
 SimpleNode Program(): {}
 {
-    ImportDeclaration() ClassDeclaration() <EOF> { return jjtThis; }
+    ImportDeclaration() Class() <EOF> { return jjtThis; }
 }
 
 
@@ -121,11 +121,15 @@ void ImportNames() : {Token t1, t2;}
     t1 = <IDENTIFIER> {  jjtThis.put("name", t1.image); } #Identifier(true) (<DOT> t2 = <IDENTIFIER> {  jjtThis.put("name", t2.image); } #Identifier)*
 }
 
-void ClassDeclaration(): {Token t1, t2;}
+void Class(): {}
 {
-    <CLASS> t1 = <IDENTIFIER> {  jjtThis.put("name", t1.image); } #Identifier [<EXTENDS> t2 = <IDENTIFIER> {  jjtThis.put("name", t2.image); } #Identifier] <OPENBRACKET> (VarDeclaration())* (MethodDeclaration())* <CLOSEBRACKET>
+    ClassDeclaration() <OPENBRACKET> (VarDeclaration())* (MethodDeclaration())* <CLOSEBRACKET>
 }
 
+void ClassDeclaration() : {Token t1, t2;}
+{
+    <CLASS> t1 = <IDENTIFIER> {  jjtThis.put("name", t1.image); } #Identifier [<EXTENDS> t2 = <IDENTIFIER> {  jjtThis.put("name", t2.image); } #Extends]
+}
 
 void VarDeclaration() :{Token t;}
 {
@@ -139,7 +143,12 @@ void VarDeclaration() :{Token t;}
 
  void MethodBody() : {}
 {
-    (LOOKAHEAD(2) VarDeclaration())* (Statement())*
+    MethodParameters() (Statement())*
+}
+
+void MethodParameters() : {}
+{
+    (LOOKAHEAD(2) VarDeclaration())*
 }
 
 void MethodMain(): {}

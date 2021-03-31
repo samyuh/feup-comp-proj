@@ -1,9 +1,8 @@
 /*  REASON:
     Array indices must be integer.
 */
-// TODO: delete;
-import io.bla.bla;
-class T {
+
+class T extends treta {
     public static void main(String[] s) { 
         int[] a;
         int c;
@@ -11,5 +10,9 @@ class T {
         a = new int[0];
         c = a[true];
         
+    }
+
+    public int methodFoo(){
+       return j;
     }
 }

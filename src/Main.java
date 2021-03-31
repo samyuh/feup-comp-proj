@@ -25,7 +25,7 @@ public class Main implements JmmParser {
                 //System.out.println(reportList.get(i));
             }
            if (!grammar.getHasError()){
-                //root.dump("");
+                root.dump("");
                 //System.out.println(root.toJson());
            }
 
