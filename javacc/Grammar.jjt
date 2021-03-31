@@ -113,10 +113,10 @@ SimpleNode Program(): {}
 
 void ImportDeclaration() #void: {}
 {
-    (<IMPORT> #Import ImportName() <SEMICOLON> )*
+    (<IMPORT> #Import ImportNames() <SEMICOLON> )*
 }
 
-void ImportName() #void: {Token t1, t2;}
+void ImportNames() : {Token t1, t2;}
 {
     t1 = <IDENTIFIER> {  jjtThis.put("name", t1.image); } #Identifier(true) (<DOT> t2 = <IDENTIFIER> {  jjtThis.put("name", t2.image); } #Identifier)*
 }
@@ -214,10 +214,16 @@ void DotArrayExpression() #void : {}
     ExpressionOthers() (<DOT> DotExpression() #Dot(2) | ArrayExpression())*
 }
 
-void DotExpression() #void : {Token t;}
+void DotExpression() #void : {}
 {
-     <LENGTH> #Length | t = <IDENTIFIER>  {  jjtThis.put("name", t.image); } #Identifier  ObjectMethodParameters()
+     <LENGTH> #Length | DotMethod()
 }
+
+void DotMethod() : {Token t;}
+{
+    t = <IDENTIFIER>  {  jjtThis.put("name", t.image); } #Identifier  ObjectMethodParameters()
+}
+
 
 void ObjectMethodParameters() : {}
 {

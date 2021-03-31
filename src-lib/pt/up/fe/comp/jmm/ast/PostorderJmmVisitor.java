@@ -49,6 +49,7 @@ public class PostorderJmmVisitor<D, R> extends AJmmVisitor<D, R> {
 
     @Override
     public R visit(JmmNode jmmNode, D data) {
+
         SpecsCheck.checkNotNull(jmmNode, () -> "Node should not be null");
 
         var visit = getVisit(jmmNode.getKind());
@@ -65,4 +66,6 @@ public class PostorderJmmVisitor<D, R> extends AJmmVisitor<D, R> {
 
         return reduce.apply(nodeResult, childrenResults);
     }
+
+
 }

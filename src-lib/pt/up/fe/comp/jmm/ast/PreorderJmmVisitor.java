@@ -29,7 +29,6 @@ import pt.up.fe.specs.util.SpecsCheck;
 public class PreorderJmmVisitor<D, R> extends AJmmVisitor<D, R> {
 
     private final BiFunction<R, List<R>, R> reduce;
-
     /**
      * 
      * @param reduce
@@ -46,6 +45,7 @@ public class PreorderJmmVisitor<D, R> extends AJmmVisitor<D, R> {
     public PreorderJmmVisitor() {
         this((nodeResult, childrenResults) -> nodeResult);
     }
+
 
     @Override
     public R visit(JmmNode jmmNode, D data) {

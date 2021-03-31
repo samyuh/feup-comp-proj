@@ -16,10 +16,8 @@ import pt.up.fe.specs.util.utilities.StringLines;
 public class ExamplePreorderVisitor extends PreorderJmmVisitor<String, String> {
 
     private final String identifierAttribute;
-
     public ExamplePreorderVisitor(String identifierType, String identifierAttribute) {
         super(ExamplePreorderVisitor::reduce);
-
         this.identifierAttribute = identifierAttribute;
 
         addVisit(identifierType, this::dealWithIdentifier);

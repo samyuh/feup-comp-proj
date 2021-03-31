@@ -1,7 +1,8 @@
 /*  REASON:
     Array indices must be integer.
 */
-
+// TODO: delete;
+import io.bla.bla;
 class T {
     public static void main(String[] s) { 
         int[] a;

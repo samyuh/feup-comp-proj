@@ -1,13 +1,11 @@
 package pt.up.fe.comp;
 
 import java.util.Arrays;
-import java.util.HashMap;
 
 import pt.up.fe.comp.jmm.JmmNode;
 import pt.up.fe.comp.jmm.JmmParserResult;
 import pt.up.fe.comp.jmm.analysis.JmmAnalysis;
 import pt.up.fe.comp.jmm.analysis.JmmSemanticsResult;
-import pt.up.fe.comp.jmm.ast.examples.ExamplePostorderVisitor;
 import pt.up.fe.comp.jmm.ast.examples.ExamplePreorderVisitor;
 import pt.up.fe.comp.jmm.ast.examples.ExampleVisitor;
 import pt.up.fe.comp.jmm.report.ReportType;
@@ -55,11 +53,12 @@ public class MainAnalysis implements JmmAnalysis { // }, JmmOptimization, Jasmin
         System.out.println(preOrderVisitor.visit(node, ""));
 
         System.out.println("POSTORDER VISITOR");
+        /*
         var postOrderVisitor = new ExamplePostorderVisitor();
         var kindCount = new HashMap<String, Integer>();
         postOrderVisitor.visit(node, kindCount);
         System.out.println("Kinds count: " + kindCount);
-
+*/
         // No Symbol Table being calculated yet
         return new JmmSemanticsResult(node, null, parserResult.getReports());
 

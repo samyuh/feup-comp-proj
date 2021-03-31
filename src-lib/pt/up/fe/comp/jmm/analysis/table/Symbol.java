@@ -1,6 +1,6 @@
 package pt.up.fe.comp.jmm.analysis.table;
 
-public class Symbol {
+public class Symbol{
     private final Type type;
     private final String name;
     
