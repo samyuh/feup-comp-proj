@@ -123,12 +123,17 @@ void ImportNames() : {Token t1, t2;}
 
 void Class(): {}
 {
-    ClassDeclaration() <OPENBRACKET> (VarDeclaration())* (MethodDeclaration())* <CLOSEBRACKET>
+    ClassDeclaration() <OPENBRACKET> ClassFields() (MethodDeclaration())* <CLOSEBRACKET>
 }
 
 void ClassDeclaration() : {Token t1, t2;}
 {
     <CLASS> t1 = <IDENTIFIER> {  jjtThis.put("name", t1.image); } #Identifier [<EXTENDS> t2 = <IDENTIFIER> {  jjtThis.put("name", t2.image); } #Extends]
+}
+
+void ClassFields() : {}
+{
+    (VarDeclaration())*
 }
 
 void VarDeclaration() :{Token t;}
@@ -167,16 +172,21 @@ void StringArray() : {Token t;}
 
 void MethodGeneric(): {Token t;}
 {
-    Type() t = <IDENTIFIER> {  jjtThis.put("name", t.image); } #Identifier <OPENCURVEBRACKET> [Arguments()] <CLOSECURVEBRACKET>
+    Type() t = <IDENTIFIER> {  jjtThis.put("name", t.image); } #Identifier <OPENCURVEBRACKET> [MethodParameters()] <CLOSECURVEBRACKET>
     <OPENBRACKET>
         MethodBody()
         Return()
     <CLOSEBRACKET>
 }
 
-void Arguments() : {Token t1, t2;}
+void MethodParameters() : {}
 {
-     Type() t1 = <IDENTIFIER> {jjtThis.put("name", t1.image);} #Identifier(true) (<COMMA> Type() t2 = <IDENTIFIER> {jjtThis.put("name", t2.image);} #Identifier )*
+     MethodParameter() (<COMMA> MethodParameter() )*
+}
+
+void MethodParameter() : {Token t;}
+{
+    Type() t = <IDENTIFIER> {jjtThis.put("name", t.image);} #Identifier(true)
 }
 
 void Return() : {}

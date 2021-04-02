@@ -4,6 +4,9 @@
 import ol.aaa.casd;
 import dedede.xcsdcd;
 class T extends treta {
+    int[] i;
+    int maximum;
+    int value;
     public static void main(String[] s) {
         int[] a;
         int c;

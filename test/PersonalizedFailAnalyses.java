@@ -38,7 +38,7 @@ public class PersonalizedFailAnalyses {
 
         System.out.println("\n >>>> Parameters");
         for (int i = 0; i < symbolTable.getParameters("methodFoo").size(); i++) {
-            System.out.println("VAR " + (i + 1) + " NAME [methodFoo]:: " + symbolTable.getLocalVariables("methodFoo").get(i).getName());
+            System.out.println("VAR " + (i + 1) + " NAME [methodFoo]:: " + symbolTable.getParameters("methodFoo").get(i).getName());
             System.out.println("PARAMETER " + (i + 1) + " TYPE [methodFoo]:: " + symbolTable.getParameters("methodFoo").get(i).getType().getName());
             System.out.println("PARAMETER " + (i + 1) + " IS ARRAY [methodFoo]:: " + symbolTable.getParameters("methodFoo").get(i).getType().isArray());
         }
@@ -48,6 +48,13 @@ public class PersonalizedFailAnalyses {
             System.out.println("VAR " + (i + 1) + " NAME [methodFoo]:: " + symbolTable.getLocalVariables("methodFoo").get(i).getName());
             System.out.println("VAR " + (i + 1) + " TYPE [methodFoo]:: " + symbolTable.getLocalVariables("methodFoo").get(i).getType().getName());
             System.out.println("VAR " + (i + 1) + " IS ARRAY [methodFoo]:: " + symbolTable.getLocalVariables("methodFoo").get(i).getType().isArray());
+        }
+
+        System.out.println("\n >>>> Fields");
+        for (int i = 0; i < symbolTable.getFields().size(); i++) {
+            System.out.println("VAR " + (i + 1) + " NAME:: " + symbolTable.getFields().get(i).getName());
+            System.out.println("VAR " + (i + 1) + " TYPE:: " + symbolTable.getFields().get(i).getType().getName());
+            System.out.println("VAR " + (i + 1) + " IS ARRAY:: " + symbolTable.getFields().get(i).getType().isArray());
         }
     }
 }

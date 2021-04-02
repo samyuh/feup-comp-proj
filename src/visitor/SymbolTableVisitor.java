@@ -12,10 +12,12 @@ import java.util.List;
 public class SymbolTableVisitor extends PreorderJmmVisitor<MySymbolTable,Boolean> {
 
     public SymbolTableVisitor(){
-        addVisit("ClassDeclaration", this::visitClassDeclaration);
         addVisit("ImportNames", this::visitImportNames);
+        addVisit("ClassDeclaration", this::visitClassDeclaration);
+        addVisit("ClassFields", this::visitClassFields);
         addVisit("MethodMain", this::visitMainMethod);
-        addVisit("MethodGeneric", this::visitGenericMethod); // parameters and local variables
+        addVisit("MethodGeneric", this::visitGenericMethod); // parameters and local
+
     }
 
     Boolean visitImportNames(JmmNode jmmNode, MySymbolTable symbolTable) {
@@ -35,8 +37,34 @@ public class SymbolTableVisitor extends PreorderJmmVisitor<MySymbolTable,Boolean
         if (jmmNode.getChildren().size() == 2){
             symbolTable.setExtendSuper(jmmNode.getChildren().get(1).get("name"));
         }
+        return true;
+    }
 
-        // TODO: parse fields
+    Boolean visitClassFields(JmmNode jmmNode, MySymbolTable symbolTable){
+
+        for (int i = 0 ; i < jmmNode.getChildren().size(); i++){
+            JmmNode varDeclaration = jmmNode.getChildren().get(i);
+            Symbol symbol = parseVariable(varDeclaration);
+            symbolTable.addField(symbol);
+        }
+        return true;
+    }
+
+    Boolean visitMainMethod(JmmNode jmmNode, MySymbolTable symbolTable){
+        Type type = new Type("void", false);
+
+        // Parse parameter
+        JmmNode stringArray = jmmNode.getChildren().get(0);
+        String identifier = stringArray.getChildren().get(0).get("name");
+
+        // Create symbol
+        Symbol symbol = new Symbol(new Type("String", true), identifier);
+        List<Symbol> parameters = new ArrayList<>();
+        parameters.add(symbol);
+
+        symbolTable.addMethod("main", parameters);
+        symbolTable.addMethodType("main", type );
+
         return true;
     }
 
@@ -65,13 +93,10 @@ public class SymbolTableVisitor extends PreorderJmmVisitor<MySymbolTable,Boolean
         List<Symbol> parametersSymbols = new ArrayList<>();
         JmmNode parametersNode = jmmNode.getChildren().get(2);
 
-        for (int i = 0 ; i < parametersNode.getNumChildren(); i += 2){
-            JmmNode childType = parametersNode.getChildren().get(i);
-                boolean isArray = childType.get("type").equals("int[]");
-            Type type = new Type(childType.get("type"), isArray);
-
-            String childName = parametersNode.getChildren().get(i+1).get("name");
-            parametersSymbols.add(new Symbol(type, childName));
+        for (int i = 0 ; i < parametersNode.getNumChildren(); i ++){
+            JmmNode methodParameter = parametersNode.getChildren().get(i);
+            Symbol symbol = parseVariable(methodParameter);
+            parametersSymbols.add(symbol);
         }
 
         return parametersSymbols;
@@ -84,37 +109,22 @@ public class SymbolTableVisitor extends PreorderJmmVisitor<MySymbolTable,Boolean
 
         for (int i = 0 ; i < varDeclarations.getChildren().size(); i++){
             JmmNode varDeclaration = varDeclarations.getChildren().get(i);
-            JmmNode typeNode = varDeclaration.getChildren().get(0);
-            String name = varDeclaration.getChildren().get(1).get("name");
-
-            boolean isArray = typeNode.get("type").equals("int[]");
-            Type type = new Type(typeNode.get("type"), isArray);
-
-            declarations.add(new Symbol(type, name));
+            Symbol symbol = parseVariable(varDeclaration);
+            declarations.add(symbol);
         }
 
         return declarations;
     }
 
-    Boolean visitMainMethod(JmmNode jmmNode, MySymbolTable symbolTable){
-        Type type = new Type("void", false);
+    Symbol parseVariable(JmmNode variableNode){
 
-        // Parse parameter
-        JmmNode stringArray = jmmNode.getChildren().get(0);
-        String identifier = stringArray.getChildren().get(0).get("name");
+        JmmNode typeNode = variableNode.getChildren().get(0);
+        String name = variableNode.getChildren().get(1).get("name");
 
-        // Create symbol
-        Symbol symbol = new Symbol(new Type("String", true), identifier);
-        List<Symbol> parameters = new ArrayList<>();
-        parameters.add(symbol);
+        boolean isArray = typeNode.get("type").equals("int[]");
+        Type type = new Type(typeNode.get("type"), isArray);
 
-        symbolTable.addMethod("main", parameters);
-        symbolTable.addMethodType("main", type );
-
-        return true;
+        return new Symbol(type, name);
     }
-
-
-
 
 }

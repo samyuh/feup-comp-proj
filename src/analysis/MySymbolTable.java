@@ -62,7 +62,6 @@ public class MySymbolTable implements SymbolTable {
      */
     public List<String> getMethods(){
         return new ArrayList<>(methodParameters.keySet());
-
     }
 
     /**
