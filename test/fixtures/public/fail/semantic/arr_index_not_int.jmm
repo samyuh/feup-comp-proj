@@ -1,8 +1,4 @@
-/*  REASON:
-    Array indices must be integer.
-*/
-
-class T extends treta {
+class T  {
     public static void main(String[] s) { 
         int[] a;
         int c;
@@ -10,9 +6,5 @@ class T extends treta {
         a = new int[0];
         c = a[true];
         
-    }
-
-    public int methodFoo(){
-       return j;
     }
 }

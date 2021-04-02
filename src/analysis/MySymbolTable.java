@@ -13,21 +13,18 @@ public class MySymbolTable implements SymbolTable {
     String className;
     String extendSuper;
     List<String> imports;
-    List<String> methods;
     List<Symbol> fields;
-    HashMap<String, List<Symbol>> parameters;
-    HashMap<String, List<Symbol>> localVariables;
+    HashMap<String, List<Symbol>> methodParameters; // contains parameters
+    HashMap<String, List<Symbol>> methodLocalVariables;
     HashMap<String, Type> methodTypes;
 
     public MySymbolTable() {
         imports =  new ArrayList<>();
-        methods = new ArrayList<>();
         fields = new ArrayList<>();
-        parameters = new HashMap<>();
-        localVariables = new HashMap<>();
+        methodParameters = new HashMap<>();
+        methodLocalVariables = new HashMap<>();
         methodTypes = new HashMap<>();
     }
-
 
     /**
      * @return a list of fully qualified names of imports
@@ -64,7 +61,8 @@ public class MySymbolTable implements SymbolTable {
      * @return a list with the names of the methods of the class
      */
     public List<String> getMethods(){
-        return methods;
+        return new ArrayList<>(methodParameters.keySet());
+
     }
 
     /**
@@ -81,7 +79,7 @@ public class MySymbolTable implements SymbolTable {
      * @return a list of parameters of the given method
      */
     public List<Symbol> getParameters(String methodName){
-        return parameters.get(methodName);
+        return methodParameters.get(methodName);
     }
 
     /**
@@ -90,7 +88,7 @@ public class MySymbolTable implements SymbolTable {
      * @return a list of local variables declared in the given method
      */
     public List<Symbol> getLocalVariables(String methodName){
-        return localVariables.get(methodName);
+        return  methodLocalVariables.get(methodName);
     }
 
 
@@ -110,19 +108,17 @@ public class MySymbolTable implements SymbolTable {
         fields.add(field);
     }
 
-    public void addMethod(String methodName){
-        methods.add(methodName);
+    public void addMethod(String methodName, List<Symbol> params) {
+        methodParameters.put(methodName, params);
     }
 
-    public void addParameters(String methodName, Symbol param) {
-        parameters.get(methodName).add(param);
+    public void addLocalVariables(String methodName, List<Symbol> variables) {
+        methodLocalVariables.put(methodName, variables);
     }
 
-    public void addLocalVariables(String methodName, Symbol variable) {
-        parameters.get(methodName).add(variable);
+    public void addMethodType(String methodName, Type returnType) {
+        methodTypes.put(methodName, returnType);
     }
 
-    public void addMethodTypes(String methodName, Type type) {
-        methodTypes.put(methodName,type);
-    }
+
 }

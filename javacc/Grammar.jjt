@@ -143,10 +143,10 @@ void VarDeclaration() :{Token t;}
 
  void MethodBody() : {}
 {
-    MethodParameters() (Statement())*
+    VarDeclarations() (Statement())*
 }
 
-void MethodParameters() : {}
+void VarDeclarations() : {}
 {
     (LOOKAHEAD(2) VarDeclaration())*
 }
@@ -174,9 +174,9 @@ void MethodGeneric(): {Token t;}
     <CLOSEBRACKET>
 }
 
-void Arguments() : {Token t;}
+void Arguments() : {Token t1, t2;}
 {
-     Type() t = <IDENTIFIER> {jjtThis.put("name", t.image);} #Identifier(true) (<COMMA> Type() <IDENTIFIER> {jjtThis.put("name", t.image);} #Identifier )*
+     Type() t1 = <IDENTIFIER> {jjtThis.put("name", t1.image);} #Identifier(true) (<COMMA> Type() t2 = <IDENTIFIER> {jjtThis.put("name", t2.image);} #Identifier )*
 }
 
 void Return() : {}

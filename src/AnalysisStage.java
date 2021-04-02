@@ -39,17 +39,12 @@ public class AnalysisStage implements JmmAnalysis {
         MySymbolTable symbolTable = new MySymbolTable();
         // TODO: create visitors that will create the table
         //TODO: criar estrutura com syumbolTable e report que passamos ao visitor .
+
+
         JmmNode node = parserResult.getRootNode();
         new SymbolTableVisitor().visit(node, symbolTable);
-        System.out.println(symbolTable.getClassName());
-        System.out.println(symbolTable.getSuper());
-        System.out.println(symbolTable.getImports());
-        System.out.println(symbolTable.getMethods());
-        System.out.println(symbolTable.getMethods());
-        System.out.println(symbolTable.getReturnType("main").getName());
-        System.out.println(symbolTable.getReturnType("main").isArray());
-        System.out.println(symbolTable.getReturnType("methodFoo").getName());
-        System.out.println(symbolTable.getReturnType("methodFoo").isArray());
+
+
 
 /*
         System.out.println("Dump tree with Visitor where you control tree traversal");
@@ -72,7 +67,7 @@ public class AnalysisStage implements JmmAnalysis {
         varPrinter.visit(node, null);*/
 
         // No Symbol Table being calculated yet
-        return new JmmSemanticsResult(parserResult, null, new ArrayList<>());
+        return new JmmSemanticsResult(parserResult, symbolTable, new ArrayList<>());
 
     }
 
