@@ -16,11 +16,17 @@ class T extends treta {
 
     }
 
+    public Boolean asneira(){
+        return true;
+    }
+
     public int methodFoo(Boolean p1, int[] p2, String p3){
         int v0;
         int[] v1;
         Boolean v2;
         String v3;
+        v = v3 + undeclaredVar;
+
         return j;
     }
 }

@@ -158,7 +158,7 @@ void VarDeclarations() : {}
 
 void MethodMain(): {}
 {
-    <STATIC> <VOID> <MAIN> <OPENCURVEBRACKET> StringArray() <CLOSECURVEBRACKET>
+    <STATIC> <VOID> <MAIN> <OPENCURVEBRACKET> StringArray() #MainParameters(1) <CLOSECURVEBRACKET>
     <OPENBRACKET>
         MethodBody()
     <CLOSEBRACKET>
@@ -172,7 +172,7 @@ void StringArray() : {Token t;}
 
 void MethodGeneric(): {Token t;}
 {
-    Type() t = <IDENTIFIER> {  jjtThis.put("name", t.image); } #Identifier <OPENCURVEBRACKET> [MethodParameters()] <CLOSECURVEBRACKET>
+    Type() t = <IDENTIFIER> {  jjtThis.put("name", t.image); } #Identifier <OPENCURVEBRACKET> MethodParameters() <CLOSECURVEBRACKET>
     <OPENBRACKET>
         MethodBody()
         Return()
@@ -181,7 +181,7 @@ void MethodGeneric(): {Token t;}
 
 void MethodParameters() : {}
 {
-     MethodParameter() (<COMMA> MethodParameter() )*
+     [MethodParameter() (<COMMA> MethodParameter() )*]
 }
 
 void MethodParameter() : {Token t;}

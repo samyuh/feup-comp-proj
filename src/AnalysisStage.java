@@ -17,6 +17,7 @@ import pt.up.fe.comp.jmm.report.Report;
 import pt.up.fe.comp.jmm.report.ReportType;
 import pt.up.fe.comp.jmm.report.Stage;
 import visitor.SymbolTableVisitor;
+import visitor.UndefinedVarVisitor;
 
 // TODO: example of the new step.
 // TODO: declare and build symbol table here.
@@ -37,12 +38,12 @@ public class AnalysisStage implements JmmAnalysis {
         }
 
         MySymbolTable symbolTable = new MySymbolTable();
-        // TODO: create visitors that will create the table
-        //TODO: criar estrutura com syumbolTable e report que passamos ao visitor .
+        //TODO: criar estrutura com symbolTable e report que passamos ao visitor .
 
-
+        // Visitor to fill the symbol table
         JmmNode node = parserResult.getRootNode();
         new SymbolTableVisitor().visit(node, symbolTable);
+        new UndefinedVarVisitor().visit(node, symbolTable);
 
 /*
         System.out.println("Dump tree with Visitor where you control tree traversal");

@@ -6,6 +6,7 @@ import pt.up.fe.specs.util.SpecsIo;
 
 public class PersonalizedFailAnalyses {
 
+
     @Test
     public void symbolTableTest() {
         String jmmCode = SpecsIo.getResource("fixtures/personalized/SymbolTable.jmm");
@@ -30,6 +31,15 @@ public class PersonalizedFailAnalyses {
 
         System.out.println("PARAMETER 1 TYPE [main]:: " + symbolTable.getParameters("main").get(0).getType().getName());
         System.out.println("PARAMETER 1 IS ARRAY [main]:: " + symbolTable.getParameters("main").get(0).getType().isArray());
+
+        System.out.println("\n >>>> Local Variables");
+        for (int i = 0; i < symbolTable.getLocalVariables("main").size(); i++) {
+            System.out.println("VAR " + (i + 1) + " NAME [main]:: " + symbolTable.getLocalVariables("main").get(i).getName());
+            System.out.println("VAR " + (i + 1) + " TYPE [main]:: " + symbolTable.getLocalVariables("main").get(i).getType().getName());
+            System.out.println("VAR " + (i + 1) + " IS ARRAY [main]:: " + symbolTable.getLocalVariables("main").get(i).getType().isArray());
+        }
+
+
 
         System.out.println();
 
@@ -56,5 +66,15 @@ public class PersonalizedFailAnalyses {
             System.out.println("VAR " + (i + 1) + " TYPE:: " + symbolTable.getFields().get(i).getType().getName());
             System.out.println("VAR " + (i + 1) + " IS ARRAY:: " + symbolTable.getFields().get(i).getType().isArray());
         }
+    }
+
+    @Test
+    public void notDeclaredVariable() {
+        String jmmCode = SpecsIo.getResource("fixtures/personalized/SymbolTable.jmm");
+        JmmParserResult jmmParser = TestUtils.parse(jmmCode);
+        var analysisResult = TestUtils.analyse(jmmParser);
+        TestUtils.noErrors(analysisResult.getReports());
+        //System.out.println(jmmParser.getRootNode().toJson());
+
     }
 }

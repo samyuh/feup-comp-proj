@@ -54,7 +54,8 @@ public class SymbolTableVisitor extends PreorderJmmVisitor<MySymbolTable,Boolean
         Type type = new Type("void", false);
 
         // Parse parameter
-        JmmNode stringArray = jmmNode.getChildren().get(0);
+        JmmNode parametersNode = jmmNode.getChildren().get(0);
+        JmmNode stringArray = parametersNode.getChildren().get(0);
         String identifier = stringArray.getChildren().get(0).get("name");
 
         // Create symbol
@@ -64,6 +65,12 @@ public class SymbolTableVisitor extends PreorderJmmVisitor<MySymbolTable,Boolean
 
         symbolTable.addMethod("main", parameters);
         symbolTable.addMethodType("main", type );
+
+        // Parse method body
+        JmmNode methodBody = jmmNode.getChildren().get(1);
+        List<Symbol> localVariables = parseMethodBody(methodBody);
+
+        symbolTable.addLocalVariables("main", localVariables);
 
         return true;
     }
@@ -83,7 +90,8 @@ public class SymbolTableVisitor extends PreorderJmmVisitor<MySymbolTable,Boolean
         symbolTable.addMethodType(name, returnType);
 
         // Parse method body
-        List<Symbol> localVariables = parseMethodBody(jmmNode, symbolTable);
+        JmmNode methodBody = jmmNode.getChildren().get(3);
+        List<Symbol> localVariables = parseMethodBody(methodBody);
         symbolTable.addLocalVariables(name, localVariables);
 
         return true;
@@ -102,12 +110,11 @@ public class SymbolTableVisitor extends PreorderJmmVisitor<MySymbolTable,Boolean
         return parametersSymbols;
     }
 
-    List<Symbol> parseMethodBody(JmmNode jmmNode, MySymbolTable symbolTable){
-        JmmNode methodBody = jmmNode.getChildren().get(3);
+    List<Symbol> parseMethodBody(JmmNode methodBody){
         JmmNode varDeclarations = methodBody.getChildren().get(0);
         List<Symbol> declarations = new ArrayList<>();
 
-        for (int i = 0 ; i < varDeclarations.getChildren().size(); i++){
+        for (int i = 0; i < varDeclarations.getChildren().size(); i++) {
             JmmNode varDeclaration = varDeclarations.getChildren().get(i);
             Symbol symbol = parseVariable(varDeclaration);
             declarations.add(symbol);
