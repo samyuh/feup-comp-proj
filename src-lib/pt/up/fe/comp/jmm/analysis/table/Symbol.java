@@ -1,9 +1,9 @@
 package pt.up.fe.comp.jmm.analysis.table;
 
-public class Symbol{
+public class Symbol {
     private final Type type;
     private final String name;
-    
+
     public Symbol(Type type, String name) {
         this.type = type;
         this.name = name;
@@ -12,8 +12,14 @@ public class Symbol{
     public Type getType() {
         return type;
     }
-  
+
     public String getName() {
         return name;
     }
+
+    @Override
+    public String toString() {
+        return "Symbol [type=" + type + ", name=" + name + "]";
+    }
+
 }
