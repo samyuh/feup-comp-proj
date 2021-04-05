@@ -1,6 +1,6 @@
 package visitor;
 
-import analysis.MySymbolTable;
+import analysis.Analysis;
 import pt.up.fe.comp.jmm.JmmNode;
 import pt.up.fe.comp.jmm.analysis.table.Symbol;
 import pt.up.fe.comp.jmm.analysis.table.Type;
@@ -9,7 +9,7 @@ import pt.up.fe.comp.jmm.ast.PreorderJmmVisitor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SymbolTableVisitor extends PreorderJmmVisitor<MySymbolTable,Boolean> {
+public class SymbolTableVisitor extends PreorderJmmVisitor<Analysis,Boolean> {
 
     public SymbolTableVisitor(){
         addVisit("ImportNames", this::visitImportNames);
@@ -20,7 +20,7 @@ public class SymbolTableVisitor extends PreorderJmmVisitor<MySymbolTable,Boolean
 
     }
 
-    Boolean visitImportNames(JmmNode jmmNode, MySymbolTable symbolTable) {
+    Boolean visitImportNames(JmmNode jmmNode, Analysis analysis) {
         StringBuilder importNames = new StringBuilder();
         for(int i = 0; i < jmmNode.getChildren().size(); i++) {
             importNames.append(jmmNode.getChildren().get(i).get("name"));
@@ -28,29 +28,29 @@ public class SymbolTableVisitor extends PreorderJmmVisitor<MySymbolTable,Boolean
                 importNames.append(".");
         }
 
-        symbolTable.addImport(importNames.toString());
+        analysis.getSymbolTable().addImport(importNames.toString());
         return true;
     }
 
-    Boolean visitClassDeclaration(JmmNode jmmNode, MySymbolTable symbolTable){
-        symbolTable.setClassName(jmmNode.getChildren().get(0).get("name"));
+    Boolean visitClassDeclaration(JmmNode jmmNode, Analysis analysis){
+        analysis.getSymbolTable().setClassName(jmmNode.getChildren().get(0).get("name"));
         if (jmmNode.getChildren().size() == 2){
-            symbolTable.setExtendSuper(jmmNode.getChildren().get(1).get("name"));
+            analysis.getSymbolTable().setExtendSuper(jmmNode.getChildren().get(1).get("name"));
         }
         return true;
     }
 
-    Boolean visitClassFields(JmmNode jmmNode, MySymbolTable symbolTable){
+    Boolean visitClassFields(JmmNode jmmNode, Analysis analysis){
 
         for (int i = 0 ; i < jmmNode.getChildren().size(); i++){
             JmmNode varDeclaration = jmmNode.getChildren().get(i);
             Symbol symbol = parseVariable(varDeclaration);
-            symbolTable.addField(symbol);
+            analysis.getSymbolTable().addField(symbol);
         }
         return true;
     }
 
-    Boolean visitMainMethod(JmmNode jmmNode, MySymbolTable symbolTable){
+    Boolean visitMainMethod(JmmNode jmmNode, Analysis analysis){
         Type type = new Type("void", false);
 
         // Parse parameter
@@ -63,19 +63,19 @@ public class SymbolTableVisitor extends PreorderJmmVisitor<MySymbolTable,Boolean
         List<Symbol> parameters = new ArrayList<>();
         parameters.add(symbol);
 
-        symbolTable.addMethod("main", parameters);
-        symbolTable.addMethodType("main", type );
+        analysis.getSymbolTable().addMethod("main", parameters);
+        analysis.getSymbolTable().addMethodType("main", type );
 
         // Parse method body
         JmmNode methodBody = jmmNode.getChildren().get(1);
         List<Symbol> localVariables = parseMethodBody(methodBody);
 
-        symbolTable.addLocalVariables("main", localVariables);
+        analysis.getSymbolTable().addLocalVariables("main", localVariables);
 
         return true;
     }
 
-    Boolean visitGenericMethod(JmmNode jmmNode, MySymbolTable symbolTable){
+    Boolean visitGenericMethod(JmmNode jmmNode, Analysis analysis){
         String type = jmmNode.getChildren().get(0).get("type");
         String name = jmmNode.getChildren().get(1).get("name");
         Type returnType;
@@ -86,13 +86,13 @@ public class SymbolTableVisitor extends PreorderJmmVisitor<MySymbolTable,Boolean
 
         // Parse parameters
         List<Symbol> parameters = parseMethodParameters(jmmNode);
-        symbolTable.addMethod(name, parameters);
-        symbolTable.addMethodType(name, returnType);
+        analysis.getSymbolTable().addMethod(name, parameters);
+        analysis.getSymbolTable().addMethodType(name, returnType);
 
         // Parse method body
         JmmNode methodBody = jmmNode.getChildren().get(3);
         List<Symbol> localVariables = parseMethodBody(methodBody);
-        symbolTable.addLocalVariables(name, localVariables);
+        analysis.getSymbolTable().addLocalVariables(name, localVariables);
 
         return true;
     }

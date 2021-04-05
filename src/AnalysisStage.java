@@ -1,18 +1,11 @@
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-
-import analysis.MySymbolTable;
+import analysis.Analysis;
 import pt.up.fe.comp.TestUtils;
 import pt.up.fe.comp.jmm.JmmNode;
 import pt.up.fe.comp.jmm.JmmParserResult;
 import pt.up.fe.comp.jmm.analysis.JmmAnalysis;
 import pt.up.fe.comp.jmm.analysis.JmmSemanticsResult;
-import pt.up.fe.comp.jmm.ast.examples.ExamplePostorderVisitor;
-import pt.up.fe.comp.jmm.ast.examples.ExamplePreorderVisitor;
-import pt.up.fe.comp.jmm.ast.examples.ExamplePrintVariables;
-import pt.up.fe.comp.jmm.ast.examples.ExampleVisitor;
 import pt.up.fe.comp.jmm.report.Report;
 import pt.up.fe.comp.jmm.report.ReportType;
 import pt.up.fe.comp.jmm.report.Stage;
@@ -37,13 +30,14 @@ public class AnalysisStage implements JmmAnalysis {
             return new JmmSemanticsResult(parserResult, null, Arrays.asList(errorReport));
         }
 
-        MySymbolTable symbolTable = new MySymbolTable();
-        //TODO: criar estrutura com symbolTable e report que passamos ao visitor .
+        //DONE: criar estrutura com symbolTable e report que passamos ao visitor .
+        Analysis analysis = new Analysis();
 
         // Visitor to fill the symbol table
         JmmNode node = parserResult.getRootNode();
-        new SymbolTableVisitor().visit(node, symbolTable);
-        new UndefinedVarVisitor().visit(node, symbolTable);
+        new SymbolTableVisitor().visit(node, analysis);
+        new UndefinedVarVisitor().visit(node, analysis);
+
 
 /*
         System.out.println("Dump tree with Visitor where you control tree traversal");
@@ -66,7 +60,7 @@ public class AnalysisStage implements JmmAnalysis {
         varPrinter.visit(node, null);*/
 
         // No Symbol Table being calculated yet
-        return new JmmSemanticsResult(parserResult, symbolTable, new ArrayList<>());
+        return new JmmSemanticsResult(parserResult, analysis.getSymbolTable(), analysis.getReports());
 
     }
 

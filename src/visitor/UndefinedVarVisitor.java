@@ -1,23 +1,26 @@
 package visitor;
-import analysis.MySymbolTable;
+import analysis.Analysis;
 import pt.up.fe.comp.jmm.JmmNode;
 import pt.up.fe.comp.jmm.analysis.table.Symbol;
 import pt.up.fe.comp.jmm.ast.PreorderJmmVisitor;
+import pt.up.fe.comp.jmm.report.Report;
+import pt.up.fe.comp.jmm.report.ReportType;
+import pt.up.fe.comp.jmm.report.Stage;
 
 import java.util.List;
 
-public class UndefinedVarVisitor extends PreorderJmmVisitor<MySymbolTable, Boolean>{
+public class UndefinedVarVisitor extends PreorderJmmVisitor<Analysis, Boolean>{
 
     public UndefinedVarVisitor(){
         addVisit("MethodDeclaration", this::visitMethodDeclaration);
     }
 
-    public Boolean visitMethodDeclaration(JmmNode MethodDeclarationNode, MySymbolTable symbolTable){
+    public Boolean visitMethodDeclaration(JmmNode MethodDeclarationNode, Analysis analysis){
         JmmNode methodScope = MethodDeclarationNode.getChildren().get(0); // MethodMain or MethodGeneric
         String methodName = getMethodName(methodScope);
         JmmNode methodBody = getMethodBody(methodScope);
 
-        validateAssignments(methodName, methodBody, symbolTable);
+        validateAssignments(methodName, methodBody, analysis);
 
         return true;
     }
@@ -36,39 +39,54 @@ public class UndefinedVarVisitor extends PreorderJmmVisitor<MySymbolTable, Boole
         return null;
     }
 
-    public void validateAssignments(String methodName, JmmNode methodBody, MySymbolTable symbolTable){
+    public void validateAssignments(String methodName, JmmNode methodBody, Analysis analysis){
         for (JmmNode node: methodBody.getChildren()){
             if(node.getKind().equals("Assignment")){
-                validateAssignment(methodName, node, symbolTable);
+                validateAssignment(methodName, node, analysis);
             }
         }
     }
 
-    public Boolean validateAssignment(String methodName, JmmNode assignment, MySymbolTable symbolTable){
+    public Boolean validateAssignment(String methodName, JmmNode assignment, Analysis analysis){
         JmmNode left = assignment.getChildren().get(0);
         JmmNode right = assignment.getChildren().get(1);
-        List<Symbol> localVariables = symbolTable.getLocalVariables(methodName);
+
         if (left.getKind().equals("Identifier")){
-            containsSymbol(localVariables, left.get("name"));
+            varIsDefined(methodName, analysis, left);
         }
 
         if (right.getKind().equals("Identifier")){
-            if (right.getKind().equals("Identifier")){
-                containsSymbol(localVariables, right.get("name"));
-            }
+            varIsDefined(methodName, analysis, right);
         }
         return true;
     }
 
-    public Boolean containsSymbol(List<Symbol> localVariables, String nameVariable){
-        for(Symbol symbol: localVariables){
-            if(symbol.getName().equals(nameVariable)){
+    /**
+     * Check if the variable is a local variable or a class field.
+     * Register a Report if the variable is undefined.
+     * @param methodName the name of the method in which the variable was found
+     * @param analysis aggregates the symbol table and the list of reports
+     * @param identifierNode the Identifier node that represents the variable
+     */
+    public void varIsDefined(String methodName, Analysis analysis, JmmNode identifierNode){
+        List<Symbol> localVariables = analysis.getSymbolTable().getLocalVariables(methodName);
+        List<Symbol> classFields = analysis.getSymbolTable().getFields();
+        String varName = identifierNode.get("name");
 
+        if(!containsSymbol(localVariables, varName) && !containsSymbol(classFields, varName)){
+            // DONE: report error
+            analysis.addReport(new Report(ReportType.ERROR, Stage.SEMANTIC,
+                    Integer.parseInt(identifierNode.get("line")) , Integer.parseInt(identifierNode.get("col")),
+                    "Variable \"" + identifierNode.get("name") + "\" is undefined"));
+        }
+    }
+
+    public Boolean containsSymbol(List<Symbol> vars, String varName){
+        for(Symbol symbol: vars){
+            if(symbol.getName().equals(varName)){
                 return true;
             }
         }
-        // TODO: report and checkfields
-        System.out.println("Variable \"" + nameVariable + "\" is undefined");
         return false;
     }
 }
