@@ -38,7 +38,10 @@ public class AnalysisStage implements JmmAnalysis {
         new SymbolTableVisitor().visit(node, analysis);
         new UndefinedVarVisitor().visit(node, analysis);
 
-
+        System.out.println("\nReports:");
+        for(Report report: analysis.getReports()){
+            System.out.println(report);
+        }
 /*
         System.out.println("Dump tree with Visitor where you control tree traversal");
         ExampleVisitor visitor = new ExampleVisitor("Identifier", "id");

@@ -17,7 +17,6 @@ public class SymbolTableVisitor extends PreorderJmmVisitor<Analysis,Boolean> {
         addVisit("ClassFields", this::visitClassFields);
         addVisit("MethodMain", this::visitMainMethod);
         addVisit("MethodGeneric", this::visitGenericMethod); // parameters and local
-
     }
 
     Boolean visitImportNames(JmmNode jmmNode, Analysis analysis) {

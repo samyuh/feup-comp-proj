@@ -240,7 +240,7 @@ void NotExpression() #void : {}
 
 void DotArrayExpression() #void : {}
 {
-    ExpressionOthers() (<DOT> DotExpression() #Dot(2) | ArrayExpression())*
+    ExpressionOthers() (<DOT> DotExpression() #Dot(2) | ArrayExpression() #ArrayAccess(2))*
 }
 
 void DotExpression() #void : {}

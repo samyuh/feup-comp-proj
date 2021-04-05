@@ -14,7 +14,8 @@ class T extends treta {
         int c;
         // This is valid in Java
         a = new int[0];
-        c = a[true];
+        c = truru[2];
+        c = a.getLen(d);
 
     }
 
@@ -34,7 +35,7 @@ class T extends treta {
         int[] v1;
         Boolean v2;
         String v3;
-        v = v3 + undeclaredVar;
+        v = v3 + undeclaredVar - 7 - m * (5 + kkk);
 
         return j;
     }

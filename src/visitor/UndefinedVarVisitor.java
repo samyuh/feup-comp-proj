@@ -10,14 +10,13 @@ import pt.up.fe.comp.jmm.report.Stage;
 import java.util.List;
 
 public class UndefinedVarVisitor extends PreorderJmmVisitor<Analysis, Boolean>{
-
     public UndefinedVarVisitor(){
         addVisit("MethodDeclaration", this::visitMethodDeclaration);
     }
 
     public Boolean visitMethodDeclaration(JmmNode MethodDeclarationNode, Analysis analysis){
         JmmNode methodScope = MethodDeclarationNode.getChildren().get(0); // MethodMain or MethodGeneric
-        String methodName = getMethodName(methodScope);
+        String methodName = getMethodName(methodScope); // Get method name
         JmmNode methodBody = getMethodBody(methodScope);
 
         validateAssignments(methodName, methodBody, analysis);
@@ -47,19 +46,50 @@ public class UndefinedVarVisitor extends PreorderJmmVisitor<Analysis, Boolean>{
         }
     }
 
-    public Boolean validateAssignment(String methodName, JmmNode assignment, Analysis analysis){
-        JmmNode left = assignment.getChildren().get(0);
-        JmmNode right = assignment.getChildren().get(1);
+    public Boolean validateAssignment(String methodName, JmmNode node, Analysis analysis) {
+        JmmNode left, right;
 
-        if (left.getKind().equals("Identifier")){
-            varIsDefined(methodName, analysis, left);
-        }
+        while (true) {
+            left = node.getChildren().get(0);
+            right = node.getChildren().get(1);
 
-        if (right.getKind().equals("Identifier")){
-            varIsDefined(methodName, analysis, right);
+            if (!node.getKind().equals("DotMethod") && left.getKind().equals("Identifier")) {
+                varIsDefined(methodName, analysis, left);
+            }
+
+            if (right.getKind().equals("Identifier")) {
+                varIsDefined(methodName, analysis, right);
+                break;
+            } else if (isOperator(right.getKind()) ||
+                    right.getKind().equals("ObjectMethodParameters") ||
+                    right.getKind().equals("DotMethod")) {
+
+                if(right.getNumChildren() == 0){
+                    break;
+                } else if (right.getNumChildren() == 1 && right.getChildren().get(0).getKind().equals("Identifier")){
+                    varIsDefined(methodName, analysis, right.getChildren().get(0));
+                    break;
+                }
+                node = right;
+            }  else break;
         }
         return true;
     }
+    // a = i.test(a+2)
+    public Boolean isOperator(String kind) {
+        if(kind.equals("Add") ||
+                kind.equals("Mult") ||
+                kind.equals("Sub") ||
+                kind.equals("Div") ||
+                kind.equals("Less") ||
+                kind.equals("And") ||
+                kind.equals("ArrayAccess") ||
+                kind.equals("Dot")) {
+            return true;
+        }
+        return false;
+    }
+
 
     /**
      * Check if the variable is a local variable or a class field.
