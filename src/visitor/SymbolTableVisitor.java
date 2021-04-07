@@ -19,7 +19,7 @@ public class SymbolTableVisitor extends PreorderJmmVisitor<Analysis,Boolean> {
         addVisit("MethodGeneric", this::visitGenericMethod); // parameters and local
     }
 
-    Boolean visitImportNames(JmmNode jmmNode, Analysis analysis) {
+    public Boolean visitImportNames(JmmNode jmmNode, Analysis analysis) {
         StringBuilder importNames = new StringBuilder();
         for(int i = 0; i < jmmNode.getChildren().size(); i++) {
             importNames.append(jmmNode.getChildren().get(i).get("name"));
@@ -31,7 +31,7 @@ public class SymbolTableVisitor extends PreorderJmmVisitor<Analysis,Boolean> {
         return true;
     }
 
-    Boolean visitClassDeclaration(JmmNode jmmNode, Analysis analysis){
+    public Boolean visitClassDeclaration(JmmNode jmmNode, Analysis analysis){
         analysis.getSymbolTable().setClassName(jmmNode.getChildren().get(0).get("name"));
         if (jmmNode.getChildren().size() == 2){
             analysis.getSymbolTable().setExtendSuper(jmmNode.getChildren().get(1).get("name"));
@@ -39,7 +39,7 @@ public class SymbolTableVisitor extends PreorderJmmVisitor<Analysis,Boolean> {
         return true;
     }
 
-    Boolean visitClassFields(JmmNode jmmNode, Analysis analysis){
+    public Boolean visitClassFields(JmmNode jmmNode, Analysis analysis){
 
         for (int i = 0 ; i < jmmNode.getChildren().size(); i++){
             JmmNode varDeclaration = jmmNode.getChildren().get(i);
@@ -49,7 +49,7 @@ public class SymbolTableVisitor extends PreorderJmmVisitor<Analysis,Boolean> {
         return true;
     }
 
-    Boolean visitMainMethod(JmmNode jmmNode, Analysis analysis){
+    public Boolean visitMainMethod(JmmNode jmmNode, Analysis analysis){
         Type type = new Type("void", false);
 
         // Parse parameter
@@ -74,7 +74,7 @@ public class SymbolTableVisitor extends PreorderJmmVisitor<Analysis,Boolean> {
         return true;
     }
 
-    Boolean visitGenericMethod(JmmNode jmmNode, Analysis analysis){
+    public Boolean visitGenericMethod(JmmNode jmmNode, Analysis analysis){
         String type = jmmNode.getChildren().get(0).get("type");
         String name = jmmNode.getChildren().get(1).get("name");
         Type returnType;
@@ -96,7 +96,7 @@ public class SymbolTableVisitor extends PreorderJmmVisitor<Analysis,Boolean> {
         return true;
     }
 
-    List<Symbol> parseMethodParameters(JmmNode jmmNode){
+    public List<Symbol> parseMethodParameters(JmmNode jmmNode){
         List<Symbol> parametersSymbols = new ArrayList<>();
         JmmNode parametersNode = jmmNode.getChildren().get(2);
 
@@ -109,7 +109,7 @@ public class SymbolTableVisitor extends PreorderJmmVisitor<Analysis,Boolean> {
         return parametersSymbols;
     }
 
-    List<Symbol> parseMethodBody(JmmNode methodBody){
+    public List<Symbol> parseMethodBody(JmmNode methodBody){
         JmmNode varDeclarations = methodBody.getChildren().get(0);
         List<Symbol> declarations = new ArrayList<>();
 
@@ -122,7 +122,7 @@ public class SymbolTableVisitor extends PreorderJmmVisitor<Analysis,Boolean> {
         return declarations;
     }
 
-    Symbol parseVariable(JmmNode variableNode){
+    public Symbol parseVariable(JmmNode variableNode){
 
         JmmNode typeNode = variableNode.getChildren().get(0);
         String name = variableNode.getChildren().get(1).get("name");

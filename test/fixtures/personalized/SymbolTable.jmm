@@ -12,6 +12,7 @@ class T extends treta {
     public static void main(String[] s) {
         int[] a;
         int c;
+        a = b - c + d;
         // This is valid in Java
         a = new int[0];
         c = truru[2];
@@ -19,8 +20,8 @@ class T extends treta {
 
     }
 
-    public Boolean asneira(){
-        Boolean result;
+    public boolean asneira(){
+        boolean result;
 
         if (maximum < 0){
             result = false;
@@ -39,4 +40,11 @@ class T extends treta {
 
         return j;
     }
+
+    /*
+        public Report ola(){
+            Report r = new Report();
+            return r;
+        }
+    */
 }

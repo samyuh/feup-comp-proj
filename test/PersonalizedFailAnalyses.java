@@ -12,7 +12,7 @@ public class PersonalizedFailAnalyses {
         String jmmCode = SpecsIo.getResource("fixtures/personalized/SymbolTable.jmm");
         JmmParserResult jmmParser = TestUtils.parse(jmmCode);
         var analysisResult = TestUtils.analyse(jmmParser);
-        TestUtils.noErrors(analysisResult.getReports());
+        //TestUtils.noErrors(analysisResult.getReports());
         //System.out.println(jmmParser.getRootNode().toJson());
 
         SymbolTable symbolTable = analysisResult.getSymbolTable();
@@ -75,6 +75,27 @@ public class PersonalizedFailAnalyses {
         var analysisResult = TestUtils.analyse(jmmParser);
         TestUtils.noErrors(analysisResult.getReports());
         //System.out.println(jmmParser.getRootNode().toJson());
+
+    }
+
+    @Test
+    public void FuncNotFoundVisitor() {
+        String jmmCode = SpecsIo.getResource("fixtures/personalized/FuncNotFoundVisitor.jmm");
+        JmmParserResult jmmParser = TestUtils.parse(jmmCode);
+        var analysisResult = TestUtils.analyse(jmmParser);
+        TestUtils.noErrors(analysisResult.getReports());
+        //System.out.println(jmmParser.getRootNode().toJson());
+
+    }
+
+    @Test
+    public void badArguments() {
+        String jmmCode = SpecsIo.getResource("fixtures/personalized/BadArguments.jmm");
+        JmmParserResult jmmParser = TestUtils.parse(jmmCode);
+        var analysisResult = TestUtils.analyse(jmmParser);
+        // System.out.println(jmmParser.getRootNode().toJson());
+        TestUtils.noErrors(analysisResult.getReports());
+
 
     }
 }

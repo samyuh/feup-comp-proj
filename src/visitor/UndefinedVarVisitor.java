@@ -3,9 +3,7 @@ import analysis.Analysis;
 import pt.up.fe.comp.jmm.JmmNode;
 import pt.up.fe.comp.jmm.analysis.table.Symbol;
 import pt.up.fe.comp.jmm.ast.PreorderJmmVisitor;
-import pt.up.fe.comp.jmm.report.Report;
-import pt.up.fe.comp.jmm.report.ReportType;
-import pt.up.fe.comp.jmm.report.Stage;
+import pt.up.fe.specs.util.treenode.transform.transformations.AddChildTransform;
 
 import java.util.List;
 
@@ -53,29 +51,20 @@ public class UndefinedVarVisitor extends PreorderJmmVisitor<Analysis, Boolean>{
             left = node.getChildren().get(0);
             right = node.getChildren().get(1);
 
-            if (!node.getKind().equals("DotMethod") && left.getKind().equals("Identifier")) {
+            if (left.getKind().equals("Identifier")) {
                 varIsDefined(methodName, analysis, left);
             }
 
             if (right.getKind().equals("Identifier")) {
                 varIsDefined(methodName, analysis, right);
                 break;
-            } else if (isOperator(right.getKind()) ||
-                    right.getKind().equals("ObjectMethodParameters") ||
-                    right.getKind().equals("DotMethod")) {
-
-                if(right.getNumChildren() == 0){
-                    break;
-                } else if (right.getNumChildren() == 1 && right.getChildren().get(0).getKind().equals("Identifier")){
-                    varIsDefined(methodName, analysis, right.getChildren().get(0));
-                    break;
-                }
+            } else if (isOperator(right.getKind())) {
                 node = right;
             }  else break;
         }
         return true;
     }
-    // a = i.test(a+2)
+
     public Boolean isOperator(String kind) {
         if(kind.equals("Add") ||
                 kind.equals("Mult") ||
@@ -83,8 +72,7 @@ public class UndefinedVarVisitor extends PreorderJmmVisitor<Analysis, Boolean>{
                 kind.equals("Div") ||
                 kind.equals("Less") ||
                 kind.equals("And") ||
-                kind.equals("ArrayAccess") ||
-                kind.equals("Dot")) {
+                kind.equals("ArrayAccess")) {
             return true;
         }
         return false;
@@ -105,9 +93,7 @@ public class UndefinedVarVisitor extends PreorderJmmVisitor<Analysis, Boolean>{
 
         if(!containsSymbol(localVariables, varName) && !containsSymbol(classFields, varName)){
             // DONE: report error
-            analysis.addReport(new Report(ReportType.ERROR, Stage.SEMANTIC,
-                    Integer.parseInt(identifierNode.get("line")) , Integer.parseInt(identifierNode.get("col")),
-                    "Variable \"" + identifierNode.get("name") + "\" is undefined"));
+            analysis.addReport(identifierNode, "Variable \"" + identifierNode.get("name") + "\" is undefined");
         }
     }
 
