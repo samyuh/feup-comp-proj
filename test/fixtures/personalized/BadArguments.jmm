@@ -1,0 +1,28 @@
+
+class T {
+
+    public static void main(String[] a) {
+
+    }
+
+    public int foo(int a){
+        boolean n;
+        int[] a;
+        n = true;
+        this.foo(n);
+        this.arrayParamAccept(a);
+
+        this.arrayParamError(n);
+        this.arrayParamError(8);
+
+        this.foo(true,20);
+        return 1;
+    }
+    public int arrayParamAccept(int[] a){
+        return 1;
+    }
+
+    public int arrayParamError(int[] a){
+        return 1;
+    }
+}

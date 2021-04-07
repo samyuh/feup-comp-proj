@@ -1,0 +1,55 @@
+/*  REASON:
+    Variable assignments to literals must have the literal be the variable's type.
+    Status: OK.
+*/
+
+import acceptImport;
+class T {
+    public static void main(String[] a) {
+        int ola;
+        Report report;
+
+        ola = a + b + u; // TODO: UndefinedVisitor - verificar parametros
+        report.getName(); // TODO: WRONG (FuncNotFound) aparece que o import não foi definido porque nao
+                          // verificamos se o lado esquerdo era uma variavel
+        io.println(10);
+        a.getName(); // TODO: variavel pode estar definida nos parametros da função
+                     // (FuncNotFound para dot method)
+        acceptImport.println(10);
+    }
+
+    public int foo(boolean a){
+        int n;
+        this.bar();
+
+        if (this.ifBarError()){
+            n = 0;
+        } else {
+            n = 0;
+        }
+
+        if (this.ifBarAccept()){
+            n = 0;
+        } else {
+            n = 0;
+        }
+
+        while(this.whileBarError()){
+            n = 0;
+        }
+
+        while(this.whileBarAccept()){
+            n = 0;
+        }
+
+        return n;
+    }
+
+    public int ifBarAccept(){
+        return 1;
+    }
+
+    public int whileBarAccept(){
+        return 1;
+    }
+}

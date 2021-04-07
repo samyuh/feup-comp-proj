@@ -125,7 +125,9 @@ class SimpleNode implements Node, JmmNode {
     }
 
     for (String attr : this.getAttributes()) {
-      temp += this.get(attr) + " ";
+      if(!attr.equals("line") && !attr.equals("col")){
+        temp += this.get(attr) + " ";
+      }
     }
     return prefix + toString() + " :: " + temp;
   }

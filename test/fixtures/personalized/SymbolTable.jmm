@@ -1,5 +1,7 @@
 /*  REASON:
     Array indices must be integer.
+    Var "v" is undefined.
+    Var "undeclaredVar" is undefined.
 */
 import ol.aaa.casd;
 import dedede.xcsdcd;
@@ -10,14 +12,23 @@ class T extends treta {
     public static void main(String[] s) {
         int[] a;
         int c;
+        a = b - c + d;
         // This is valid in Java
         a = new int[0];
-        c = a[true];
+        c = truru[2];
+        c = a.getLen(d);
 
     }
 
-    public Boolean asneira(){
-        return true;
+    public boolean asneira(){
+        boolean result;
+
+        if (maximum < 0){
+            result = false;
+        } else {
+            result = true;
+        }
+        return result;
     }
 
     public int methodFoo(Boolean p1, int[] p2, String p3){
@@ -25,8 +36,15 @@ class T extends treta {
         int[] v1;
         Boolean v2;
         String v3;
-        v = v3 + undeclaredVar;
+        v = v3 + undeclaredVar - 7 - m * (5 + kkk);
 
         return j;
     }
+
+    /*
+        public Report ola(){
+            Report r = new Report();
+            return r;
+        }
+    */
 }

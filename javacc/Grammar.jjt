@@ -1,6 +1,7 @@
 options
 {
     LOOKAHEAD = 1;
+    NODE_SCOPE_HOOK=true;
 }
 PARSER_BEGIN(Grammar)
 
@@ -19,6 +20,15 @@ public class Grammar{
     public Boolean getHasError(){
         return this.hasError;
     }
+
+     void jjtreeOpenNodeScope(Node n) {
+        ((SimpleNode)n).put("line", Integer.toString(getToken(1).beginLine));
+        ((SimpleNode)n).put("col", Integer.toString(getToken(1).beginColumn));
+    }
+
+    void jjtreeCloseNodeScope(Node n) {
+    }
+
 }
 
 PARSER_END(Grammar)
@@ -230,7 +240,7 @@ void NotExpression() #void : {}
 
 void DotArrayExpression() #void : {}
 {
-    ExpressionOthers() (<DOT> DotExpression() #Dot(2) | ArrayExpression())*
+    ExpressionOthers() (<DOT> DotExpression() #Dot(2) | ArrayExpression() #ArrayAccess(2))*
 }
 
 void DotExpression() #void : {}
