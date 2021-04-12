@@ -18,13 +18,13 @@ public class FuncNotFoundVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
         if (nodeLeft.getKind().equals("Identifier")) {
             String nodeName = nodeLeft.get("name");
 
-            // Check imported met
+            // Check imported method
             if (!analysis.getSymbolTable().getImports().contains(nodeName)) {
-                analysis.addReport(nodeLeft,"Import \"" + nodeName + "\" is undefined");
+                // Check if object
+                if(!checkObject(node, nodeName, analysis)){
+                    analysis.addReport(nodeLeft,  "\"" + nodeName + "\" is not an import nor an object");
+                }
             }
-
-            // Check imported object
-            checkObject(node, nodeName, analysis);
         }
 
         // Check class methods
@@ -35,7 +35,7 @@ public class FuncNotFoundVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
         return true;
     }
 
-    public void checkObject(JmmNode node, String nodeName, Analysis analysis) {
+    public Boolean checkObject(JmmNode node, String nodeName, Analysis analysis) {
         String methodName = getParentMethod(node);
 
         List<Symbol> localVariables = analysis.getSymbolTable().getLocalVariables(methodName);
@@ -44,8 +44,9 @@ public class FuncNotFoundVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
 
         if(!containsObject(localVariables, nodeName) && !containsObject(classFields, nodeName) &&
                 !containsObject(methodParams, nodeName)){
-            analysis.addReport(node, "Variable \"" + nodeName + "\" is undefined");
+            return false;
         }
+        return true;
     }
 
     public Boolean containsObject(List<Symbol> vars, String varName){

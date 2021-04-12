@@ -10,10 +10,9 @@ class T {
         Report report;
 
         ola = a + b + u;
-        report.getName(); // TODO: WRONG (FuncNotFound) aparece que o import nao foi definido porque nao verificamos se o lado esquerdo era uma variavel
+        report.getName(y);
         io.println(10);
-        a.getName(); // TODO: variavel pode estar definida nos parametros da função
-                     // (FuncNotFound para dot method)
+        a.getName();
         acceptImport.println(10);
     }
 

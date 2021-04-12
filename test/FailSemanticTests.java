@@ -26,7 +26,7 @@ public class FailSemanticTests {
     }
     @Test
     public void badArguments(){
-        String jmmCode = SpecsIo.getResource("fixtures/public/fail/semantic/badArguments.jmm");
+        String jmmCode = SpecsIo.getResource("fixtures/personalized/BadArguments.jmm");
         JmmParserResult jmmParser = TestUtils.parse(jmmCode);
         var analysisResult = TestUtils.analyse(jmmParser);
         TestUtils.noErrors(analysisResult.getReports());
@@ -38,8 +38,8 @@ public class FailSemanticTests {
         String jmmCode = SpecsIo.getResource("fixtures/public/fail/semantic/binop_incomp.jmm");
         JmmParserResult jmmParser = TestUtils.parse(jmmCode);
         var analysisResult = TestUtils.analyse(jmmParser);
+        System.out.println(jmmParser.toJson());
         TestUtils.noErrors(analysisResult.getReports());
-        System.out.println(jmmParser.getRootNode().toJson());
         System.out.println(jmmParser.getRootNode().toJson());
     }
 
@@ -57,6 +57,7 @@ public class FailSemanticTests {
         String jmmCode = SpecsIo.getResource("fixtures/public/fail/semantic/simple_length.jmm");
         JmmParserResult jmmParser = TestUtils.parse(jmmCode);
         var analysisResult = TestUtils.analyse(jmmParser);
+
         TestUtils.noErrors(analysisResult.getReports());
         System.out.println(jmmParser.getRootNode().toJson());
     }

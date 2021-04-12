@@ -3,13 +3,38 @@ import analysis.Analysis;
 import pt.up.fe.comp.jmm.JmmNode;
 import pt.up.fe.comp.jmm.analysis.table.Symbol;
 import pt.up.fe.comp.jmm.ast.PreorderJmmVisitor;
-import pt.up.fe.specs.util.treenode.transform.transformations.AddChildTransform;
 
 import java.util.List;
 
 public class UndefinedVarVisitor extends PreorderJmmVisitor<Analysis, Boolean>{
     public UndefinedVarVisitor(){
         addVisit("MethodDeclaration", this::visitMethodDeclaration);
+        addVisit("ObjectMethodParameters", this::visitMethodParameters);
+    }
+
+    public Boolean visitMethodParameters(JmmNode objectMethodParameters, Analysis analysis){
+        String methodName = getParentMethod(objectMethodParameters);
+
+        for (JmmNode node: objectMethodParameters.getChildren()) {
+            if (node.getNumChildren() > 0)
+                validateExpression(methodName, node, analysis);
+            else if (node.getKind().equals("Identifier"))
+                varIsDefined(methodName, analysis, node);
+        }
+
+        return true;
+    }
+
+
+    public String getParentMethod(JmmNode node){
+        JmmNode currentNode = node;
+        while(!currentNode.getKind().equals("MethodGeneric") && ! currentNode.getKind().equals("MethodMain")) {
+            currentNode = currentNode.getParent();
+        }
+
+        if(currentNode.getKind().equals("MethodGeneric"))
+            return currentNode.getChildren().get(1).get("name");
+        return "main";
     }
 
     public Boolean visitMethodDeclaration(JmmNode MethodDeclarationNode, Analysis analysis){
@@ -39,12 +64,12 @@ public class UndefinedVarVisitor extends PreorderJmmVisitor<Analysis, Boolean>{
     public void validateAssignments(String methodName, JmmNode methodBody, Analysis analysis){
         for (JmmNode node: methodBody.getChildren()){
             if(node.getKind().equals("Assignment")){
-                validateAssignment(methodName, node, analysis);
+                validateExpression(methodName, node, analysis);
             }
         }
     }
 
-    public Boolean validateAssignment(String methodName, JmmNode node, Analysis analysis) {
+    public Boolean validateExpression(String methodName, JmmNode node, Analysis analysis) {
         JmmNode left, right;
 
         while (true) {
@@ -94,7 +119,6 @@ public class UndefinedVarVisitor extends PreorderJmmVisitor<Analysis, Boolean>{
 
         if(!containsSymbol(localVariables, varName) && !containsSymbol(classFields, varName) &&
                 !containsSymbol(methodParams, varName)){
-            // DONE: report error
             analysis.addReport(identifierNode, "Variable \"" + identifierNode.get("name") + "\" is undefined");
         }
     }

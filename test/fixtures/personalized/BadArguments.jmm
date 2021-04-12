@@ -10,7 +10,8 @@ class T {
         int[] a;
         n = true;
         this.foo(n);
-        this.arrayParamAccept(a);
+        this.arrayParamAccept(a, test.hello(ttt,ooo));
+        this.arrayParamAccept(ola, adeus);
 
         this.arrayParamError(n);
         this.arrayParamError(8);
