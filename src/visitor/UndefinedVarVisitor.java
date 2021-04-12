@@ -86,12 +86,14 @@ public class UndefinedVarVisitor extends PreorderJmmVisitor<Analysis, Boolean>{
      * @param analysis aggregates the symbol table and the list of reports
      * @param identifierNode the Identifier node that represents the variable
      */
-    public void varIsDefined(String methodName, Analysis analysis, JmmNode identifierNode){
+    public void varIsDefined(String methodName, Analysis analysis, JmmNode identifierNode) {
         List<Symbol> localVariables = analysis.getSymbolTable().getLocalVariables(methodName);
         List<Symbol> classFields = analysis.getSymbolTable().getFields();
+        List<Symbol> methodParams = analysis.getSymbolTable().getParameters(methodName);
         String varName = identifierNode.get("name");
 
-        if(!containsSymbol(localVariables, varName) && !containsSymbol(classFields, varName)){
+        if(!containsSymbol(localVariables, varName) && !containsSymbol(classFields, varName) &&
+                !containsSymbol(methodParams, varName)){
             // DONE: report error
             analysis.addReport(identifierNode, "Variable \"" + identifierNode.get("name") + "\" is undefined");
         }

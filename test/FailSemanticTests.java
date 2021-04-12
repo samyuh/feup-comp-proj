@@ -40,6 +40,7 @@ public class FailSemanticTests {
         var analysisResult = TestUtils.analyse(jmmParser);
         TestUtils.noErrors(analysisResult.getReports());
         System.out.println(jmmParser.getRootNode().toJson());
+        System.out.println(jmmParser.getRootNode().toJson());
     }
 
     @Test

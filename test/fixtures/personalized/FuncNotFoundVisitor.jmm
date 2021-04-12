@@ -9,9 +9,8 @@ class T {
         int ola;
         Report report;
 
-        ola = a + b + u; // TODO: UndefinedVisitor - verificar parametros
-        report.getName(); // TODO: WRONG (FuncNotFound) aparece que o import não foi definido porque nao
-                          // verificamos se o lado esquerdo era uma variavel
+        ola = a + b + u;
+        report.getName(); // TODO: WRONG (FuncNotFound) aparece que o import nao foi definido porque nao verificamos se o lado esquerdo era uma variavel
         io.println(10);
         a.getName(); // TODO: variavel pode estar definida nos parametros da função
                      // (FuncNotFound para dot method)
