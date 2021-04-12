@@ -8,22 +8,10 @@ class T {
     public int foo(int a){
         boolean n;
         int[] a;
+        T test;
         n = true;
-        this.foo(n);
-        this.arrayParamAccept(a, test.hello(ttt,ooo));
-        this.arrayParamAccept(ola, adeus);
-
-        this.arrayParamError(n);
-        this.arrayParamError(8);
-
-        this.foo(true,20);
-        return 1;
-    }
-    public int arrayParamAccept(int[] a){
+        test.buuu(a);
         return 1;
     }
 
-    public int arrayParamError(int[] a){
-        return 1;
-    }
 }

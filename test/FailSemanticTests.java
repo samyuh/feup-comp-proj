@@ -26,7 +26,7 @@ public class FailSemanticTests {
     }
     @Test
     public void badArguments(){
-        String jmmCode = SpecsIo.getResource("fixtures/personalized/BadArguments.jmm");
+        String jmmCode = SpecsIo.getResource("fixtures/public/fail/semantic/BadArguments.jmm");
         JmmParserResult jmmParser = TestUtils.parse(jmmCode);
         var analysisResult = TestUtils.analyse(jmmParser);
         TestUtils.noErrors(analysisResult.getReports());

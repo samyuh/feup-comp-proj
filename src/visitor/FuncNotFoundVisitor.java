@@ -17,7 +17,6 @@ public class FuncNotFoundVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
         JmmNode nodeRight = node.getChildren().get(1);
         if (nodeLeft.getKind().equals("Identifier")) {
             String nodeName = nodeLeft.get("name");
-
             // Check imported method
             if (!analysis.getSymbolTable().getImports().contains(nodeName)) {
                 // Check if object
@@ -37,21 +36,27 @@ public class FuncNotFoundVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
 
     public Boolean checkObject(JmmNode node, String nodeName, Analysis analysis) {
         String methodName = getParentMethod(node);
+        JmmNode calledMethod = node.getChildren().get(1).getChildren().get(0);
 
         List<Symbol> localVariables = analysis.getSymbolTable().getLocalVariables(methodName);
         List<Symbol> classFields = analysis.getSymbolTable().getFields();
         List<Symbol> methodParams = analysis.getSymbolTable().getParameters(methodName);
 
-        if(!containsObject(localVariables, nodeName) && !containsObject(classFields, nodeName) &&
-                !containsObject(methodParams, nodeName)){
+        if(!containsObject(localVariables, nodeName, calledMethod, analysis) && !containsObject(classFields, nodeName, calledMethod, analysis) &&
+                !containsObject(methodParams, nodeName, calledMethod, analysis)){
             return false;
         }
         return true;
     }
 
-    public Boolean containsObject(List<Symbol> vars, String varName){
+    public Boolean containsObject(List<Symbol> vars, String varName,  JmmNode calledMethod, Analysis analysis){
         for(Symbol symbol: vars){
             if(symbol.getName().equals(varName) && isValidType(symbol.getType().getName())){
+                if(symbol.getType().getName().equals(analysis.getSymbolTable().getClassName())
+                        && !analysis.getSymbolTable().getMethods().contains(calledMethod.get("name"))){
+                    analysis.addReport(calledMethod,
+                            "\"" + calledMethod.get("name") + "\" is not a class method");
+                }
                 return true;
             }
         }

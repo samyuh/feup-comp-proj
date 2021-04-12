@@ -8,7 +8,6 @@ import pt.up.fe.comp.jmm.ast.PreorderJmmVisitor;
 
 import java.util.List;
 
-// TODO: Ver tambem se as variaveis passadas a um dot method estao definidas
 public class BadArgumentsVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
     public BadArgumentsVisitor(){
        addVisit("DotMethod", this::visitDotMethod);
