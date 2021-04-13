@@ -1,0 +1,28 @@
+class T  {
+    public static void main(String[] s) {
+
+        // First test -> Array access must be an integer
+        int[] a;
+        int[] d;
+        int c;
+        int total;
+        // This is valid in Java
+        a = new int[0];
+        c = a[true];
+
+        // Second Test -> Array initialization must be an integer
+        d = new int[true];
+
+        // Fourth Test -> Can't attempt array access on a different data structure
+        c = 1[10];
+
+        // Third Test -> Can't sum arrays directly
+        /*
+
+        int[] arr1 = new int[10];
+        int[] arr2 = new int[10];
+
+        total = arr1 + arr2;
+        */
+    }
+}

@@ -41,8 +41,6 @@ public class Utils {
         return "int";
     }
 
-
-
     public static String getParentMethodName(JmmNode node) {
         JmmNode currentNode = node;
         while (!currentNode.getKind().equals("MethodGeneric") && !currentNode.getKind().equals("MethodMain")) {
@@ -51,5 +49,15 @@ public class Utils {
             if (currentNode.getKind().equals("MethodGeneric"))
                 return currentNode.getChildren().get(1).get("name");
             return "main";
-        }
+    }
+
+    public static Boolean isOperator(String kind) {
+        return kind.equals("Add") ||
+                kind.equals("Mult") ||
+                kind.equals("Sub") ||
+                kind.equals("Div") ||
+                kind.equals("Less") ||
+                kind.equals("And") ||
+                kind.equals("ArrayAccess");
+    }
 }

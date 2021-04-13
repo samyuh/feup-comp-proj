@@ -9,10 +9,7 @@ import pt.up.fe.comp.jmm.analysis.JmmSemanticsResult;
 import pt.up.fe.comp.jmm.report.Report;
 import pt.up.fe.comp.jmm.report.ReportType;
 import pt.up.fe.comp.jmm.report.Stage;
-import visitor.BadArgumentsVisitor;
-import visitor.FuncNotFoundVisitor;
-import visitor.SymbolTableVisitor;
-import visitor.UndefinedVarVisitor;
+import visitor.*;
 
 // TODO: example of the new step.
 // TODO: declare and build symbol table here.
@@ -41,6 +38,7 @@ public class AnalysisStage implements JmmAnalysis {
         new UndefinedVarVisitor().visit(node, analysis);
         new FuncNotFoundVisitor().visit(node, analysis);
         new BadArgumentsVisitor().visit(node, analysis);
+        new ArrayVisitor().visit(node,analysis);
 
         System.out.println("\nReports:");
         for(Report report: analysis.getReports()){
