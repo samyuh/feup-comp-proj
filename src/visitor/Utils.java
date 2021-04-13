@@ -18,6 +18,7 @@ public class Utils {
 
         List<Symbol> localVariables = analysis.getSymbolTable().getLocalVariables(parentMethodName);
         List<Symbol> fields = analysis.getSymbolTable().getFields();
+        List<Symbol> parameters = analysis.getSymbolTable().getParameters(parentMethodName);
 
         for (Symbol symb: localVariables){
             String varName = symb.getName();
@@ -31,19 +32,24 @@ public class Utils {
                 return symb.getType().getName();
         }
 
+        for (Symbol symb: parameters){
+            String varName = symb.getName();
+            if (varName.equals(node.get("name")))
+                return symb.getType().getName();
+        }
+
         return "int";
     }
 
 
 
-    public static String getParentMethodName(JmmNode node){
+    public static String getParentMethodName(JmmNode node) {
         JmmNode currentNode = node;
-        while(!currentNode.getKind().equals("MethodGeneric") && ! currentNode.getKind().equals("MethodMain")) {
+        while (!currentNode.getKind().equals("MethodGeneric") && !currentNode.getKind().equals("MethodMain")) {
             currentNode = currentNode.getParent();
         }
-
-        if(currentNode.getKind().equals("MethodGeneric"))
-            return currentNode.getChildren().get(1).get("name");
-        return "main";
-    }
+            if (currentNode.getKind().equals("MethodGeneric"))
+                return currentNode.getChildren().get(1).get("name");
+            return "main";
+        }
 }
