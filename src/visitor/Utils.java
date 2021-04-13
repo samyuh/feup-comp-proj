@@ -20,6 +20,7 @@ public class Utils {
         List<Symbol> fields = analysis.getSymbolTable().getFields();
         List<Symbol> parameters = analysis.getSymbolTable().getParameters(parentMethodName);
 
+        // Verifies if the element is in the symbol and table. And if it is, return the type.
         for (Symbol symb: localVariables){
             String varName = symb.getName();
             if (varName.equals(node.get("name")))

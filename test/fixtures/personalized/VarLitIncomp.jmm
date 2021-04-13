@@ -1,0 +1,44 @@
+/*  REASON:
+    Variable assignments to literals must have the literal be the variable's type.
+*/
+
+class T {
+    int j;
+
+    public static void main(String[] a) {
+        int i;
+        boolean b;
+
+        // right node is boolean
+        i = true;
+
+        // left node is boolean
+        b = i;
+
+        // field case
+        j = false;
+
+        // if import is void
+
+        // expression
+
+    }
+
+    public boolean inParameter(boolean a, int p){
+        boolean k;
+
+        // parameters and parameters
+        a = p;
+        p = a;
+
+        // fields and parameters
+        a = j;
+        j = a;
+
+        // accept
+        a = k;
+        k = a;
+
+        return true;
+    }
+}
