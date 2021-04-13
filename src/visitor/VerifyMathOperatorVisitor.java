@@ -15,10 +15,8 @@ public class VerifyMathOperatorVisitor extends PreorderJmmVisitor<Analysis, Bool
     public Boolean visitMathExpression(JmmNode node, Analysis analysis) {
         JmmNode left = node.getChildren().get(0);
         JmmNode right = node.getChildren().get(1);
-
         String parentMethodName = Utils.getParentMethodName(node);
-        System.out.println(Utils.getVariableType(left, analysis, parentMethodName));
-        System.out.println(Utils.getVariableType(right, analysis, parentMethodName));
+
         if(!Utils.getVariableType(left, analysis, parentMethodName).equals("int") && !Utils.getVariableType(left, analysis, parentMethodName).equals("[]int")) {
             analysis.addReport(left, "Math expression is not valid with bool" + left);
         }

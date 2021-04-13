@@ -10,8 +10,6 @@ class T {
         i = 0;
         j = true;
 
-        // NOT VALID
-
         // add expression
         k = i + j;
 
@@ -24,13 +22,6 @@ class T {
         k = !0;
         k = !k;
 
-        if( k < a ){
-            i = k;
-        }else{
-            i = j;
-        }
-
-        j = (true && false);
 
 
 

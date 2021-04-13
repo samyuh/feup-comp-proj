@@ -58,4 +58,13 @@ public class Utils {
         if (node.getKind().equals("True") || node.getKind().equals("False")) return true;
         return false;
     }
+
+    public static  boolean isMathExpression(String kind){
+        return kind.equals("Mul") || kind.equals("Add") || kind.equals("Sub") || kind.equals("Div");
+    }
+
+    public static boolean isBooleanExpression(String kind){
+        return kind.equals("Less") || kind.equals("And") || kind.equals("Not");
+    }
+
 }
