@@ -17,6 +17,7 @@ public class FuncNotFoundVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
         JmmNode nodeRight = node.getChildren().get(1);
         if (nodeLeft.getKind().equals("Identifier")) {
             String nodeName = nodeLeft.get("name");
+
             // Check imported method
             if (!analysis.getSymbolTable().getImports().contains(nodeName)) {
                 // Check if object
@@ -26,12 +27,18 @@ public class FuncNotFoundVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
             }
         }
 
+
         // Check class methods
         if (nodeLeft.getKind().equals("This") && nodeRight.getKind().equals("DotMethod")){
+            if(hasInheritance(analysis)) return true;
             hasThisDotMethod(nodeRight, analysis);
         }
 
         return true;
+    }
+
+    private boolean hasInheritance(Analysis analysis) {
+        return analysis.getSymbolTable().getSuper() != null;
     }
 
     public Boolean checkObject(JmmNode node, String nodeName, Analysis analysis) {
@@ -42,20 +49,21 @@ public class FuncNotFoundVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
         List<Symbol> classFields = analysis.getSymbolTable().getFields();
         List<Symbol> methodParams = analysis.getSymbolTable().getParameters(methodName);
 
-        if(!containsObject(localVariables, nodeName, calledMethod, analysis) && !containsObject(classFields, nodeName, calledMethod, analysis) &&
-                !containsObject(methodParams, nodeName, calledMethod, analysis)){
-            return false;
-        }
-        return true;
+        return containsObject(localVariables, nodeName, calledMethod, analysis) || containsObject(classFields, nodeName, calledMethod, analysis) ||
+                containsObject(methodParams, nodeName, calledMethod, analysis);
     }
 
     public Boolean containsObject(List<Symbol> vars, String varName,  JmmNode calledMethod, Analysis analysis){
         for(Symbol symbol: vars){
-            if(symbol.getName().equals(varName) && isValidType(symbol.getType().getName())){
-                if(symbol.getType().getName().equals(analysis.getSymbolTable().getClassName())
-                        && !analysis.getSymbolTable().getMethods().contains(calledMethod.get("name"))){
-                    analysis.addReport(calledMethod,
-                            "\"" + calledMethod.get("name") + "\" is not a class method");
+            // Check if the variable exists and its type is valid
+            if(symbol.getName().equals(varName) && isValidType(symbol.getType().getName())) {
+                // Check if it is an object of the class
+                if (symbol.getType().getName().equals(analysis.getSymbolTable().getClassName())) {
+                    if (hasInheritance(analysis)) return true; // Extends
+                    else if (!analysis.getSymbolTable().getMethods().contains(calledMethod.get("name"))) {
+                        analysis.addReport(calledMethod,
+                                "\"" + calledMethod.get("name") + "\" is not a class method");
+                    }
                 }
                 return true;
             }

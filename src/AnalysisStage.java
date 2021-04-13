@@ -38,6 +38,7 @@ public class AnalysisStage implements JmmAnalysis {
         new UndefinedVarVisitor().visit(node, analysis);
         new FuncNotFoundVisitor().visit(node, analysis);
         new BadArgumentsVisitor().visit(node, analysis);
+        new ArrayVisitor().visit(node,analysis);
         new VarLitIncompVisitor().visit(node, analysis);
 
         new VerifyMathOperatorVisitor().visit(node, analysis);

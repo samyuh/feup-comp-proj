@@ -95,9 +95,24 @@ public class PersonalizedFailAnalyses {
         var analysisResult = TestUtils.analyse(jmmParser);
         // System.out.println(jmmParser.getRootNode().toJson());
         TestUtils.noErrors(analysisResult.getReports());
-
     }
 
+    @Test
+    public void arrayPersonalized() {
+        String jmmCode = SpecsIo.getResource("fixtures/personalized/arrayTest.jmm");
+        JmmParserResult jmmParser = TestUtils.parse(jmmCode);
+        var analysisResult = TestUtils.analyse(jmmParser);
+        // System.out.println(jmmParser.getRootNode().toJson());
+        TestUtils.noErrors(analysisResult.getReports());
+    }
+
+    @Test
+    public void methodPersonalized() {
+        String jmmCode = SpecsIo.getResource("fixtures/personalized/methodTest.jmm");
+        JmmParserResult jmmParser = TestUtils.parse(jmmCode);
+        var analysisResult = TestUtils.analyse(jmmParser);
+        // System.out.println(jmmParser.getRootNode().toJson());
+        TestUtils.noErrors(analysisResult.getReports());
     @Test
     public void var_lit_incomp(){
         String jmmCode = SpecsIo.getResource("fixtures/personalized/varLitIncomp.jmm");
