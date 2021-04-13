@@ -4,12 +4,6 @@ import analysis.Analysis;
 import pt.up.fe.comp.jmm.JmmNode;
 import pt.up.fe.comp.jmm.ast.PreorderJmmVisitor;
 
-/**
- * - verificar se um array access é de facto feito sobre um array (e.g. 1[10] não é permitido)
- * - verificar se o indice do array access é um inteiro (e.g. a[true] não é permitido)
- * - a = new int[true];
- * - não é possível utilizar arrays diretamente para operações aritmeticas (e.g. array1 + array2)
- */
 public class ArrayVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
     public ArrayVisitor(){
         addVisit("ArrayAccess",this::visitArrayAccess);
@@ -24,7 +18,6 @@ public class ArrayVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
         if(kind.equals("Identifier")){
             String parentMethodName = Utils.getParentMethodName(arrayNode);
             String type = Utils.getVariableType(identifierNode, analysis, parentMethodName);
-            System.out.println(type);
             if(!type.equals("int[]")){
                 analysis.addReport(identifierNode, "Invalid identifier, must be an int[]. Provided: " + type);
                 return false;
