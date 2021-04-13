@@ -40,6 +40,9 @@ public class AnalysisStage implements JmmAnalysis {
         new BadArgumentsVisitor().visit(node, analysis);
         new VarLitIncompVisitor().visit(node, analysis);
 
+        new VerifyMathOperatorVisitor().visit(node, analysis);
+        new VerifyBoolOperatorVisitor().visit(node, analysis);
+
         System.out.println("\nReports:");
         for(Report report: analysis.getReports()){
             System.out.println(report);

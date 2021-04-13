@@ -1,0 +1,38 @@
+/*  REASON:
+    Incompatible types for binary operation.
+*/
+
+class T {
+    public static void main(String[] a) {
+        int i;
+        boolean j;
+        int k;
+        i = 0;
+        j = true;
+
+        // NOT VALID
+
+        // add expression
+        k = i + j;
+
+        // and expression
+        k = (j && true && 0);
+        k = (true && j && a);
+
+        // not expressions
+        k = !!a;
+        k = !0;
+        k = !k;
+
+        if( k < a ){
+            i = k;
+        }else{
+            i = j;
+        }
+
+        j = (true && false);
+
+
+
+    }
+}

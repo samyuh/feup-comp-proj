@@ -108,4 +108,15 @@ public class PersonalizedFailAnalyses {
         System.out.println(jmmParser.getRootNode().toJson());
     }
 
+
+    @Test
+    public void binop_incomp(){
+        String jmmCode = SpecsIo.getResource("fixtures/personalized/binop_incomp.jmm");
+        JmmParserResult jmmParser = TestUtils.parse(jmmCode);
+        var analysisResult = TestUtils.analyse(jmmParser);
+        //System.out.println(jmmParser.toJson());
+        TestUtils.noErrors(analysisResult.getReports());
+        System.out.println(jmmParser.getRootNode().toJson());
+    }
+
 }

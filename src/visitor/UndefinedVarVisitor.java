@@ -80,16 +80,13 @@ public class UndefinedVarVisitor extends PreorderJmmVisitor<Analysis, Boolean>{
     }
 
     public Boolean isOperator(String kind) {
-        if(kind.equals("Add") ||
+        return kind.equals("Add") ||
                 kind.equals("Mult") ||
                 kind.equals("Sub") ||
                 kind.equals("Div") ||
                 kind.equals("Less") ||
                 kind.equals("And") ||
-                kind.equals("ArrayAccess")) {
-            return true;
-        }
-        return false;
+                kind.equals("ArrayAccess");
     }
 
 

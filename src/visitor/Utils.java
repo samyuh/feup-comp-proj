@@ -53,4 +53,9 @@ public class Utils {
                 return currentNode.getChildren().get(1).get("name");
             return "main";
         }
+
+    public static Boolean isBoolean(JmmNode node){
+        if (node.getKind().equals("True") || node.getKind().equals("False")) return true;
+        return false;
+    }
 }
