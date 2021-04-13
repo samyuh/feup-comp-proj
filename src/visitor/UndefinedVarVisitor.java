@@ -13,7 +13,7 @@ public class UndefinedVarVisitor extends PreorderJmmVisitor<Analysis, Boolean>{
     }
 
     public Boolean visitMethodParameters(JmmNode objectMethodParameters, Analysis analysis){
-        String methodName = getParentMethod(objectMethodParameters);
+        String methodName = Utils.getParentMethodName(objectMethodParameters);
 
         for (JmmNode node: objectMethodParameters.getChildren()) {
             if (node.getNumChildren() > 0)
@@ -25,17 +25,6 @@ public class UndefinedVarVisitor extends PreorderJmmVisitor<Analysis, Boolean>{
         return true;
     }
 
-
-    public String getParentMethod(JmmNode node){
-        JmmNode currentNode = node;
-        while(!currentNode.getKind().equals("MethodGeneric") && ! currentNode.getKind().equals("MethodMain")) {
-            currentNode = currentNode.getParent();
-        }
-
-        if(currentNode.getKind().equals("MethodGeneric"))
-            return currentNode.getChildren().get(1).get("name");
-        return "main";
-    }
 
     public Boolean visitMethodDeclaration(JmmNode MethodDeclarationNode, Analysis analysis){
         JmmNode methodScope = MethodDeclarationNode.getChildren().get(0); // MethodMain or MethodGeneric

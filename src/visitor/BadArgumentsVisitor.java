@@ -35,12 +35,12 @@ public class BadArgumentsVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
             return;
         }
 
-        String parentMethodName = getParentMethod(node);
+        String parentMethodName = Utils.getParentMethodName(node);
 
         for (int i = 0 ; i < requiredArgs; i++){
             Type type = parameters.get(i).getType();
             String requiredType = type.getName();
-            String providedType = getVariableType(node.getChildren().get(i), analysis, parentMethodName);
+            String providedType = Utils.getVariableType(node.getChildren().get(i), analysis, parentMethodName);
             if (!providedType.equals(requiredType)){
                 analysis.addReport(node,"Parameter at position " + i + " has invalid type." +
                         " Provided: " + providedType + " Required: " + requiredType);
@@ -48,40 +48,6 @@ public class BadArgumentsVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
         }
     }
 
-    public String getVariableType(JmmNode node, Analysis analysis, String parentMethodName){
-
-        if (node.getKind().equals("Number")) return "int";
-        else if (node.getKind().equals("True") || node.getKind().equals("False")) return "boolean";
-        else if (node.getKind().equals("This")) return analysis.getSymbolTable().getClassName();
-
-        List<Symbol> localVariables = analysis.getSymbolTable().getLocalVariables(parentMethodName);
-        List<Symbol> fields = analysis.getSymbolTable().getFields();
-
-        for (Symbol symb: localVariables){
-            String varName = symb.getName();
-            if (varName.equals(node.get("name")))
-                return symb.getType().getName();
-        }
-
-        for (Symbol symb: fields){
-            String varName = symb.getName();
-            if (varName.equals(node.get("name")))
-                return symb.getType().getName();
-        }
-
-        return "int";
-    }
-
-    public String getParentMethod(JmmNode node){
-        JmmNode currentNode = node;
-        while(!currentNode.getKind().equals("MethodGeneric") && ! currentNode.getKind().equals("MethodMain")) {
-            currentNode = currentNode.getParent();
-        }
-
-        if(currentNode.getKind().equals("MethodGeneric"))
-            return currentNode.getChildren().get(1).get("name");
-        return "main";
-    }
 
 
 }
