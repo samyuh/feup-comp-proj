@@ -28,9 +28,9 @@ public interface JmmOptimization {
     OllirResult toOllir(JmmSemanticsResult semanticsResult);
 
     /**
-     * Step 3 (for CP3): otimize code at the OLLIR level
-     * 
-     * @param semanticsResult
+     * Step 3 (for CP3): optimize code at the OLLIR level
+     *
+     * @param ollirResult
      * @return
      */
     default OllirResult optimize(OllirResult ollirResult) {

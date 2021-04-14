@@ -1,8 +1,10 @@
 import java.util.ArrayList;
 import java.util.List;
 
+import analysis.MySymbolTable;
 import pt.up.fe.comp.jmm.JmmNode;
 import pt.up.fe.comp.jmm.analysis.JmmSemanticsResult;
+import pt.up.fe.comp.jmm.analysis.table.SymbolTable;
 import pt.up.fe.comp.jmm.ollir.JmmOptimization;
 import pt.up.fe.comp.jmm.ollir.OllirResult;
 import pt.up.fe.comp.jmm.report.Report;
@@ -29,12 +31,11 @@ public class OptimizationStage implements JmmOptimization {
         JmmNode node = semanticsResult.getRootNode();
 
         // Convert the AST to a String containing the equivalent OLLIR code
-        String ollirCode = ""; // Convert node ...
+        OllirEmitter ollirEmitter = new OllirEmitter(semanticsResult.getSymbolTable());
+        String ollirCode = ollirEmitter.visit(node); // Convert node ...
+        System.out.println("OLLIR CODE:\n" + ollirCode);
 
-        // More reports from this stage
-        List<Report> reports = new ArrayList<>();
-
-        return new OllirResult(semanticsResult, ollirCode, reports);
+        return new OllirResult(semanticsResult, ollirCode, ollirEmitter.getReports());
     }
 
     @Override
@@ -48,5 +49,4 @@ public class OptimizationStage implements JmmOptimization {
         // THIS IS JUST FOR CHECKPOINT 3
         return ollirResult;
     }
-
 }

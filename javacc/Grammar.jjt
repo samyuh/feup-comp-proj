@@ -121,9 +121,9 @@ SimpleNode Program(): {}
 }
 
 
-void ImportDeclaration() #void: {}
+void ImportDeclaration() #Imports: {}
 {
-    (<IMPORT> #Import ImportNames() <SEMICOLON> )*
+    (<IMPORT> ImportNames() <SEMICOLON> )*
 }
 
 void ImportNames() : {Token t1, t2;}
