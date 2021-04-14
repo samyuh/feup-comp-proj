@@ -1,12 +1,14 @@
 import io;
 class Fac {
+    int a;
     public int compFac(int num){
         int num_aux;
-        if (num < 1){
-            num_aux = 1;
-        }
-        else
-            num_aux = num * (this.compFac(num));
+
+        num = 6;
+        num_aux = num;
+        num = 4;
+        a[5] = 7;
+
         return num_aux;
     }
 }

@@ -12,6 +12,7 @@ public class OllirEmitter {
     List<Report> reports;
     StringBuilder sb;
 
+
     public OllirEmitter(SymbolTable symbolTable){
         this.symbolTable = symbolTable;
         reports = new ArrayList<>();
@@ -28,7 +29,7 @@ public class OllirEmitter {
     public String visit(JmmNode node){
         boolean hasImports = node.getNumChildren() == 2;
 
-        sb.append(symbolTable.getClassName() + "{\n");
+        sb.append(symbolTable.getClassName()).append("{\n");
         visitFields();
         classContructor();
 
@@ -93,20 +94,14 @@ public class OllirEmitter {
         sb.append("\t}\n");
     }
 
-    /*
-        Note: The elements of the OLLIR that start with a ‘$’ are parameters of the method and
-        the number following the ‘$’ identifies the position of the parameter in the method signature
-         from 0 to N-1(N is the number of parameters of the method) for static methods,
-         and from 1 to N for the other methods (in this later case the parameter 0 is the this).
-     */
     private void visitStatements(String methodName, List<JmmNode> statements){
         for(int i = 1; i < statements.size(); i++){
+
             switch (statements.get(i).getKind()){
-                case("Dot"):
-                    dotStatement(methodName, statements.get(i));
+                case("Assignment"):
+                    assignmentStatement(methodName, statements.get(i));
                     break;
                 case("IfElse"):
-                    ifElseStatement(methodName, statements.get(i));
                     break;
                 case("WhileStatment"):
                     break;
@@ -114,38 +109,74 @@ public class OllirEmitter {
                 default:
                     break;
             }
+            sb.append("\n");
+        }
+    }
+    // num_aux = 1;
+    // num_aux.i32 :=.i32 1.i32; // num_aux is localVariable
+    // putfield(this, num_aux.i32, ladoDireitoDoIgual).V; // num_aux is field
+    // $1.num_aux := .i32 1.i32;
+    private void assignmentStatement(String methodName, JmmNode statement){
+        JmmNode left = statement.getChildren().get(0);
+        JmmNode right = statement.getChildren().get(1);
+
+        // Simple assignment
+        if(right.getNumChildren() == 0){
+            if(left.getKind().equals("ArrayAssignment")){
+                String name = left.getChildren().get(0).get("name");
+                buildArray(methodName, name);
+            }
+            else if(left.getKind().equals("Identifier")){
+                String name = left.get("name");
+                buildIdentifier(methodName, name);
+            }
+            sb.append(":=");
+            sb.append("");
         }
     }
 
-    private void dotStatement(String methodName, JmmNode statement){
-        JmmNode beforeDot = statement.getChildren().get(0);
-        JmmNode afterDot = statement.getChildren().get(1);
+    private void buildIdentifier(String methodName, String name){
+        Type type;
 
-        if(symbolTable.getImports().contains(beforeDot.get("name").equals("this"))){
-            sb.append("invokevirtual(this, \"" + afterDot.get("name") + ",\"");
-            // Get parameters
+        if((type = getFieldType(name)) != null){
+            // Variable is a Field: putfield(this, num_aux.i32, ladoDireitoDoIgual).V;
+            String variable = getVar(name,type);
+            sb.append(generatePutField(variable,"EXPRESSION"));
+            return;
+        } else if((type = getLocalVariableType(methodName, name)) == null){
+            // Variable is a Parameter: $1.num_aux.i32 := .i32 1.i32;
+            int position = getParameterPosition(methodName,name);
+            type = getParameterType(methodName, position);
+            name = "$" + position + "." + name;
         }
+        sb.append(name);
+        sb.append(getVarType(type));
+
     }
 
-    private void ifElseStatement(String methodName, JmmNode statement){
-        JmmNode condition = statement.getChildren().get(0);
-        JmmNode ifBody = statement.getChildren().get(1);
-        JmmNode elseBody = statement.getChildren().get(2);
-        /*
-        sb.append("if(");
-        switch (condition.getKind()){
-            case "Less":
-                sb.append(">=");
-            case "And":
-        }
-        sb.append(") goto else;\n");
-        // ifbody here
-        sb.append("goto endif;");
-        sb.append("else:\n");
-        // elsebody here
-        sb.append("endif:\n");
-        */
+    //
+    //
+    private void buildArray(String methodName, String name){
+        Type type;
 
+        // putfield(this, A[i.i32].i32, ladoDoreito).V
+        //
+        if((type = getFieldType(name)) != null){
+            // Variable is a Field: putfield(this, num_aux.i32, ladoDireitoDoIgual).V;
+            String variable = name + "[" + "EXPRESSION" + "]" + getVarType(type);
+            sb.append(generatePutField(variable,"EXPRESSION"));
+            return;
+
+        //$1.A[i.i32].i32
+        } else if((type = getLocalVariableType(methodName, name)) == null){
+            // Variable is a Parameter: $1.num_aux.i32 := .i32 1.i32;
+            int position = getParameterPosition(methodName,name);
+            type = getParameterType(methodName, position);
+            name = "$" + position + "." + name;
+        }
+        sb.append(name);
+        sb.append("[" + "EXPRESSION" + "]");
+        sb.append(getVarType(type));
     }
 
     private String getVarType(Type type){
@@ -170,6 +201,48 @@ public class OllirEmitter {
         return typeStr;
     }
 
+    private String getVar(String name, Type type){
+        String varName = name;
+        if(type.isArray())
+            varName += ".array";
+
+        switch (type.getName()){
+            case "int":
+                varName += ".i32";
+                break;
+            case "boolean":
+                varName += ".bool";
+                break;
+            case "void":
+                varName += ".V";
+                break;
+            default:
+                varName += "." + type.getName();
+                break;
+        }
+        return varName;
+    }
+
+    private Type getLocalVariableType(String methodName, String name){
+        for (Symbol symb: symbolTable.getLocalVariables(methodName)){
+            if (name.equals(symb.getName()))
+                return symb.getType();
+        }
+        return null;
+    }
+
+    private Type getFieldType(String name){
+        for (Symbol symb: symbolTable.getFields()){
+            if (name.equals(symb.getName()))
+                return symb.getType();
+        }
+        return null;
+    }
+
+    private Type getParameterType(String methodName, int position){
+        return symbolTable.getParameters(methodName).get(position-1).getType();
+    }
+
     private List<JmmNode> getMethodNodes(JmmNode classNode){
         List<JmmNode> methodDeclarations = new ArrayList<>();
         for(int i = 2; i < classNode.getNumChildren(); i++){
@@ -177,4 +250,21 @@ public class OllirEmitter {
         }
         return methodDeclarations;
     }
+
+
+    private int getParameterPosition(String method, String parameter){
+        List<Symbol> parameters = symbolTable.getParameters(method);
+
+        for (int i = 0; i < parameters.size();i++){
+            if (parameter.equals(parameters.get(i).getName()))
+                return i + 1;
+
+        }
+        return -1;
+    }
+
+    private String generatePutField(String variable,String next){
+        return "putfield(this," + variable + "," + next + ").V";
+    }
+
 }
