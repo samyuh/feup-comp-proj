@@ -1,0 +1,72 @@
+class T {
+    boolean field;
+    public static void main(String[] a) {
+        int j;
+        boolean n;
+        n = true;
+        field = true;
+        T test;
+
+        if(true){
+            j = 2;
+        } else{
+            j = 2;
+        }
+
+        if (false){
+            j = 2;
+        } else{
+            j = 2;
+        }
+
+
+        if (n){
+            j = 2;
+        } else{
+            j = 2;
+        }
+
+        if (field){
+            j = 2; 
+        }else{
+            j = 2; 
+        }
+
+        if (this.returnBoolean()) {
+            j = 2;
+        } else {
+            j = 2;
+        }
+
+        if (test.returnBoolean()){
+            j = 2;
+        } else {
+            j = 2;
+        }
+
+        if (true && true){
+            j = 2;
+        } else {
+            j = 2;
+        }
+
+        if ( 2 < 2) {
+            j = 2;
+        } else {
+            j = 2;
+        }
+
+        if ( ! true ){
+            j = 2;
+        } else {
+            j = 2;
+        }
+
+
+    }
+
+    public boolean returnBoolean(){
+        return true;
+    }
+
+}

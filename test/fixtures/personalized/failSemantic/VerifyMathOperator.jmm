@@ -1,0 +1,61 @@
+/*  REASON:
+    Incompatible types for binary operation.
+*/
+
+class T {
+    boolean n;
+    public static void main(String[] a) {
+
+        int j;
+        boolean k ;
+        T obj;
+
+        k = true;
+        n = 2;
+
+
+        // Simple expressions.
+        j = 1 + 2 + true;
+
+        // Local variables.
+        j = j * k;
+
+        // Fields.
+        j = n + 2;
+
+        j = this.returnBoolean() + 2;
+        j = 2 + this.returnBoolean();
+        j = k * this.returnBoolean();
+        j = n + k * this.returnBoolean();
+
+        j = this.returnObj() + 2;
+        j = 2 + this.returnObj();
+        j = k * this.returnObj();
+        j = n + k * this.returnObj();
+
+         j = obj.returnBoolean() + 2;
+         j = 2 + obj.returnBoolean();
+         j = k * obj.returnBoolean();
+         j = n + k * obj.returnBoolean();
+
+         j = obj.returnObj() + 2;
+         j = 2 + obj.returnObj();
+
+    }
+
+    public boolean returnBoolean(){
+        return true;
+    }
+
+    public Obj returnObj(){
+        Obj obj;
+        obj = new Obj();
+        return obj;
+    }
+
+    public int testParameters(int m){
+        int j;
+        j = m * this.returnObj();
+        return j;
+    }
+}

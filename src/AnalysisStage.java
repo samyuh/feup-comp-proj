@@ -43,6 +43,7 @@ public class AnalysisStage implements JmmAnalysis {
 
         new VerifyMathOperatorVisitor().visit(node, analysis);
         new VerifyBoolOperatorVisitor().visit(node, analysis);
+        new WhileIfVisitorCondition().visit(node, analysis);
 
         System.out.println("\nReports:");
         for(Report report: analysis.getReports()){
