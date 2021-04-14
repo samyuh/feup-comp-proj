@@ -11,7 +11,7 @@ public class Utils {
     /**
      * Checks the type of the node by searching in fields, imports, parameter, declaration.
      */
-    public static String getVariableType(JmmNode node, Analysis analysis, String parentMethodName){
+    public static String getVariableType(JmmNode node, Analysis analysis, String parentMethodName) {
         if (node.getKind().equals("Number")) return "int";
         else if (node.getKind().equals("True") || node.getKind().equals("False")) return "boolean";
         else if (node.getKind().equals("This")) return analysis.getSymbolTable().getClassName();
@@ -21,19 +21,19 @@ public class Utils {
         List<Symbol> parameters = analysis.getSymbolTable().getParameters(parentMethodName);
 
         // Verifies if the element is in the symbol and table. And if it is, return the type.
-        for (Symbol symb: localVariables){
+        for (Symbol symb : localVariables) {
             String varName = symb.getName();
             if (varName.equals(node.get("name")))
                 return symb.getType().getName();
         }
 
-        for (Symbol symb: fields){
+        for (Symbol symb : fields) {
             String varName = symb.getName();
             if (varName.equals(node.get("name")))
                 return symb.getType().getName();
         }
 
-        for (Symbol symb: parameters){
+        for (Symbol symb : parameters) {
             String varName = symb.getName();
             if (varName.equals(node.get("name")))
                 return symb.getType().getName();
@@ -42,29 +42,28 @@ public class Utils {
         return "int";
     }
 
+
     public static String getParentMethodName(JmmNode node) {
         JmmNode currentNode = node;
         while (!currentNode.getKind().equals("MethodGeneric") && !currentNode.getKind().equals("MethodMain")) {
             currentNode = currentNode.getParent();
         }
-            if (currentNode.getKind().equals("MethodGeneric"))
-                return currentNode.getChildren().get(1).get("name");
-            return "main";
-        }
+        if (currentNode.getKind().equals("MethodGeneric"))
+            return currentNode.getChildren().get(1).get("name");
+        return "main";
+    }
 
-    public static Boolean isBoolean(JmmNode node){
+    public static Boolean isBoolean(JmmNode node) {
         if (node.getKind().equals("True") || node.getKind().equals("False")) return true;
         return false;
     }
 
-    public static  boolean isMathExpression(String kind){
-        return kind.equals("Mul") || kind.equals("Add") || kind.equals("Sub") || kind.equals("Div");
+    public static boolean isMathExpression(String kind) {
+        return kind.equals("Mult") || kind.equals("Add") || kind.equals("Sub") || kind.equals("Div");
     }
 
-    public static boolean isBooleanExpression(String kind){
+    public static boolean isBooleanExpression(String kind) {
         return kind.equals("Less") || kind.equals("And") || kind.equals("Not");
-    }
-
     }
 
     public static Boolean isOperator(String kind) {
@@ -75,5 +74,22 @@ public class Utils {
                 kind.equals("Less") ||
                 kind.equals("And") ||
                 kind.equals("ArrayAccess");
+    }
+
+    public static String getReturnValueMethod(JmmNode dotNode, Analysis analysis) {
+        JmmNode leftNode = dotNode.getChildren().get(0);
+        String parentMethodName = Utils.getParentMethodName(dotNode);
+        String typeName = Utils.getVariableType(leftNode, analysis, parentMethodName);
+        String className = analysis.getSymbolTable().getClassName();
+
+        String methodName = dotNode.getChildren().get(1).getChildren().get(0).get("name");
+
+        boolean containsMethodName = analysis.getSymbolTable().getMethods().contains(methodName);
+
+        if (containsMethodName && (typeName.equals(className) || dotNode.getKind().equals("This"))) {
+                return analysis.getSymbolTable().getReturnType(methodName).getName();
+        }
+
+        return "undefined";
     }
 }

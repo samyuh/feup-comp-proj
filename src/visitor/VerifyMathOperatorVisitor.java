@@ -13,18 +13,36 @@ public class VerifyMathOperatorVisitor extends PreorderJmmVisitor<Analysis, Bool
     }
 
     public Boolean visitMathExpression(JmmNode node, Analysis analysis) {
-        JmmNode left = node.getChildren().get(0);
-        JmmNode right = node.getChildren().get(1);
+        JmmNode leftNode = node.getChildren().get(0);
+        JmmNode rightNode = node.getChildren().get(1);
         String parentMethodName = Utils.getParentMethodName(node);
 
-        if(!Utils.getVariableType(left, analysis, parentMethodName).equals("int") && !Utils.getVariableType(left, analysis, parentMethodName).equals("[]int")) {
-            analysis.addReport(left, "Math expression is not valid with bool" + left);
-        }
-        else if(!Utils.getVariableType(right, analysis, parentMethodName).equals("int") && !Utils.getVariableType(right, analysis, parentMethodName).equals("[]int")) {
-            analysis.addReport(right, "Math expression is not valid with bool" + right);
-        }
+        checkNodeExpression(leftNode, analysis, parentMethodName);
+        checkNodeExpression(rightNode, analysis, parentMethodName);
 
-        // TODO: functions.
         return true;
     }
+
+    private void checkNodeExpression(JmmNode node, Analysis analysis, String parentMethodName){
+
+        if (Utils.isMathExpression(node.getKind()))
+            return;
+        else if (Utils.isBooleanExpression(node.getKind())) {
+            analysis.addReport(node, "\"" + node + "\" invalid operator.");
+        }
+        else if (node.getKind().equals("Dot")){
+            String returnValueMethod = Utils.getReturnValueMethod(node, analysis);
+            if (!isAcceptedTypes(returnValueMethod))
+                analysis.addReport(node, "\"" + node + "\" invalid type.");
+        }
+        else if (!isAcceptedTypes(Utils.getVariableType(node, analysis, parentMethodName))) {
+            analysis.addReport(node, "\"" + node + "\" invalid type.");
+        }
+    }
+
+    private boolean isAcceptedTypes(String kind){
+        return kind.equals("undefined") || kind.equals("int") || kind.equals("int[]");
+    }
+
+
 }

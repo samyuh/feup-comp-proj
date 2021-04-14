@@ -11,7 +11,6 @@ public class VerifyBoolOperatorVisitor extends PreorderJmmVisitor<Analysis, Bool
         addVisit("Less", this::visitLess);
         addVisit("And", this::visitAnd);
         addVisit("Not", this::visitNot);
-
     }
 
     /**
@@ -35,15 +34,18 @@ public class VerifyBoolOperatorVisitor extends PreorderJmmVisitor<Analysis, Bool
         String leftKind = Utils.getVariableType(leftNode, analysis, parentMethodName);
         String rightKind = Utils.getVariableType(rightNode, analysis, parentMethodName);
 
-        // TODO: how is the []int
         if (!leftKind.equals("int") && !leftKind.equals("int[]")){
             analysis.addReport(rightNode, "\"" + leftNode + "\" invalid type");
-        } else if (!rightKind.equals("int") && !rightKind.equals("[]int")) {
+        } else if (!rightKind.equals("int") && !rightKind.equals("int[]")) {
             analysis.addReport(leftNode, "\"" + leftNode + "\" invalid type");
         }
 
-        // TODO: add for functions.
-
+        // Check functions (test.bla() < 2); where test is from the T class.
+        else if (rightNode.getKind().equals("Dot")){
+            String returnValueMethod = Utils.getReturnValueMethod(rightNode, analysis);
+            if (!returnValueMethod.equals("undefined") && !returnValueMethod.equals("int") && !returnValueMethod.equals("int[]"))
+                analysis.addReport(leftNode, "\"" + leftNode + "\" invalid type: expecting an int or an int[].");
+        }
         return true;
     }
 
@@ -64,10 +66,16 @@ public class VerifyBoolOperatorVisitor extends PreorderJmmVisitor<Analysis, Bool
         }
         else if(!Utils.getVariableType(rightNode, analysis, parentMethodName).equals("boolean")){
             analysis.addReport(rightNode, "\"" + rightNode + "\" invalid expression");
+        } else if (rightNode.getKind().equals("Dot") && !Utils.getReturnValueMethod(rightNode, analysis).equals("boolean"))
+            analysis.addReport(leftNode, "\"" + leftNode + "\" invalid type");
+
+
+        // Check functions (test.bla() && true); where test is from the T class.
+        else if (rightNode.getKind().equals("Dot")){
+            String returnValueMethod = Utils.getReturnValueMethod(rightNode, analysis);
+            if (!returnValueMethod.equals("undefined") && !returnValueMethod.equals("boolean"))
+                analysis.addReport(rightNode , "\"" + rightNode + "\" invalid type: expecting an boolean.");
         }
-
-        // TODO: functions.
-
         return true;
     }
 
@@ -79,7 +87,11 @@ public class VerifyBoolOperatorVisitor extends PreorderJmmVisitor<Analysis, Bool
         if (!Utils.isBooleanExpression(child.getKind()) && !Utils.getVariableType(child, analysis, parentMethodName).equals("boolean"))
             analysis.addReport(child, "\"" + child + "\" invalid expression");
 
-        // TODO: functions
+        else if (child.getKind().equals("Dot")){
+            String returnValueMethod = Utils.getReturnValueMethod(child, analysis);
+            if (!returnValueMethod.equals("undefined") && !returnValueMethod.equals("boolean"))
+                analysis.addReport(child, "\"" + child + "\" invalid type: expecting an boolean.");
+        }
         return true;
     }
 
