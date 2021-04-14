@@ -23,22 +23,22 @@ public class Utils {
         for (Symbol symb: localVariables){
             String varName = symb.getName();
             if (varName.equals(node.get("name")))
-                return symb.getType().getName();
+                return symb.getType().getName() + (symb.getType().isArray() ? "[]" : "");
         }
 
         for (Symbol symb: fields){
             String varName = symb.getName();
             if (varName.equals(node.get("name")))
-                return symb.getType().getName();
+                return symb.getType().getName() + (symb.getType().isArray() ? "[]" : "");
         }
 
         for (Symbol symb: parameters){
             String varName = symb.getName();
             if (varName.equals(node.get("name")))
-                return symb.getType().getName();
+                return symb.getType().getName() + (symb.getType().isArray() ? "[]" : "");
         }
 
-        return "int";
+        return "undefined";
     }
 
     public static String getParentMethodName(JmmNode node) {

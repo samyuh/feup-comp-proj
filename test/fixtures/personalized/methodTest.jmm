@@ -1,7 +1,7 @@
 import Foo;
 import M;
 
-class T {
+class T extends M {
 
     public static void main(String[] s) {
         int a;

@@ -80,7 +80,7 @@ public class SymbolTableVisitor extends PreorderJmmVisitor<Analysis,Boolean> {
         Type returnType;
 
         // Verifies if it's an array.
-        if (type.equals("int[]")) returnType = new Type(type, true);
+        if (type.equals("int[]")) returnType = new Type("int", true);
         else returnType = new Type(type, false);
 
         // Parse parameters
@@ -127,8 +127,10 @@ public class SymbolTableVisitor extends PreorderJmmVisitor<Analysis,Boolean> {
         JmmNode typeNode = variableNode.getChildren().get(0);
         String name = variableNode.getChildren().get(1).get("name");
 
-        boolean isArray = typeNode.get("type").equals("int[]");
-        Type type = new Type(typeNode.get("type"), isArray);
+        // Verifies if it's an array.
+        Type type;
+        if (typeNode.get("type").equals("int[]")) type = new Type("int", true);
+        else type = new Type(typeNode.get("type"), false);
 
         return new Symbol(type, name);
     }
