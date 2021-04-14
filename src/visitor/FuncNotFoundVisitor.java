@@ -10,6 +10,7 @@ import java.util.List;
 public class FuncNotFoundVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
     public FuncNotFoundVisitor() {
         addVisit("Dot", this::visitDot);
+        addVisit("NewObject",this::visitNewObject);
     }
 
     public Boolean visitDot(JmmNode node, Analysis analysis) {
@@ -35,6 +36,25 @@ public class FuncNotFoundVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
         }
 
         return true;
+    }
+
+    public Boolean visitNewObject(JmmNode node, Analysis analysis){
+        JmmNode objectNode = node.getChildren().get(0);
+        String objectName = objectNode.get("name");
+
+        // Check if the object is an instance of the actual class
+        if(objectName.equals(analysis.getSymbolTable().getClassName())) return true;
+
+        // Check if the object is is an instance of the extended class
+        if(analysis.getSymbolTable().getSuper() != null &&
+                objectName.equals(analysis.getSymbolTable().getSuper())) return true;
+
+        // Check if it is an import
+        if (analysis.getSymbolTable().getImports().contains(objectName)) {
+            analysis.addReport(objectNode,  "\"" + objectName + "\" is not an import nor an object");
+        }
+
+        return false;
     }
 
     private boolean hasInheritance(Analysis analysis) {

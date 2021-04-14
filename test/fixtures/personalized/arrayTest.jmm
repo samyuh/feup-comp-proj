@@ -9,7 +9,7 @@ class T  {
         a = new int[0];
         c = a[4];        // First test -> Array access must be an integer
         d = new int[6];  // Array initialization must be an integer
-        c = t.retornaIntArray()[10];          // Can't attempt array access on a different data structure
+        c = t.retornaIntArray(a,io.getWhat(),3)[10];          // Can't attempt array access on a different data structure
 
         // Third Test -> Can't sum arrays directly
         /*
@@ -25,7 +25,7 @@ class T  {
         return 1;
     }
 
-    public int[] retornaIntArray(){
+    public int[] retornaIntArray(int n, int m, int n){
         int[] a;
         a = new int[1];
         return a;

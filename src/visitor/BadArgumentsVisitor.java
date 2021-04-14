@@ -35,19 +35,16 @@ public class BadArgumentsVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
             return;
         }
 
-        String parentMethodName = Utils.getParentMethodName(node);
-
         for (int i = 0 ; i < requiredArgs; i++){
             Type type = parameters.get(i).getType();
-            String requiredType = type.getName();
-            String providedType = Utils.getVariableType(node.getChildren().get(i), analysis, parentMethodName);
-            if (!providedType.equals(requiredType)){
+            String requiredType = type.getName() + (type.isArray() ? "[]" : "");
+
+            String providedType = Utils.getNodeType(node.getChildren().get(i), analysis);
+            if (!providedType.equals(requiredType) && !providedType.equals("undefined")){
                 analysis.addReport(node,"Parameter at position " + i + " has invalid type." +
                         " Provided: " + providedType + " Required: " + requiredType);
             }
         }
     }
-
-
 
 }

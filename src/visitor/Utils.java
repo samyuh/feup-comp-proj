@@ -42,6 +42,28 @@ public class Utils {
         return "undefined";
     }
 
+    public static String getNodeType(JmmNode node, Analysis analysis){
+        String kind = node.getKind();
+
+        if(isMathExpression(kind)) return "int";
+        if(isBooleanExpression(kind)) return "boolean";
+
+        switch (kind){
+            case "Dot":
+                return getReturnValueMethod(node,analysis);
+            case "ArrayAccess":
+                return "int";
+            case "NewObject":
+                return node.getChildren().get(0).get("name");
+            case "NewIntArray":
+                return "int[]";
+            default:
+                String parentMethodName = getParentMethodName(node);
+                return getVariableType(node,analysis,parentMethodName);
+        }
+
+    }
+
     public static String getParentMethodName(JmmNode node) {
         JmmNode currentNode = node;
         while (!currentNode.getKind().equals("MethodGeneric") && !currentNode.getKind().equals("MethodMain")) {

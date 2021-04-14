@@ -64,16 +64,16 @@ public class UndefinedVarVisitor extends PreorderJmmVisitor<Analysis, Boolean>{
 
         while (true) {
             left = node.getChildren().get(0);
-            right = node.getChildren().get(1);
-
-            if (left.getKind().equals("Identifier")) {
+            if (left.getKind().equals("Identifier"))
                 varIsDefined(methodName, analysis, left);
-            }
 
+            if(node.getNumChildren() == 1) break;
+
+            right = node.getChildren().get(1);
             if (right.getKind().equals("Identifier")) {
                 varIsDefined(methodName, analysis, right);
                 break;
-            } else if (Utils.isOperator(right.getKind())) {
+            } else if (Utils.isOperator(right.getKind()) || right.getKind().equals("NewIntArray")) {
                 node = right;
             }  else break;
         }
