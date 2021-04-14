@@ -10,26 +10,6 @@ public class ArrayVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
         addVisit("NewExpression", this::visitNewExpression);
     }
 
-    public Boolean visitAccessIdentifier(JmmNode arrayNode, Analysis analysis){
-        JmmNode identifierNode = arrayNode.getChildren().get(0);
-        String kind = identifierNode.getKind();
-
-        // Check if it is an identifier
-        if(kind.equals("Identifier")){
-            String parentMethodName = Utils.getParentMethodName(arrayNode);
-            String type = Utils.getVariableType(identifierNode, analysis, parentMethodName);
-            if(!type.equals("int[]")){
-                analysis.addReport(identifierNode, "Invalid identifier, must be an int[]. Provided: " + type);
-                return false;
-            }
-        }
-        else{
-            analysis.addReport(identifierNode, "Invalid array access operation, must be an int[] identifier. Provided: " + kind);
-            return false;
-        }
-        return true;
-    }
-
     public Boolean visitArrayAccess(JmmNode arrayNode, Analysis analysis){
         JmmNode accessNode = arrayNode.getChildren().get(1);
 
@@ -45,9 +25,29 @@ public class ArrayVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
 
     }
 
+    public Boolean visitAccessIdentifier(JmmNode arrayNode, Analysis analysis){
+        JmmNode identifierNode = arrayNode.getChildren().get(0);
+        String kind = identifierNode.getKind();
+
+        // Check if it is an identifier
+        if(kind.equals("Identifier")){
+            String parentMethodName = Utils.getParentMethodName(arrayNode);
+            String type = Utils.getVariableType(identifierNode, analysis, parentMethodName);
+            if(!type.equals("int[]")){
+                analysis.addReport(identifierNode, "Invalid identifier, must be an int[].");
+                return false;
+            }
+        }
+        else{
+            analysis.addReport(identifierNode, "Invalid array access operation, must be an int[] identifier. Provided: " + kind);
+            return false;
+        }
+        return true;
+    }
+
     private Boolean checkInsideBrackets(JmmNode arrayNode, Analysis analysis, JmmNode node, String context) {
         String kind = node.getKind();
-        // Check if it is an identifier
+        // Check if it the index is an identifier
         if(kind.equals("Identifier")){
             String parentMethodName = Utils.getParentMethodName(arrayNode);
             String type = Utils.getVariableType(node, analysis, parentMethodName);
@@ -57,11 +57,26 @@ public class ArrayVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
                 analysis.addReport(node, "Invalid array " + context + ", identifier must be an integer. Provided: " + type);
                 return false;
             }
-        } else if(!kind.equals("Number") && !Utils.isOperator(kind)){
-            analysis.addReport(node,
-                    "Invalid array " + context + ", must be an integer. Provided: " + kind);
+        }
+        // Check if the index is a number, an expression that returns a numeric value,
+        // a function that returns an int or another array access
+        else if(!kind.equals("Number") && !Utils.isMathExpression(kind) &&
+                !kind.equals("ArrayAccess") && !returnIntMethod(node,analysis)) {
+            analysis.addReport(node, "Invalid array " + context + ". Index must be an integer.");
             return false;
         }
         return true;
+    }
+
+    private boolean returnIntMethod(JmmNode node, Analysis analysis){
+        if(!node.getKind().equals("Dot")) return true;
+        String returnValue = Utils.getReturnValueMethod(node,analysis);
+        return returnValue.equals("undefined") || returnValue.equals("int");
+    }
+
+    private boolean returnIntArrayMethod(JmmNode node, Analysis analysis){
+        if(!node.getKind().equals("Dot")) return true;
+        String returnValue = Utils.getReturnValueMethod(node,analysis);
+        return returnValue.equals("undefined") || returnValue.equals("int[]");
     }
 }

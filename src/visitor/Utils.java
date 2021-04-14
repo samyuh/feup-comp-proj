@@ -4,6 +4,7 @@ import analysis.Analysis;
 import analysis.MySymbolTable;
 import pt.up.fe.comp.jmm.JmmNode;
 import pt.up.fe.comp.jmm.analysis.table.Symbol;
+import pt.up.fe.comp.jmm.analysis.table.Type;
 
 import java.util.List;
 
@@ -51,6 +52,14 @@ public class Utils {
             return "main";
     }
 
+    public static boolean isMathExpression(String kind) {
+        return kind.equals("Mult") || kind.equals("Add") || kind.equals("Sub") || kind.equals("Div");
+    }
+
+    public static boolean isBooleanExpression(String kind) {
+        return kind.equals("Less") || kind.equals("And") || kind.equals("Not");
+    }
+
     public static Boolean isOperator(String kind) {
         return kind.equals("Add") ||
                 kind.equals("Mult") ||
@@ -59,5 +68,23 @@ public class Utils {
                 kind.equals("Less") ||
                 kind.equals("And") ||
                 kind.equals("ArrayAccess");
+    }
+
+    public static String getReturnValueMethod(JmmNode dotNode, Analysis analysis) {
+        JmmNode leftNode = dotNode.getChildren().get(0);
+        String parentMethodName = Utils.getParentMethodName(dotNode);
+        String typeName = Utils.getVariableType(leftNode, analysis, parentMethodName);
+        String className = analysis.getSymbolTable().getClassName();
+
+        String methodName = dotNode.getChildren().get(1).getChildren().get(0).get("name");
+
+        boolean containsMethodName = analysis.getSymbolTable().getMethods().contains(methodName);
+
+        if (containsMethodName && (typeName.equals(className) || dotNode.getKind().equals("This"))) {
+            Type returnType = analysis.getSymbolTable().getReturnType(methodName);
+            return returnType.getName() + (returnType.isArray() ? "[]" : "");
+        }
+
+        return "undefined";
     }
 }

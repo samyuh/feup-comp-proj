@@ -293,7 +293,7 @@ void ExpressionOthers() #void : {Token t;}
 
 void NewExpression() : {Token t;}
 {
-    <NEW> (<INT> <OPENSQUAREBRACKET> AndExpression() <CLOSESQUAREBRACKET>
+    <NEW> (<INT> ArrayExpression()
         | t = <IDENTIFIER> {  jjtThis.put("name", t.image); } #Identifier  <OPENCURVEBRACKET> <CLOSECURVEBRACKET>)
 }
 
