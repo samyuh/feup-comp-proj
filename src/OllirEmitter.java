@@ -10,10 +10,12 @@ import java.util.List;
 public class OllirEmitter {
     SymbolTable symbolTable;
     List<Report> reports;
+    StringBuilder sb;
 
     public OllirEmitter(SymbolTable symbolTable){
         this.symbolTable = symbolTable;
         reports = new ArrayList<>();
+        sb = new StringBuilder();
     }
 
     public List<Report> getReports() {
@@ -24,21 +26,18 @@ public class OllirEmitter {
      * @param node the Program root node
      * */
     public String visit(JmmNode node){
-        StringBuilder sb = new StringBuilder();
         boolean hasImports = node.getNumChildren() == 2;
 
-        if(hasImports)
-            //visitImports(sb);
         sb.append(symbolTable.getClassName() + "{\n");
-        visitFields(sb);
-        classContructor(sb);
+        visitFields();
+        classContructor();
 
         JmmNode classNode = hasImports ? node.getChildren().get(1) : node.getChildren().get(1);
         // Check if the class has methods
         if(classNode.getNumChildren() > 2){
             for(JmmNode methodNode: getMethodNodes(classNode)){
                 // Visit each method of the class
-                visitMethod(methodNode.getChildren().get(0), sb);
+                visitMethod(methodNode.getChildren().get(0));
             }
         }
 
@@ -46,14 +45,7 @@ public class OllirEmitter {
         return sb.toString();
     }
 
-    private void visitImports(StringBuilder sb){
-        // Loop through import names
-        for(String importName: symbolTable.getImports()){
-            // TODO
-        }
-    }
-
-    private void visitFields(StringBuilder sb){
+    private void visitFields(){
         for(Symbol field : symbolTable.getFields()){
             sb.append("\t.field private ");
             sb.append(field.getName());
@@ -62,14 +54,14 @@ public class OllirEmitter {
         }
     }
 
-    private void classContructor(StringBuilder sb){
+    private void classContructor(){
         sb.append("\t.construct ");
         sb.append(symbolTable.getClassName());
         sb.append("().V {\n");
         sb.append("\t\tinvokespecial(this, \"<init>\").V;\n\t}\n");
     }
 
-    private void visitMethod(JmmNode methodNode, StringBuilder sb){
+    private void visitMethod(JmmNode methodNode){
         sb.append("\t.method public ");
         String methodName;
         if(methodNode.getKind().equals("MethodMain")){
@@ -95,9 +87,65 @@ public class OllirEmitter {
 
         // Method Body
         sb.append("{\n");
-        // visitVarDeclarations();
-        // visitStatements();
+        int bodyIdx = methodName.equals("main") ? methodNode.getNumChildren()-1 : methodNode.getNumChildren()-2;
+        List<JmmNode> statements = methodNode.getChildren().get(bodyIdx).getChildren();
+        visitStatements(methodName, statements);
         sb.append("\t}\n");
+    }
+
+    /*
+        Note: The elements of the OLLIR that start with a ‘$’ are parameters of the method and
+        the number following the ‘$’ identifies the position of the parameter in the method signature
+         from 0 to N-1(N is the number of parameters of the method) for static methods,
+         and from 1 to N for the other methods (in this later case the parameter 0 is the this).
+     */
+    private void visitStatements(String methodName, List<JmmNode> statements){
+        for(int i = 1; i < statements.size(); i++){
+            switch (statements.get(i).getKind()){
+                case("Dot"):
+                    dotStatement(methodName, statements.get(i));
+                    break;
+                case("IfElse"):
+                    ifElseStatement(methodName, statements.get(i));
+                    break;
+                case("WhileStatment"):
+                    break;
+                //...
+                default:
+                    break;
+            }
+        }
+    }
+
+    private void dotStatement(String methodName, JmmNode statement){
+        JmmNode beforeDot = statement.getChildren().get(0);
+        JmmNode afterDot = statement.getChildren().get(1);
+
+        if(symbolTable.getImports().contains(beforeDot.get("name").equals("this"))){
+            sb.append("invokevirtual(this, \"" + afterDot.get("name") + ",\"");
+            // Get parameters
+        }
+    }
+
+    private void ifElseStatement(String methodName, JmmNode statement){
+        JmmNode condition = statement.getChildren().get(0);
+        JmmNode ifBody = statement.getChildren().get(1);
+        JmmNode elseBody = statement.getChildren().get(2);
+        /*
+        sb.append("if(");
+        switch (condition.getKind()){
+            case "Less":
+                sb.append(">=");
+            case "And":
+        }
+        sb.append(") goto else;\n");
+        // ifbody here
+        sb.append("goto endif;");
+        sb.append("else:\n");
+        // elsebody here
+        sb.append("endif:\n");
+        */
+
     }
 
     private String getVarType(Type type){
