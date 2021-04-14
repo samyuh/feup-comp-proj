@@ -30,10 +30,19 @@ public class OllirEmitter {
         if(hasImports)
             //visitImports(sb);
         sb.append(symbolTable.getClassName() + "{\n");
-            visitFields(sb);
-            visitClassBody(sb);
-        sb.append("}");
+        visitFields(sb);
+        classContructor(sb);
 
+        JmmNode classNode = hasImports ? node.getChildren().get(1) : node.getChildren().get(1);
+        // Check if the class has methods
+        if(classNode.getNumChildren() > 2){
+            for(JmmNode methodNode: getMethodNodes(classNode)){
+                // Visit each method of the class
+                visitMethod(methodNode.getChildren().get(0), sb);
+            }
+        }
+
+        sb.append("}");
         return sb.toString();
     }
 
@@ -46,15 +55,49 @@ public class OllirEmitter {
 
     private void visitFields(StringBuilder sb){
         for(Symbol field : symbolTable.getFields()){
-            sb.append(".field private ");
+            sb.append("\t.field private ");
             sb.append(field.getName());
             sb.append(getVarType(field.getType()));
             sb.append(";\n");
         }
     }
 
-    private void visitClassBody(StringBuilder sb){
-        // TODO
+    private void classContructor(StringBuilder sb){
+        sb.append("\t.construct ");
+        sb.append(symbolTable.getClassName());
+        sb.append("().V {\n");
+        sb.append("\t\tinvokespecial(this, \"<init>\").V;\n\t}\n");
+    }
+
+    private void visitMethod(JmmNode methodNode, StringBuilder sb){
+        sb.append("\t.method public ");
+        String methodName;
+        if(methodNode.getKind().equals("MethodMain")){
+            sb.append("static ");
+            methodName = "main";
+        }
+        else methodName = methodNode.getChildren().get(1).get("name");
+        sb.append(methodName);
+
+        // Parameters
+        sb.append("(");
+        List<Symbol> parameters = symbolTable.getParameters(methodName);
+        for(int i = 0; i < parameters.size(); i++){
+            sb.append(parameters.get(i).getName());
+            sb.append(getVarType(parameters.get(i).getType()));
+            if(i < parameters.size()-1) sb.append(", ");
+        }
+        sb.append(")");
+
+        // Return Type
+        Type returnType = symbolTable.getReturnType(methodName);
+        sb.append(getVarType(returnType));
+
+        // Method Body
+        sb.append("{\n");
+        // visitVarDeclarations();
+        // visitStatements();
+        sb.append("\t}\n");
     }
 
     private String getVarType(Type type){
@@ -69,10 +112,21 @@ public class OllirEmitter {
             case "boolean":
                 typeStr += ".bool";
                 break;
+            case "void":
+                typeStr += ".V";
+                break;
             default:
                 typeStr += "." + type.getName();
                 break;
         }
         return typeStr;
+    }
+
+    private List<JmmNode> getMethodNodes(JmmNode classNode){
+        List<JmmNode> methodDeclarations = new ArrayList<>();
+        for(int i = 2; i < classNode.getNumChildren(); i++){
+            methodDeclarations.add(classNode.getChildren().get(i));
+        }
+        return methodDeclarations;
     }
 }
