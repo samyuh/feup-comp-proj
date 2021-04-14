@@ -7,13 +7,13 @@ import pt.up.fe.comp.jmm.ast.PreorderJmmVisitor;
 public class ArrayVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
     public ArrayVisitor(){
         addVisit("ArrayAccess",this::visitArrayAccess);
-        addVisit("NewExpression", this::visitNewExpression);
+        addVisit("NewIntArray", this::visitNewExpression);
     }
 
     public Boolean visitArrayAccess(JmmNode arrayNode, Analysis analysis){
         JmmNode accessNode = arrayNode.getChildren().get(1);
 
-        return visitAccessIdentifier(arrayNode, analysis) &&
+        return visitAccessedArray(arrayNode, analysis) &&
                 checkInsideBrackets(arrayNode, analysis ,accessNode,"access");
 
     }
@@ -22,27 +22,29 @@ public class ArrayVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
         JmmNode sizeNode = arrayNode.getChildren().get(0);
 
         return checkInsideBrackets(arrayNode, analysis ,sizeNode,"size");
-
     }
 
-    public Boolean visitAccessIdentifier(JmmNode arrayNode, Analysis analysis){
-        JmmNode identifierNode = arrayNode.getChildren().get(0);
-        String kind = identifierNode.getKind();
 
-        // Check if it is an identifier
+    public Boolean visitAccessedArray(JmmNode newExpresionNode, Analysis analysis){
+        JmmNode arrayNode = newExpresionNode.getChildren().get(0);
+        String kind = arrayNode.getKind();
+
+        // Check if the Identifier is an array
         if(kind.equals("Identifier")){
-            String parentMethodName = Utils.getParentMethodName(arrayNode);
-            String type = Utils.getVariableType(identifierNode, analysis, parentMethodName);
+            String parentMethodName = Utils.getParentMethodName(newExpresionNode);
+            String type = Utils.getVariableType(arrayNode, analysis, parentMethodName);
             if(!type.equals("int[]")){
-                analysis.addReport(identifierNode, "Invalid identifier, must be an int[].");
+                analysis.addReport(arrayNode, "Invalid identifier, must be an int[].");
                 return false;
             }
+            return true;
         }
-        else{
-            analysis.addReport(identifierNode, "Invalid array access operation, must be an int[] identifier. Provided: " + kind);
-            return false;
-        }
-        return true;
+
+        // Check if the array is the return type of a method
+        if(returnIntArrayMethod(arrayNode,analysis)) return true;
+
+        analysis.addReport(arrayNode, "Invalid array access operation. This operation is only valid for int[].");
+        return false;
     }
 
     private Boolean checkInsideBrackets(JmmNode arrayNode, Analysis analysis, JmmNode node, String context) {
@@ -69,13 +71,13 @@ public class ArrayVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
     }
 
     private boolean returnIntMethod(JmmNode node, Analysis analysis){
-        if(!node.getKind().equals("Dot")) return true;
+        if(!node.getKind().equals("Dot")) return false;
         String returnValue = Utils.getReturnValueMethod(node,analysis);
         return returnValue.equals("undefined") || returnValue.equals("int");
     }
 
     private boolean returnIntArrayMethod(JmmNode node, Analysis analysis){
-        if(!node.getKind().equals("Dot")) return true;
+        if(!node.getKind().equals("Dot")) return false;
         String returnValue = Utils.getReturnValueMethod(node,analysis);
         return returnValue.equals("undefined") || returnValue.equals("int[]");
     }

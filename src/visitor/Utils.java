@@ -85,6 +85,8 @@ public class Utils {
             return returnType.getName() + (returnType.isArray() ? "[]" : "");
         }
 
+        // TODO: Deal with length case, which returns an int
+
         return "undefined";
     }
 }
