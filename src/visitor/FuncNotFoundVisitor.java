@@ -63,6 +63,8 @@ public class FuncNotFoundVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
 
     public Boolean checkObject(JmmNode node, String nodeName, Analysis analysis) {
         String methodName = getParentMethod(node);
+
+        // Todo: fix error for length case
         JmmNode calledMethod = node.getChildren().get(1).getChildren().get(0);
 
         List<Symbol> localVariables = analysis.getSymbolTable().getLocalVariables(methodName);

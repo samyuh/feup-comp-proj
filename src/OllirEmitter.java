@@ -129,6 +129,7 @@ public class OllirEmitter {
     }
 
 
+    // Convert assignment expression to ollir
     private void assignmentStatement(String methodName, JmmNode statement){
         JmmNode left = statement.getChildren().get(0); // Left side of the assignment
         JmmNode right = statement.getChildren().get(1); // Right side of the assignment
@@ -167,7 +168,7 @@ public class OllirEmitter {
         String rightSide = ollirExpression(methodName, valueNode);
 
         sb.append(prefix()).append(leftSide).append(" :=").append(MyOllirUtils.ollirType(type));
-        sb.append(" ").append(rightSide).append(";\n");
+        sb.append(" ").append(rightSide).append(";");
     }
 
     private void ollirArrayAssignment(String methodName, String name, JmmNode indexNode, JmmNode rightNode){
@@ -190,12 +191,13 @@ public class OllirEmitter {
         String leftSide = ollirArrayAccess(methodName,name,indexNode);
         String rightSide = ollirExpression(methodName, rightNode);
 
-        sb.append(prefix()).append(leftSide).append(" :=.i32 ").append(rightSide).append(";\n");
+        sb.append(prefix()).append(leftSide).append(" :=.i32 ").append(rightSide).append(";");
     }
 
+    // Get ollir representation for an array access
     private String ollirArrayAccess(String methodName, String name, JmmNode node){
         String indexValue;
-        if(!node.getKind().equals("Identifier")){
+        if(isField(node) || !node.getKind().equals("Identifier")){
             String aux = newAuxiliarVar(".i32", methodName, node);
             sb.append(aux);
             indexValue = "t" + auxVarNumber + ".i32";
@@ -204,6 +206,8 @@ public class OllirEmitter {
         return name + "[" + indexValue + "].i32";
     }
 
+
+    // Get ollir representation for an expression
     private String ollirExpression(String methodName, JmmNode node){
         String kind = node.getKind();
 
@@ -228,18 +232,66 @@ public class OllirEmitter {
             return ollirArrayAccess(methodName,name,indexNode);
         }
 
+        // Dot Method
+        if(kind.equals("Dot"))
+            return ollirDotMethod(methodName, node);
+
         // "new" , "int" , "[" , Expression , "]"
         // "new" , Identifier , "(" , ")"
         // "!" , Expression
-        // Expression , "[" , Expression , "]"
-        // Expression , "." , "length"
-        // Expression , "." , Identifier , "(" , [ Expression { "," , Expression } ], ")"
 
         // TODO: implement recursive expression subdivision, with auxiliar variables
         return "VALUE";// ollirExpression(valueNode);
     }
 
+    // Expression , "." , "length"
+    // Expression , "." , Identifier , "(" , [ Expression { "," , Expression } ], ")"
 
+    // Get the ollir representation of a dot method
+    public String ollirDotMethod(String methodName, JmmNode node){
+        JmmNode left = node.getChildren().get(0);
+        JmmNode right = node.getChildren().get(1); // DotMethod
+
+        if(left.getKind().equals("This")){
+            JmmNode methodNode = right.getChildren().get(0);
+            JmmNode parametersNode = right.getChildren().get(1);
+
+            // Invoked Method
+            String invokedMethod,returnType;
+            if(methodNode.getKind().equals("Identifier")){
+                invokedMethod = methodNode.get("name");
+                returnType = MyOllirUtils.ollirType(symbolTable.getReturnType(invokedMethod));
+            }
+            else {
+                invokedMethod = ollirExpression(methodName, methodNode);
+                returnType = "";
+            }
+
+            // Parameters
+            String parameters = "";
+            for(JmmNode param : parametersNode.getChildren()){
+                parameters += ", ";
+                if(param.getNumChildren() > 0){
+                    String type = getNodeType(methodName, param);
+                    sb.append(newAuxiliarVar(type, methodName, param));
+                    parameters += "t" + auxVarNumber + type;
+                } else if(isField(param)){
+                    String type = MyOllirUtils.ollirType(getFieldType(param.get("name")));
+                    sb.append(newAuxiliarVar(type, methodName, param));
+                    parameters += "t" + auxVarNumber + type;
+                }
+                else parameters += ollirExpression(methodName, param);
+            }
+
+            return "invokevirtual(this,\"" + invokedMethod + "\"" + parameters + ")" + returnType;
+
+        }
+        //right.getKind();
+
+        return "";
+    }
+
+    // Get the ollir expression of an identifier (parameter, field or local variable)
     public String ollirFromIdentifierNode(String methodName, JmmNode identifierNode){
         Type type;
         String name = identifierNode.get("name");
@@ -259,17 +311,20 @@ public class OllirEmitter {
         return MyOllirUtils.ollirVar(name,type);
     }
 
+    // Get the ollir expression of a boolean or maths expression
     public String ollirMathBooleanExpression(String methodName, JmmNode node, String type){
         JmmNode left = node.getChildren().get(0);
         JmmNode right = node.getChildren().get(1);
 
         String leftValue, rightValue;
-        if(left.getNumChildren() > 0){
+        // Process left node
+        if(left.getNumChildren() > 0 || isField(left)){
             sb.append(newAuxiliarVar(type, methodName, left));
             leftValue = "t" + auxVarNumber + type;
         } else leftValue = ollirExpression(methodName,left);
 
-        if(right.getNumChildren() > 0){
+        // Process right node
+        if(right.getNumChildren() > 0 || isField(right)){
             sb.append(newAuxiliarVar(type, methodName, right));
             rightValue = "t" + auxVarNumber + type;
         } else rightValue = ollirExpression(methodName, right);
@@ -278,15 +333,18 @@ public class OllirEmitter {
     }
 
 
+    // Get ollir putfield expression
     private String generatePutField(String methodName, String field, JmmNode valueNode){
         String value = ollirExpression(methodName, valueNode);
         return prefix() + "putfield(this," + field + "," + value + ").V;";
     }
 
+    // Get ollir getfield expression
     private String generateGetField(String field, Type type){
         return "getfield(this," + MyOllirUtils.ollirVar(field, type) + ")" + MyOllirUtils.ollirType(type);
     }
 
+    // Create a new auxiliar variable
     private String newAuxiliarVar(String type, String methodName, JmmNode node){
         String value = ollirExpression(methodName, node);
         auxVarNumber++;
@@ -308,6 +366,10 @@ public class OllirEmitter {
                 return symb.getType();
         }
         return null;
+    }
+
+    private boolean isField(JmmNode node){
+        return node.getKind().equals("Identifier") && (getFieldType(node.get("name")) != null);
     }
 
     private Type getParameterType(String methodName, int position){
@@ -332,6 +394,25 @@ public class OllirEmitter {
             methodDeclarations.add(classNode.getChildren().get(i));
         }
         return methodDeclarations;
+    }
+
+    private String getNodeType(String methodName, JmmNode node){
+        String kind = node.getKind();
+
+        if(Utils.isMathExpression(kind) || kind.equals("ArrayAccess")) return ".i32";
+        if(Utils.isBooleanExpression(kind)) return ".bool";
+        if(kind.equals("NewIntArray")) return ".array.i32";
+        if(kind.equals("NewObject")) return node.getChildren().get(0).get("name");
+        if(kind.equals("Dot")) {
+            // Class Method
+            if (symbolTable.getMethods().contains(methodName)) {
+                Type returnType = symbolTable.getReturnType(methodName);
+                return MyOllirUtils.ollirType(returnType);
+            } // length case
+            else return "undefined";
+        }
+
+        return "ERROR";
     }
 
     public List<Report> getReports() {

@@ -28,6 +28,7 @@ public class MyOllirUtils {
     public static String ollirVar(String varName, Type type){
         return varName + ollirType(type);
     }
+
     public static String ollirParameter(String name, int position){
         return "$" + position + "." + name;
     }
@@ -50,4 +51,5 @@ public class MyOllirUtils {
                 return "ERROR";
         }
     }
+
 }

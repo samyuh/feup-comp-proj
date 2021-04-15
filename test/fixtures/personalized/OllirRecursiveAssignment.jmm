@@ -1,25 +1,24 @@
 class MeuDeus {
+    int field;
     public static void main(String[] args){
     }
 
-    public int testMethod(){
+    public int testMethod(int param){
         int a;
         int[] arr;
         boolean ola;
         boolean b;
-        /* // this works
+
+        /*
         ola = false;
         a = 6 + 6 + 6;
         b = ola && true && false;
-
         a = arr[2] + 3;
-
         a = 5 + arr[2];
-        */
-
         a = arr[arr[2]] + 3;
         a = arr[a] + 4;
-
+        */
+        a = arr[field] + arr[param] + field;
         return 3;
     }
 }

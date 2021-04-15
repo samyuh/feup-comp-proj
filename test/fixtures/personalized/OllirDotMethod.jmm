@@ -1,0 +1,23 @@
+class AiVida {
+    int ai;
+    public int retornaInt(){
+        int a;
+        int[] b;
+        // a = this.doSomething(1,2);
+        // a = this.doSomething(a + 2,2);
+        //a = this.doSomething(b[3+a],3);
+        // a = this.doSomething(ai+9,a);
+        //a = this.doSomething(a, this.doNothing());
+        a = 34 + this.doSomething(ai, b[4 + this.doNothing()]) + this.doNothing();
+        //a = this.doSomething(a,2).what();
+        return a;
+    }
+
+    public int doSomething(int a, int b){
+        return 23;
+    }
+    public int doNothing(){
+        return 1;
+    }
+
+}
