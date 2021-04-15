@@ -1,12 +1,10 @@
 import io;
 class Fac {
-    int a;
+    int b;
     public int compFac(int num){
         int num_aux;
+        int[] a;
 
-        num = 6;
-        num_aux = num;
-        num = 4;
         a[5] = 7;
 
         return num_aux;

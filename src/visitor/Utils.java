@@ -41,8 +41,6 @@ public class Utils {
         return "int";
     }
 
-
-
     public static String getParentMethodName(JmmNode node) {
         JmmNode currentNode = node;
         while (!currentNode.getKind().equals("MethodGeneric") && !currentNode.getKind().equals("MethodMain")) {

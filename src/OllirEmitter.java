@@ -12,15 +12,10 @@ public class OllirEmitter {
     List<Report> reports;
     StringBuilder sb;
 
-
     public OllirEmitter(SymbolTable symbolTable){
         this.symbolTable = symbolTable;
         reports = new ArrayList<>();
         sb = new StringBuilder();
-    }
-
-    public List<Report> getReports() {
-        return reports;
     }
 
     /**
@@ -31,9 +26,9 @@ public class OllirEmitter {
 
         sb.append(symbolTable.getClassName()).append("{\n");
         visitFields();
-        classContructor();
+        classConstructor();
 
-        JmmNode classNode = hasImports ? node.getChildren().get(1) : node.getChildren().get(1);
+        JmmNode classNode = hasImports ? node.getChildren().get(1) : node.getChildren().get(0);
         // Check if the class has methods
         if(classNode.getNumChildren() > 2){
             for(JmmNode methodNode: getMethodNodes(classNode)){
@@ -50,12 +45,12 @@ public class OllirEmitter {
         for(Symbol field : symbolTable.getFields()){
             sb.append("\t.field private ");
             sb.append(field.getName());
-            sb.append(getVarType(field.getType()));
+            sb.append(OllirUtils.ollirType(field.getType()));
             sb.append(";\n");
         }
     }
 
-    private void classContructor(){
+    private void classConstructor(){
         sb.append("\t.construct ");
         sb.append(symbolTable.getClassName());
         sb.append("().V {\n");
@@ -77,26 +72,36 @@ public class OllirEmitter {
         List<Symbol> parameters = symbolTable.getParameters(methodName);
         for(int i = 0; i < parameters.size(); i++){
             sb.append(parameters.get(i).getName());
-            sb.append(getVarType(parameters.get(i).getType()));
+            sb.append(OllirUtils.ollirType(parameters.get(i).getType()));
             if(i < parameters.size()-1) sb.append(", ");
         }
         sb.append(")");
 
         // Return Type
         Type returnType = symbolTable.getReturnType(methodName);
-        sb.append(getVarType(returnType));
+        String returnTypeStr = OllirUtils.ollirType(returnType);
+        sb.append(returnTypeStr);
 
         // Method Body
         sb.append("{\n");
+        sb.append("a.array.i32 :=.array.i32 new(array, 5.i32).array.i32;\n");
         int bodyIdx = methodName.equals("main") ? methodNode.getNumChildren()-1 : methodNode.getNumChildren()-2;
         List<JmmNode> statements = methodNode.getChildren().get(bodyIdx).getChildren();
         visitStatements(methodName, statements);
+
+        // Return Statement
+        if(!methodName.equals("main")){
+            JmmNode returnValue = methodNode.getChildren().get(bodyIdx+1).getChildren().get(0);
+            sb.append("ret");
+            sb.append(returnTypeStr).append(" ");
+            sb.append(ollirExpression(methodName,returnValue)).append(";");
+        }
+
         sb.append("\t}\n");
     }
 
     private void visitStatements(String methodName, List<JmmNode> statements){
         for(int i = 1; i < statements.size(); i++){
-
             switch (statements.get(i).getKind()){
                 case("Assignment"):
                     assignmentStatement(methodName, statements.get(i));
@@ -112,116 +117,109 @@ public class OllirEmitter {
             sb.append("\n");
         }
     }
-    // num_aux = 1;
-    // num_aux.i32 :=.i32 1.i32; // num_aux is localVariable
-    // putfield(this, num_aux.i32, ladoDireitoDoIgual).V; // num_aux is field
-    // $1.num_aux := .i32 1.i32;
+
+
     private void assignmentStatement(String methodName, JmmNode statement){
-        JmmNode left = statement.getChildren().get(0);
-        JmmNode right = statement.getChildren().get(1);
+        JmmNode left = statement.getChildren().get(0); // Left side of the assignment
+        JmmNode right = statement.getChildren().get(1); // Right side of the assignment
 
-        // Simple assignment
-        if(right.getNumChildren() == 0){
-            if(left.getKind().equals("ArrayAssignment")){
-                String name = left.getChildren().get(0).get("name");
-                buildArray(methodName, name);
-            }
-            else if(left.getKind().equals("Identifier")){
-                String name = left.get("name");
-                buildIdentifier(methodName, name);
-            }
-            sb.append(":=");
-            sb.append("");
+        // Array Assignment
+        if(left.getKind().equals("ArrayAssignment")){
+            String name = left.getChildren().get(0).get("name"); // Array name
+            JmmNode indexNode = left.getChildren().get(1).getChildren().get(0);
+            ollirArrayAssignment(methodName, name, indexNode, right);
+            return;
         }
+
+        // Identifier Assignment
+        String name = left.get("name"); // Identifier Name
+        ollirIdentifierAssignment(methodName, name, right);
     }
 
-    private void buildIdentifier(String methodName, String name){
+    private void ollirIdentifierAssignment(String methodName, String name, JmmNode valueNode){
         Type type;
 
+        // Left side of the assignment is a Field: e.g. putfield(this, num_aux.i32, value).V;
         if((type = getFieldType(name)) != null){
-            // Variable is a Field: putfield(this, num_aux.i32, ladoDireitoDoIgual).V;
-            String variable = getVar(name,type);
-            sb.append(generatePutField(variable,"EXPRESSION"));
+            sb.append(generatePutField(methodName, OllirUtils.ollirVar(name,type),valueNode));
             return;
-        } else if((type = getLocalVariableType(methodName, name)) == null){
-            // Variable is a Parameter: $1.num_aux.i32 := .i32 1.i32;
+        }
+
+        // Left side of the assignment is a Parameter: e.g. $1.num_aux.i32 := .i32 1.i32;
+        if((type = getLocalVariableType(methodName, name)) == null){
             int position = getParameterPosition(methodName,name);
             type = getParameterType(methodName, position);
-            name = "$" + position + "." + name;
+            name = OllirUtils.ollirParameter(name,position);
         }
-        sb.append(name);
-        sb.append(getVarType(type));
 
+        // Left side of the assignment is a Local Variable or Parameter
+        String leftSide = OllirUtils.ollirVar(name, type);
+        String rightSide = ollirExpression(methodName, valueNode);
+
+        sb.append(leftSide).append(":=").append(OllirUtils.ollirType(type)).append(" ").append(rightSide).append(";\n");
     }
 
-    //
-    //
-    private void buildArray(String methodName, String name){
+    private void ollirArrayAssignment(String methodName, String name, JmmNode indexNode, JmmNode rightNode){
+
+        //  Left side of the assignment is a Field: e.g.putfield(this, A[i.i32].i32, ladoDoreito).V
+        if(getFieldType(name) != null){
+            String indexValue = ollirExpression(methodName, indexNode);
+            String leftSide = name + "[" + indexValue + "].i32";
+            sb.append(generatePutField(methodName, leftSide, rightNode));
+            return;
+        }
+
+        // // Left side of the assignment is a Parameter: e.g. $1.A[i.i32].i32
+        if(getLocalVariableType(methodName, name) == null){
+            // Variable is a Parameter: $1.num_aux.i32 := .i32 1.i32;
+            int position = getParameterPosition(methodName,name);
+            name = OllirUtils.ollirParameter(name,position);
+        }
+
+        // Left side of the assignment is a Local Variable or Parameter
+        String indexValue = ollirExpression(methodName, indexNode);
+        String leftSide = name + "[" + indexValue + "].i32";
+        String rightSide = ollirExpression(methodName, rightNode);
+
+        sb.append(leftSide).append(":=.i32 ").append(rightSide).append(";\n");
+    }
+
+    // TODO: process a node, generating auxiliar variables
+    private String ollirExpression(String methodName, JmmNode node){
+        String kind = node.getKind();
+
+        if(kind.equals("Identifier"))
+            return ollirFromIdentifierNode(methodName, node);
+        if(kind.equals("True") || kind.equals("False"))
+            return kind.toLowerCase() + ".bool";
+        if(kind.equals("Number"))
+            return node.get("value") + ".i32";
+
+        // TODO: implement recursive expression subdivision, with auxiliar variables
+        return "VALUE";// ollirExpression(valueNode);
+    }
+
+    public String ollirFromIdentifierNode(String methodName, JmmNode identifierNode){
         Type type;
+        String name = identifierNode.get("name");
 
-        // putfield(this, A[i.i32].i32, ladoDoreito).V
-        //
-        if((type = getFieldType(name)) != null){
-            // Variable is a Field: putfield(this, num_aux.i32, ladoDireitoDoIgual).V;
-            String variable = name + "[" + "EXPRESSION" + "]" + getVarType(type);
-            sb.append(generatePutField(variable,"EXPRESSION"));
-            return;
-
-        //$1.A[i.i32].i32
-        } else if((type = getLocalVariableType(methodName, name)) == null){
-            // Variable is a Parameter: $1.num_aux.i32 := .i32 1.i32;
-            int position = getParameterPosition(methodName,name);
-            type = getParameterType(methodName, position);
-            name = "$" + position + "." + name;
+        if((type = getFieldType(name)) == null){
+           if((type = getLocalVariableType(methodName, name)) == null){
+                // Ollir for Parameter
+               int position = getParameterPosition(methodName,name);
+               type = getParameterType(methodName, position);
+               name = OllirUtils.ollirParameter(name, position);
+           }
         }
-        sb.append(name);
-        sb.append("[" + "EXPRESSION" + "]");
-        sb.append(getVarType(type));
+
+        return OllirUtils.ollirVar(name,type);
     }
 
-    private String getVarType(Type type){
-        String typeStr = "";
-        if(type.isArray())
-            typeStr = ".array";
-
-        switch (type.getName()){
-            case "int":
-               typeStr += ".i32";
-               break;
-            case "boolean":
-                typeStr += ".bool";
-                break;
-            case "void":
-                typeStr += ".V";
-                break;
-            default:
-                typeStr += "." + type.getName();
-                break;
-        }
-        return typeStr;
+    private String generatePutField(String methodName, String field, JmmNode valueNode){
+        String value = ollirExpression(methodName, valueNode);
+        return "putfield(this," + field + "," + value + ").V;";
     }
 
-    private String getVar(String name, Type type){
-        String varName = name;
-        if(type.isArray())
-            varName += ".array";
-
-        switch (type.getName()){
-            case "int":
-                varName += ".i32";
-                break;
-            case "boolean":
-                varName += ".bool";
-                break;
-            case "void":
-                varName += ".V";
-                break;
-            default:
-                varName += "." + type.getName();
-                break;
-        }
-        return varName;
-    }
 
     private Type getLocalVariableType(String methodName, String name){
         for (Symbol symb: symbolTable.getLocalVariables(methodName)){
@@ -243,15 +241,6 @@ public class OllirEmitter {
         return symbolTable.getParameters(methodName).get(position-1).getType();
     }
 
-    private List<JmmNode> getMethodNodes(JmmNode classNode){
-        List<JmmNode> methodDeclarations = new ArrayList<>();
-        for(int i = 2; i < classNode.getNumChildren(); i++){
-            methodDeclarations.add(classNode.getChildren().get(i));
-        }
-        return methodDeclarations;
-    }
-
-
     private int getParameterPosition(String method, String parameter){
         List<Symbol> parameters = symbolTable.getParameters(method);
 
@@ -263,8 +252,17 @@ public class OllirEmitter {
         return -1;
     }
 
-    private String generatePutField(String variable,String next){
-        return "putfield(this," + variable + "," + next + ").V";
+
+    private List<JmmNode> getMethodNodes(JmmNode classNode){
+        List<JmmNode> methodDeclarations = new ArrayList<>();
+        for(int i = 2; i < classNode.getNumChildren(); i++){
+            methodDeclarations.add(classNode.getChildren().get(i));
+        }
+        return methodDeclarations;
+    }
+
+    public List<Report> getReports() {
+        return reports;
     }
 
 }
