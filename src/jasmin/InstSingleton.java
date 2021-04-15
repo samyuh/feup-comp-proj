@@ -44,6 +44,10 @@ public class InstSingleton {
             case ADD -> "iadd \n";
             case SUB -> "isub \n";
             case DIV -> "idiv \n";
+            case AND -> "iand \n";
+            case NOT -> "ineg \n";
+            case OR -> "ior \n";
+
             default -> "\n";
         };
     }
