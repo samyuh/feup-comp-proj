@@ -5,11 +5,21 @@ class MeuDeus {
     public int testMethod(){
         int a;
         int[] arr;
+        boolean ola;
+        boolean b;
+        /* // this works
+        ola = false;
         a = 6 + 6 + 6;
-        /*
+        b = ola && true && false;
+
         a = arr[2] + 3;
+
         a = 5 + arr[2];
         */
+
+        a = arr[arr[2]] + 3;
+        a = arr[a] + 4;
+
         return 3;
     }
 }

@@ -166,15 +166,15 @@ public class OllirEmitter {
         String leftSide = MyOllirUtils.ollirVar(name, type);
         String rightSide = ollirExpression(methodName, valueNode);
 
-        sb.append(prefix()).append(leftSide).append(":=").append(MyOllirUtils.ollirType(type)).append(" ").append(rightSide).append(";\n");
+        sb.append(prefix()).append(leftSide).append(" :=").append(MyOllirUtils.ollirType(type));
+        sb.append(" ").append(rightSide).append(";\n");
     }
 
     private void ollirArrayAssignment(String methodName, String name, JmmNode indexNode, JmmNode rightNode){
 
         //  Left side of the assignment is a Field: e.g.putfield(this, A[i.i32].i32, ladoDoreito).V
         if(getFieldType(name) != null){
-            String indexValue = ollirArrayIndex(methodName, indexNode);
-            String leftSide = name + "[" + indexValue + "].i32";
+            String leftSide = ollirArrayAccess(methodName,name,indexNode);
             sb.append(generatePutField(methodName, leftSide, rightNode));
             return;
         }
@@ -187,40 +187,58 @@ public class OllirEmitter {
         }
 
         // Left side of the assignment is a Local Variable or Parameter
-        String indexValue = ollirArrayIndex(methodName, indexNode);
-        String leftSide = name + "[" + indexValue + "].i32";
+        String leftSide = ollirArrayAccess(methodName,name,indexNode);
         String rightSide = ollirExpression(methodName, rightNode);
 
-        sb.append(indent).append(leftSide).append(":=.i32 ").append(rightSide).append(";\n");
+        sb.append(prefix()).append(leftSide).append(" :=.i32 ").append(rightSide).append(";\n");
     }
 
-    private String ollirArrayIndex(String methodName, JmmNode node){
-        if(node.getKind().equals("Number")){
+    private String ollirArrayAccess(String methodName, String name, JmmNode node){
+        String indexValue;
+        if(!node.getKind().equals("Identifier")){
             String aux = newAuxiliarVar(".i32", methodName, node);
             sb.append(aux);
-            return "t" + auxVarNumber + ".i32";
-        }
-        return ollirExpression(methodName,node);
+            indexValue = "t" + auxVarNumber + ".i32";
+        } else indexValue = ollirFromIdentifierNode(methodName, node);
+
+        return name + "[" + indexValue + "].i32";
     }
 
-    // TODO: process a node, generating auxiliar variables
     private String ollirExpression(String methodName, JmmNode node){
         String kind = node.getKind();
 
+        // Terminals
         if(kind.equals("Identifier"))
             return ollirFromIdentifierNode(methodName, node);
         if(kind.equals("True") || kind.equals("False"))
             return kind.toLowerCase() + ".bool";
         if(kind.equals("Number"))
             return node.get("value") + ".i32";
+
+        // Math and Boolean Expressions
         if(Utils.isMathExpression(kind))
             return ollirMathBooleanExpression(methodName, node, ".i32");
         if(Utils.isBooleanExpression(kind))
             return ollirMathBooleanExpression(methodName, node, ".bool");
 
+        // Array Access
+        if(kind.equals("ArrayAccess")){
+            String name = node.getChildren().get(0).get("name"); // Array name
+            JmmNode indexNode = node.getChildren().get(1); // Array Index
+            return ollirArrayAccess(methodName,name,indexNode);
+        }
+
+        // "new" , "int" , "[" , Expression , "]"
+        // "new" , Identifier , "(" , ")"
+        // "!" , Expression
+        // Expression , "[" , Expression , "]"
+        // Expression , "." , "length"
+        // Expression , "." , Identifier , "(" , [ Expression { "," , Expression } ], ")"
+
         // TODO: implement recursive expression subdivision, with auxiliar variables
         return "VALUE";// ollirExpression(valueNode);
     }
+
 
     public String ollirFromIdentifierNode(String methodName, JmmNode identifierNode){
         Type type;
@@ -259,18 +277,20 @@ public class OllirEmitter {
         return leftValue + MyOllirUtils.ollirOperator(node) + rightValue;
     }
 
+
     private String generatePutField(String methodName, String field, JmmNode valueNode){
         String value = ollirExpression(methodName, valueNode);
         return prefix() + "putfield(this," + field + "," + value + ").V;";
     }
 
     private String generateGetField(String field, Type type){
-        return prefix() + "getfield(this," + MyOllirUtils.ollirVar(field, type) + ")" + MyOllirUtils.ollirType(type);
+        return "getfield(this," + MyOllirUtils.ollirVar(field, type) + ")" + MyOllirUtils.ollirType(type);
     }
 
     private String newAuxiliarVar(String type, String methodName, JmmNode node){
+        String value = ollirExpression(methodName, node);
         auxVarNumber++;
-        return prefix() + "t" + auxVarNumber + type + " :=" + type +" " + ollirExpression(methodName, node) + ";\n";
+        return prefix() + "t" + auxVarNumber + type + " :=" + type +" " + value + ";\n";
     }
 
 

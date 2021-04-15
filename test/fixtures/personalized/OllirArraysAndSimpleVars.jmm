@@ -11,12 +11,12 @@ class Fac {
         fieldBool = false;
         localBool = fieldBool;
 
-        /*
+
         a[5] = num_aux;
         a[num_aux] = num_aux;
         a[num_aux] = b;
         a = 5;
-        */
+
 
         return num_aux;
     }
