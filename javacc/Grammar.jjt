@@ -291,10 +291,19 @@ void ExpressionOthers() #void : {Token t;}
      | <OPENCURVEBRACKET> AndExpression() <CLOSECURVEBRACKET>
 }
 
-void NewExpression() : {Token t;}
+void NewExpression() #void : {}
 {
-    <NEW> (<INT> <OPENSQUAREBRACKET> AndExpression() <CLOSESQUAREBRACKET>
-        | t = <IDENTIFIER> {  jjtThis.put("name", t.image); } #Identifier  <OPENCURVEBRACKET> <CLOSECURVEBRACKET>)
+    <NEW> (NewIntArray() | NewObject())
+}
+
+void NewIntArray(): {}
+{
+    <INT> ArrayExpression()
+}
+
+void NewObject(): {Token t;}
+{
+    t = <IDENTIFIER> {  jjtThis.put("name", t.image); } #Identifier  <OPENCURVEBRACKET> <CLOSECURVEBRACKET>
 }
 
 void Statement() #void: {}

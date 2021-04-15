@@ -6,6 +6,7 @@ import pt.up.fe.comp.jmm.ast.PreorderJmmVisitor;
 
 import java.util.List;
 
+
 public class UndefinedVarVisitor extends PreorderJmmVisitor<Analysis, Boolean>{
     public UndefinedVarVisitor(){
         addVisit("MethodDeclaration", this::visitMethodDeclaration);
@@ -63,35 +64,21 @@ public class UndefinedVarVisitor extends PreorderJmmVisitor<Analysis, Boolean>{
 
         while (true) {
             left = node.getChildren().get(0);
-            right = node.getChildren().get(1);
-
-            if (left.getKind().equals("Identifier")) {
+            if (left.getKind().equals("Identifier"))
                 varIsDefined(methodName, analysis, left);
-            }
 
+            if(node.getNumChildren() == 1) break;
+
+            right = node.getChildren().get(1);
             if (right.getKind().equals("Identifier")) {
                 varIsDefined(methodName, analysis, right);
                 break;
-            } else if (isOperator(right.getKind())) {
+            } else if (Utils.isOperator(right.getKind()) || right.getKind().equals("NewIntArray")) {
                 node = right;
             }  else break;
         }
         return true;
     }
-
-    public Boolean isOperator(String kind) {
-        if(kind.equals("Add") ||
-                kind.equals("Mult") ||
-                kind.equals("Sub") ||
-                kind.equals("Div") ||
-                kind.equals("Less") ||
-                kind.equals("And") ||
-                kind.equals("ArrayAccess")) {
-            return true;
-        }
-        return false;
-    }
-
 
     /**
      * Check if the variable is a local variable or a class field.

@@ -127,7 +127,10 @@ public class SymbolTableVisitor extends PreorderJmmVisitor<Analysis,Boolean> {
         JmmNode typeNode = variableNode.getChildren().get(0);
         String name = variableNode.getChildren().get(1).get("name");
 
-        boolean isArray = false;
+        // Verifies if it's an array.
+        Type type;
+        if (typeNode.get("type").equals("int[]")) type = new Type("int", true);
+        else type = new Type(typeNode.get("type"), false);
 
         Type type;
         if (typeNode.get("type").equals("int[]")) type = new Type("int",true);

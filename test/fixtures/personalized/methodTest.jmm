@@ -1,0 +1,15 @@
+import Foo;
+import M;
+
+class T extends M {
+
+    public static void main(String[] s) {
+        int a;
+        int tralala;
+        this.ola(); // Deve assumir que o método ola existe na classe super e não dar erro
+        tralala.ola(); // Deve assumir que o método ola existe na classe super e não dar erro
+
+        a = Foo.b();
+        a = Hey.b(); // Erro porque não foi importada
+    }
+}
