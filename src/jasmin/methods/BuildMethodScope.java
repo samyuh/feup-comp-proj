@@ -64,8 +64,8 @@ public class BuildMethodScope extends JasminMethod{
         ArrayList<Element> params = method.getParams();
         methodString.append("(");
 
-        for (int i = 0; i < params.size(); i++) {
-            Type type = params.get(i).getType();
+        for (Element param : params) {
+            Type type = param.getType();
             methodString.append(TranslateType.getJasminType(type));
             methodString.append(",");
         }
