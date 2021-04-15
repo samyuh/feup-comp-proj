@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OllirEmitter {
+    static int auxVarNumber;
     SymbolTable symbolTable;
     List<Report> reports;
     StringBuilder sb;
@@ -16,6 +17,7 @@ public class OllirEmitter {
         this.symbolTable = symbolTable;
         reports = new ArrayList<>();
         sb = new StringBuilder();
+        auxVarNumber = 1;
     }
 
     /**
@@ -57,7 +59,7 @@ public class OllirEmitter {
         sb.append("\t\tinvokespecial(this, \"<init>\").V;\n\t}\n");
     }
 
-    private void visitMethod(JmmNode methodNode){
+    private void visitMethod(JmmNode methodNode) {
         sb.append("\t.method public ");
         String methodName;
         if(methodNode.getKind().equals("MethodMain")){
@@ -84,7 +86,6 @@ public class OllirEmitter {
 
         // Method Body
         sb.append("{\n");
-        sb.append("a.array.i32 :=.array.i32 new(array, 5.i32).array.i32;\n");
         int bodyIdx = methodName.equals("main") ? methodNode.getNumChildren()-1 : methodNode.getNumChildren()-2;
         List<JmmNode> statements = methodNode.getChildren().get(bodyIdx).getChildren();
         visitStatements(methodName, statements);
@@ -163,7 +164,7 @@ public class OllirEmitter {
 
         //  Left side of the assignment is a Field: e.g.putfield(this, A[i.i32].i32, ladoDoreito).V
         if(getFieldType(name) != null){
-            String indexValue = ollirExpression(methodName, indexNode);
+            String indexValue = ollirArrayIndex(methodName, indexNode);
             String leftSide = name + "[" + indexValue + "].i32";
             sb.append(generatePutField(methodName, leftSide, rightNode));
             return;
@@ -177,11 +178,20 @@ public class OllirEmitter {
         }
 
         // Left side of the assignment is a Local Variable or Parameter
-        String indexValue = ollirExpression(methodName, indexNode);
+        String indexValue = ollirArrayIndex(methodName, indexNode);
         String leftSide = name + "[" + indexValue + "].i32";
         String rightSide = ollirExpression(methodName, rightNode);
 
         sb.append(leftSide).append(":=.i32 ").append(rightSide).append(";\n");
+    }
+
+    private String ollirArrayIndex(String methodName, JmmNode node){
+        if(node.getKind().equals("Number")){
+            String aux = newAuxiliarVar(".i32", node.get("value"));
+            sb.append(aux);
+            return "t" + auxVarNumber + ".i32";
+        }
+        return ollirExpression(methodName,node);
     }
 
     // TODO: process a node, generating auxiliar variables
@@ -250,6 +260,10 @@ public class OllirEmitter {
 
         }
         return -1;
+    }
+
+    private String newAuxiliarVar(String type, String value){
+        return "t" + auxVarNumber + type + " :=" + type +" " + value + type + ";\n";
     }
 
 
