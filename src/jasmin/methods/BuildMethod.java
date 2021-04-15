@@ -13,12 +13,22 @@ public class BuildMethod extends JasminMethod {
     public String getMethod(int index) {
         Method method = ollir.getMethod(index);
         methodString.append(new BuildMethodScope(ollir, method).getScope());
-        methodString.append(new BuildMethodAssigment(ollir,method).getAssigments());
+        for (Instruction inst: method.getInstructions())
+            methodString.append(getInstruction(inst, method));
         addEnd();
 
         return this.toString();
     }
 
+    public String getInstruction(Instruction inst, Method method){
+        System.out.println(inst.toString());
+        switch (inst.getInstType()){
+            case ASSIGN:
+                return new BuildMethodAssigment(ollir, method).getInstructionAssign((AssignInstruction) inst);
+
+        }
+        return "";
+    }
 
     public void addEnd() {
         methodString.append(".end method");

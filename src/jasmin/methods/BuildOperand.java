@@ -51,11 +51,6 @@ public class BuildOperand extends JasminMethod {
     }
 
     public void addCall(CallInstruction callInstruction){
-        System.out.println(OllirAccesser.getCallInvocation(callInstruction));
-        System.out.println(callInstruction.getFirstArg().toString());
-        if (callInstruction.getSecondArg() != null)
-            System.out.println(callInstruction.getSecondArg());
-        System.out.println(callInstruction.getNumOperands());
         methodString.append(TranslateCall.getJasminInst(callInstruction, table));
     }
 

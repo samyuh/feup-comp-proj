@@ -33,9 +33,13 @@ public class InstSingleton {
         return "aload_"+reg + "\n";
     }
 
-    public static String anewarray(int regVar, Type type){
-        return iload(regVar) + "anewarray " + TranslateType.getJasminType(type) + "\n";
+    public static String anewarray(int regVar, String type){
+        return iload(regVar) + "anewarray " + type + "\n";
 
+    }
+
+    public static String getfield(int classReg, Type type, String fieldName){
+        return aload(classReg) + "getfield " + TranslateType.getJasminType(type) + " " + fieldName + "\n";
     }
 
     public static String getOp(OperationType opType){

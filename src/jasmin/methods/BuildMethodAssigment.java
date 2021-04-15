@@ -12,23 +12,7 @@ public class BuildMethodAssigment extends JasminMethod{
         this.method = method;
     }
 
-    public String getAssigments(){
-        ArrayList<Instruction> instructions = method.getInstructions();
-        for (Instruction instruction : instructions) addInstruction(instruction);
-
-        return this.toString();
-    }
-
-    public void addInstruction(Instruction instruction){
-        InstructionType instructionType = instruction.getInstType();
-
-        switch(instructionType){
-            case ASSIGN:
-                addInstructionAssign((AssignInstruction) instruction);
-        }
-    }
-
-    public void addInstructionAssign(AssignInstruction assignInstruction){
+    public String getInstructionAssign(AssignInstruction assignInstruction){
         assignInstruction.show();
         String destName = ((Operand)assignInstruction.getDest()).getName();
         Instruction rhs = assignInstruction.getRhs();
@@ -40,6 +24,7 @@ public class BuildMethodAssigment extends JasminMethod{
         methodString.append(InstSingleton.istore(reg));
         addEndLine();
 
+        return this.toString();
     }
 
 

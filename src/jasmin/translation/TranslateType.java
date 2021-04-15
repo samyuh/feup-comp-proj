@@ -1,27 +1,35 @@
 package jasmin.translation;
 
 
-import org.specs.comp.ollir.ArrayType;
-import org.specs.comp.ollir.ClassType;
-import org.specs.comp.ollir.ElementType;
-import org.specs.comp.ollir.Type;
+import org.specs.comp.ollir.*;
 
 public class TranslateType {
 
+    public static String getJasminType(Type type, Operand operand) {
 
-    public static String getJasminType(Type type){
+        switch (type.getTypeOfElement()) {
+            case OBJECTREF:
+                return operand.getName();
+            default:
+               return getJasminType(type);
+        }
+    }
 
-        if (type.getTypeOfElement() == ElementType.ARRAYREF)
-            return getJasminTypeArray((ArrayType)type);
-        else if (type.getTypeOfElement() == ElementType.CLASS) {
-            System.out.println("TO IMPLEMENT");
-            return "";
+    public static String getJasminType(Type type) {
+        switch (type.getTypeOfElement()) {
+            case ARRAYREF:
+                return getJasminTypeArray((ArrayType) type);
+            case CLASS:
+                System.out.println("To implement");
+                return "";
+            default:
+                return getJasminTypeVar(type, type.getTypeOfElement());
         }
 
-        return getJasminTypeVar(type, type.getTypeOfElement());
 
     }
-    public static String getJasminTypeArray(ArrayType type){
+
+    public static String getJasminTypeArray(ArrayType type) {
         StringBuilder translation = new StringBuilder();
 
         translation.append("[".repeat(Math.max(0, type.getNumDimensions())));
@@ -33,8 +41,8 @@ public class TranslateType {
 
     }
 
-    public static String getJasminTypeVar(Type type, ElementType elementType){
-        switch(elementType){
+    public static String getJasminTypeVar(Type type, ElementType elementType) {
+        switch (elementType) {
             case INT32:
                 return "I";
             case BOOLEAN:
@@ -42,14 +50,13 @@ public class TranslateType {
             case STRING:
                 return "Ljava/lang/String;";
             case CLASS:
-                return ((ClassType)type).getName();
+                return ((ClassType) type).getName();
             case VOID:
                 return "V";
 
         }
         return "";
     }
-
 
 
 }
