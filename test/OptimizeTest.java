@@ -26,8 +26,14 @@ public class OptimizeTest {
     }
 
     @Test
-    public void testFac() {
-        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/OllirArrays.jmm"));
+    public void testArraysAndSimpleVars() {
+        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/OllirArraysAndSimpleVars.jmm"));
+        TestUtils.noErrors(result.getReports());
+    }
+
+    @Test
+    public void testRecursionInAssignments(){
+        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/OllirRecursiveAssignment.jmm"));
         TestUtils.noErrors(result.getReports());
     }
 }

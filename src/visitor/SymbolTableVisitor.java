@@ -132,10 +132,6 @@ public class SymbolTableVisitor extends PreorderJmmVisitor<Analysis,Boolean> {
         if (typeNode.get("type").equals("int[]")) type = new Type("int", true);
         else type = new Type(typeNode.get("type"), false);
 
-        Type type;
-        if (typeNode.get("type").equals("int[]")) type = new Type("int",true);
-        else type = new Type(typeNode.get("type"), false);
-
         return new Symbol(type, name);
     }
 

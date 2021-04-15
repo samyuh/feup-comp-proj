@@ -1,0 +1,31 @@
+import io;
+class Fac {
+    int b;
+    boolean fieldBool;
+
+    public int compFac(int num){
+        int num_aux;
+        int[] a;
+        boolean localBool;
+
+        fieldBool = false;
+        localBool = fieldBool;
+
+        /*
+        a[5] = num_aux;
+        a[num_aux] = num_aux;
+        a[num_aux] = b;
+        a = 5;
+        */
+
+        return num_aux;
+    }
+
+    public boolean boolReturn(boolean boolParam1, boolean boolParam2){
+        boolean boolVar;
+
+        boolVar = boolParam2;
+        return true;
+    }
+
+}

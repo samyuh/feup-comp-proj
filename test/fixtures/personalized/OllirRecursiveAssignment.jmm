@@ -1,0 +1,15 @@
+class MeuDeus {
+    public static void main(String[] args){
+    }
+
+    public int testMethod(){
+        int a;
+        int[] arr;
+        a = 6 + 6 + 6;
+        /*
+        a = arr[2] + 3;
+        a = 5 + arr[2];
+        */
+        return 3;
+    }
+}
