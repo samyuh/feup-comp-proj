@@ -241,7 +241,7 @@ public class OllirEmitter {
         // "!" , Expression
 
         // TODO: implement recursive expression subdivision, with auxiliar variables
-        return "VALUE";// ollirExpression(valueNode);
+        return "NOT IMPLEMENTED";
     }
 
     // Expression , "." , "length"
@@ -252,6 +252,7 @@ public class OllirEmitter {
         JmmNode left = node.getChildren().get(0);
         JmmNode right = node.getChildren().get(1); // DotMethod
 
+        // TODO: ver se é um objeto da classe
         if(left.getKind().equals("This")){
             JmmNode methodNode = right.getChildren().get(0);
             JmmNode parametersNode = right.getChildren().get(1);
@@ -262,9 +263,9 @@ public class OllirEmitter {
                 invokedMethod = methodNode.get("name");
                 returnType = MyOllirUtils.ollirType(symbolTable.getReturnType(invokedMethod));
             }
-            else {
-                invokedMethod = ollirExpression(methodName, methodNode);
-                returnType = "";
+            else { // TODO: acho que aqui só pode ser Dot
+                //invokedMethod = ollirExpression(methodName, methodNode);
+                return "NOT IMPLEMENTED";
             }
 
             // Parameters
@@ -275,7 +276,8 @@ public class OllirEmitter {
                     String type = getNodeType(methodName, param);
                     sb.append(newAuxiliarVar(type, methodName, param));
                     parameters += "t" + auxVarNumber + type;
-                } else if(isField(param)){
+                }
+                else if(isField(param)){
                     String type = MyOllirUtils.ollirType(getFieldType(param.get("name")));
                     sb.append(newAuxiliarVar(type, methodName, param));
                     parameters += "t" + auxVarNumber + type;
@@ -286,9 +288,8 @@ public class OllirEmitter {
             return "invokevirtual(this,\"" + invokedMethod + "\"" + parameters + ")" + returnType;
 
         }
-        //right.getKind();
 
-        return "";
+        return "NOT IMPLEMENTED";
     }
 
     // Get the ollir expression of an identifier (parameter, field or local variable)
