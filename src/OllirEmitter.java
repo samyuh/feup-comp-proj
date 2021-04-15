@@ -10,6 +10,7 @@ import visitor.Utils;
 
 public class OllirEmitter {
     static int auxVarNumber;
+    static int indent;
     SymbolTable symbolTable;
     List<Report> reports;
     StringBuilder sb;
@@ -19,6 +20,7 @@ public class OllirEmitter {
         reports = new ArrayList<>();
         sb = new StringBuilder();
         auxVarNumber = 0;
+        indent = 0;
     }
 
     /**
@@ -28,6 +30,7 @@ public class OllirEmitter {
         boolean hasImports = node.getNumChildren() == 2;
 
         sb.append(symbolTable.getClassName()).append("{\n");
+        indent++;
         visitFields();
         classConstructor();
 
@@ -40,13 +43,14 @@ public class OllirEmitter {
             }
         }
 
+        indent--;
         sb.append("}");
         return sb.toString();
     }
 
     private void visitFields(){
         for(Symbol field : symbolTable.getFields()){
-            sb.append("\t.field private ");
+            sb.append(prefix()).append(".field private ");
             sb.append(field.getName());
             sb.append(MyOllirUtils.ollirType(field.getType()));
             sb.append(";\n");
@@ -54,14 +58,16 @@ public class OllirEmitter {
     }
 
     private void classConstructor(){
-        sb.append("\t.construct ");
+        sb.append(prefix()).append(".construct ");
         sb.append(symbolTable.getClassName());
         sb.append("().V {\n");
-        sb.append("\t\tinvokespecial(this, \"<init>\").V;\n\t}\n");
+        indent++;
+        sb.append(prefix()).append("invokespecial(this, \"<init>\").V;\n\t}\n");
+        indent--;
     }
 
     private void visitMethod(JmmNode methodNode) {
-        sb.append("\t.method public ");
+        sb.append(prefix()).append(".method public ");
         String methodName;
         if(methodNode.getKind().equals("MethodMain")){
             sb.append("static ");
@@ -87,6 +93,7 @@ public class OllirEmitter {
 
         // Method Body
         sb.append("{\n");
+        indent++;
         int bodyIdx = methodName.equals("main") ? methodNode.getNumChildren()-1 : methodNode.getNumChildren()-2;
         List<JmmNode> statements = methodNode.getChildren().get(bodyIdx).getChildren();
         visitStatements(methodName, statements);
@@ -94,12 +101,13 @@ public class OllirEmitter {
         // Return Statement
         if(!methodName.equals("main")){
             JmmNode returnValue = methodNode.getChildren().get(bodyIdx+1).getChildren().get(0);
-            sb.append("ret");
+            sb.append(prefix()).append("ret");
             sb.append(returnTypeStr).append(" ");
-            sb.append(ollirExpression(methodName,returnValue)).append(";");
+            sb.append(ollirExpression(methodName,returnValue)).append(";\n");
         }
 
-        sb.append("\t}\n");
+        indent--;
+        sb.append(prefix()).append("}\n");
     }
 
     private void visitStatements(String methodName, List<JmmNode> statements){
@@ -158,7 +166,7 @@ public class OllirEmitter {
         String leftSide = MyOllirUtils.ollirVar(name, type);
         String rightSide = ollirExpression(methodName, valueNode);
 
-        sb.append(leftSide).append(":=").append(MyOllirUtils.ollirType(type)).append(" ").append(rightSide).append(";\n");
+        sb.append(prefix()).append(leftSide).append(":=").append(MyOllirUtils.ollirType(type)).append(" ").append(rightSide).append(";\n");
     }
 
     private void ollirArrayAssignment(String methodName, String name, JmmNode indexNode, JmmNode rightNode){
@@ -183,7 +191,7 @@ public class OllirEmitter {
         String leftSide = name + "[" + indexValue + "].i32";
         String rightSide = ollirExpression(methodName, rightNode);
 
-        sb.append(leftSide).append(":=.i32 ").append(rightSide).append(";\n");
+        sb.append(indent).append(leftSide).append(":=.i32 ").append(rightSide).append(";\n");
     }
 
     private String ollirArrayIndex(String methodName, JmmNode node){
@@ -253,16 +261,16 @@ public class OllirEmitter {
 
     private String generatePutField(String methodName, String field, JmmNode valueNode){
         String value = ollirExpression(methodName, valueNode);
-        return "putfield(this," + field + "," + value + ").V;";
+        return prefix() + "putfield(this," + field + "," + value + ").V;";
     }
 
     private String generateGetField(String field, Type type){
-        return "getfield(this," + MyOllirUtils.ollirVar(field, type) + ")" + MyOllirUtils.ollirType(type);
+        return prefix() + "getfield(this," + MyOllirUtils.ollirVar(field, type) + ")" + MyOllirUtils.ollirType(type);
     }
 
     private String newAuxiliarVar(String type, String methodName, JmmNode node){
         auxVarNumber++;
-        return "t" + auxVarNumber + type + " :=" + type +" " + ollirExpression(methodName, node) + ";\n";
+        return prefix() + "t" + auxVarNumber + type + " :=" + type +" " + ollirExpression(methodName, node) + ";\n";
     }
 
 
@@ -308,6 +316,14 @@ public class OllirEmitter {
 
     public List<Report> getReports() {
         return reports;
+    }
+
+    public static String prefix(){
+        String tabs = "";
+        for(int i = 0; i < indent; i++){
+            tabs += "\t";
+        }
+        return tabs;
     }
 
 }
