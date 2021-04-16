@@ -9,7 +9,6 @@ class MeuDeus {
         boolean ola;
         boolean b;
 
-        /*
         ola = false;
         a = 6 + 6 + 6;
         b = ola && true && false;
@@ -17,7 +16,7 @@ class MeuDeus {
         a = 5 + arr[2];
         a = arr[arr[2]] + 3;
         a = arr[a] + 4;
-        */
+
         a = arr[field] + arr[param] + field;
         return 3;
     }

@@ -1,5 +1,8 @@
 import pt.up.fe.comp.jmm.JmmNode;
 import pt.up.fe.comp.jmm.analysis.table.Type;
+import pt.up.fe.comp.jmm.report.Report;
+import pt.up.fe.comp.jmm.report.ReportType;
+import pt.up.fe.comp.jmm.report.Stage;
 
 public class MyOllirUtils {
 
@@ -50,6 +53,11 @@ public class MyOllirUtils {
             default:
                 return "ERROR";
         }
+    }
+
+    public static Report report(JmmNode node, String message){
+        return new Report(ReportType.ERROR, Stage.LLIR,
+                Integer.parseInt(node.get("line")), Integer.parseInt(node.get("col")),message);
     }
 
 }
