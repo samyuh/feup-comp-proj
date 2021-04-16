@@ -1,6 +1,14 @@
-class AiVida {
+import io;
+import Static;
+class AiVida extends Grr {
     int ai;
     int[] classArr;
+
+    public static void main(String[] args){
+        io.println(10);
+        Static.println();
+    }
+
 
     public int retornaInt(int[] paramArr){
         int a;
@@ -8,6 +16,7 @@ class AiVida {
         AiVida vida;
 
         // Working
+        /*
         a = this.doSomething(1,2);
         a = this.doSomething(a + 2,2);
         a = this.doSomething(b[3+a],3);
@@ -19,18 +28,21 @@ class AiVida {
         a = this.what()[2];
         a = classArr[2];
         a = paramArr[2];
+        a = vida.doNothing();
+        a = vida.assumirExtend();
+        */
 
-        // TODO
-        //a = vida.doNothing();
-        //a = retornaDaClass().doNothing();
 
         // TODO: all cases when the left side is not "this"
-        //a = b.get().get();
+
         //a = b.length;
+        //a = retornaDaClass().doNothing();
+        //a = b.get().get();
         //a = this.doSomething(a,2).what();
         return a;
     }
 
+    /*
     public AiVida retornaDaClasse(){
         AiVida test;
         return test;
@@ -47,5 +59,5 @@ class AiVida {
     public int doNothing(){
         return 1;
     }
-
+    */
 }
