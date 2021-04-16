@@ -1,5 +1,6 @@
 package jasmin.methods;
 
+import jasmin.translation.TranslateCall;
 import org.specs.comp.ollir.*;
 
 
@@ -16,15 +17,18 @@ public class BuildMethod extends JasminMethod {
         for (Instruction inst: method.getInstructions())
             methodString.append(getInstruction(inst, method));
         addEnd();
+        addEndLine();
+        addEndLine();
 
         return this.toString();
     }
 
     public String getInstruction(Instruction inst, Method method){
-        System.out.println(inst.toString());
         switch (inst.getInstType()){
             case ASSIGN:
                 return new BuildMethodAssigment(ollir, method).getInstructionAssign((AssignInstruction) inst);
+            case CALL:
+                return TranslateCall.getJasminInst((CallInstruction)inst, OllirAccesser.getVarTable(method)) + "\n";
 
         }
         return "";

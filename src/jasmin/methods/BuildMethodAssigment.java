@@ -13,7 +13,6 @@ public class BuildMethodAssigment extends JasminMethod{
     }
 
     public String getInstructionAssign(AssignInstruction assignInstruction){
-        assignInstruction.show();
         String destName = ((Operand)assignInstruction.getDest()).getName();
         Instruction rhs = assignInstruction.getRhs();
         Element lhs = assignInstruction.getDest();
@@ -22,7 +21,6 @@ public class BuildMethodAssigment extends JasminMethod{
 
         methodString.append(new BuildOperand(ollir, table, lhs).getOperand(rhs));
         methodString.append(InstSingleton.istore(reg));
-        addEndLine();
 
         return this.toString();
     }

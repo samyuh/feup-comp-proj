@@ -1,18 +1,23 @@
 package jasmin;
 
-import org.specs.comp.ollir.ArrayOperand;
-import org.specs.comp.ollir.Descriptor;
-import org.specs.comp.ollir.Element;
-import org.specs.comp.ollir.Operand;
+import jasmin.translation.TranslateType;
+import org.specs.comp.ollir.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class UtilsJasmin {
 
-    public static int getVirtualRegArray(Element arrayElement, HashMap<String, Descriptor> table){
-        Descriptor descriptor = table.get(((Operand)arrayElement).getName());
-        return descriptor.getVirtualReg();
+    public static String getObjectName(Element element){
+        ClassType classType = (ClassType) element.getType();
+        return classType.getName();
+    }
+    public static Descriptor getDescriptor(Element element, HashMap<String, Descriptor> table){
+        return table.get(((Operand) element).getName());
+    }
+
+    public static int getVirtualReg(Element element, HashMap<String, Descriptor> table){
+        return getDescriptor(element, table).getVirtualReg();
     }
 
     public static int getVirtualRegIndex(Element arrayElement, HashMap<String, Descriptor> table){
@@ -22,4 +27,20 @@ public class UtilsJasmin {
         Descriptor desc = table.get(((Operand) indexElement).getName());
         return desc.getVirtualReg();
     }
+
+    public static String getArguments(ArrayList<Element> params){
+
+        StringBuilder stringBuilder = new StringBuilder("(");
+        for (Element param: params) {
+            Type type = param.getType();
+            stringBuilder.append(TranslateType.getJasminType(type));
+            stringBuilder.append(",");
+        }
+        if (params.size() > 0 )
+            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+
+        stringBuilder.append(")");
+        return stringBuilder.toString();
+    }
+
 }

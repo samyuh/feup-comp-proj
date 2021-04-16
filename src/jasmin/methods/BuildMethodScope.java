@@ -1,5 +1,6 @@
 package jasmin.methods;
 
+import jasmin.UtilsJasmin;
 import jasmin.translation.TranslateType;
 import org.specs.comp.ollir.ClassUnit;
 import org.specs.comp.ollir.Element;
@@ -24,9 +25,9 @@ public class BuildMethodScope extends JasminMethod{
         methodString.append(accessModifiers);
 
         if (method.isStaticMethod())
-            methodString.append("static");
+            methodString.append(" static");
         if (method.isFinalMethod())
-            methodString.append("final");
+            methodString.append(" final");
         methodString.append(" ");
 
 
@@ -35,13 +36,15 @@ public class BuildMethodScope extends JasminMethod{
         else
             addScopeMethod();
 
+        addEndLine();
+
         return methodString.toString();
 
     }
 
     public void addScopeMethod() {
         methodString.append(method.getMethodName());
-        addParameters();
+        methodString.append(UtilsJasmin.getArguments(method.getParams()));
         methodString.append(TranslateType.getJasminType(method.getReturnType()));
         addEndLine();
         methodString.append(".limit stack 99");
@@ -60,18 +63,4 @@ public class BuildMethodScope extends JasminMethod{
         addEndLine();
     }
 
-    public void addParameters() {
-        ArrayList<Element> params = method.getParams();
-        methodString.append("(");
-
-        for (Element param : params) {
-            Type type = param.getType();
-            methodString.append(TranslateType.getJasminType(type));
-            methodString.append(",");
-        }
-
-        methodString.deleteCharAt(methodString.length() - 1);
-        methodString.append(")");
-
-    }
 }

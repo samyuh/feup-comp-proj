@@ -36,7 +36,6 @@ public class TranslateType {
 
         //TODO: fix when the class is from an import
         translation.append(getJasminTypeVar(type, type.getTypeOfElements()));
-        System.out.println(type.getTypeOfElements());
         return translation.toString();
 
     }

@@ -4,7 +4,6 @@ import jasmin.InstSingleton;
 import jasmin.UtilsJasmin;
 import org.specs.comp.ollir.*;
 
-import javax.lang.model.element.TypeElement;
 import java.util.HashMap;
 
 
@@ -12,7 +11,6 @@ public class TranslateElement {
 
     public static String getJasminInst(Element element, HashMap<String, Descriptor> table){
         ElementType elementType = element.getType().getTypeOfElement();
-        System.out.println(element.getClass());
 
         // generates iconst_
         if (element.isLiteral()){
@@ -28,16 +26,20 @@ public class TranslateElement {
             if (typeVar == ElementType.ARRAYREF)
                 return getAccessArray(element, table);
             else {
-                int register = table.get(((Operand) element).getName()).getVirtualReg();
+                int register = UtilsJasmin.getVirtualReg(element, table);
                 return InstSingleton.iload(register);
             }
+        }
+        else if (elementType == ElementType.OBJECTREF){
+            int register = UtilsJasmin.getVirtualReg(element, table);
+            return InstSingleton.aload(register);
         }
         return "";
     }
 
     public static String getAccessArray(Element arrayElement, HashMap<String, Descriptor> table){
         int virtualRegIndex = UtilsJasmin.getVirtualRegIndex(arrayElement, table);
-        int virtualRegArray = UtilsJasmin.getVirtualRegArray(arrayElement, table);
+        int virtualRegArray = UtilsJasmin.getVirtualReg(arrayElement, table);
 
         return InstSingleton.getAccessArrayVar(virtualRegArray, virtualRegIndex);
     }

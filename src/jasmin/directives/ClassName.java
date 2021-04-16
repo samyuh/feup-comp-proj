@@ -21,11 +21,11 @@ public class ClassName extends JasminDirective {
         AccessModifiers accessModifiers = ollir.getClassAccessModifier();
         directiveString.append(".class ");
         directiveString.append(this.getAccessModifiers(accessModifiers));
-        if (ollir.isStaticClass())
-            directiveString.append("static");
-        if (ollir.isFinalClass())
-            directiveString.append("final");
         directiveString.append(" ");
+        if (ollir.isStaticClass())
+            directiveString.append(" static ");
+        if (ollir.isFinalClass())
+            directiveString.append(" final ");
         directiveString.append(ollir.getClassName());
         addEndLine();
 
