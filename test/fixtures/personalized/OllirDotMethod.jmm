@@ -5,8 +5,11 @@ class AiVida extends Grr {
     int[] classArr;
 
     public static void main(String[] args){
-        io.println(10);
-        Static.println();
+        int a;
+        //a = io.println(10,classArr[ai]);
+        //a = io.println(10,args[ai]);
+        a = io.getWhatever(10,args[ai]) + 6;
+        //Static.println();
     }
 
 

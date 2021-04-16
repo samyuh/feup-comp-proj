@@ -205,6 +205,7 @@ public class OllirEmitter {
     private String ollirArrayAccess(String methodName, JmmNode arrayNode, JmmNode node){
         String arrayStr;
         String indexValue;
+        boolean isStringArray = false;
 
         // Array accessed
         if(isField(arrayNode) || !arrayNode.getKind().equals("Identifier")){
@@ -213,7 +214,13 @@ public class OllirEmitter {
         } else {
             arrayStr = arrayNode.get("name");
             int pos = getParameterPosition(methodName, arrayStr);
-            if(pos != -1) arrayStr = MyOllirUtils.ollirParameter(arrayStr, pos);
+            if(pos != -1){
+                if(methodName.equals("main") &&
+                        MyOllirUtils.ollirType(getParameterType(methodName,pos)).equals(".array.String")){
+                     isStringArray = true;
+                }
+                arrayStr = MyOllirUtils.ollirParameter(arrayStr, pos);
+            }
         }
 
         // Index
@@ -223,7 +230,7 @@ public class OllirEmitter {
             indexValue = "t" + auxVarNumber + ".i32";
         } else indexValue = ollirFromIdentifierNode(methodName, node);
 
-        return arrayStr + "[" + indexValue + "].i32";
+        return arrayStr + "[" + indexValue + "]" + (isStringArray ? ".String" : ".i32");
     }
 
 
@@ -516,10 +523,22 @@ public class OllirEmitter {
     private String getNodeType(String methodName, JmmNode node){
         String kind = node.getKind();
 
-        if(Utils.isMathExpression(kind) || kind.equals("ArrayAccess")) return ".i32";
+        if(Utils.isMathExpression(kind)) return ".i32";
         if(Utils.isBooleanExpression(kind)) return ".bool";
         if(kind.equals("NewIntArray")) return ".array.i32";
         if(kind.equals("NewObject")) return node.getChildren().get(0).get("name");
+        if(kind.equals("ArrayAccess")){
+            if(methodName.equals("main") && node.getChildren().get(0).getKind().equals("Identifier")){
+                String name = node.getChildren().get(0).get("name");
+                int pos;
+                if((pos = getParameterPosition(methodName, name)) != -1){
+                    String type = MyOllirUtils.ollirType(getParameterType(methodName,pos));
+                    return type.equals(".array.i32") ? ".i32" : ".String";
+                }
+            }
+
+            return ".i32";
+        }
 
         return "ERROR";
     }

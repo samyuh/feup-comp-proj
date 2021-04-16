@@ -33,7 +33,7 @@ public class ArrayVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
         if(kind.equals("Identifier")){
             String parentMethodName = Utils.getParentMethodName(newExpresionNode);
             String type = Utils.getVariableType(arrayNode, analysis, parentMethodName);
-            if(!type.equals("int[]")){
+            if(!type.equals("int[]") && !type.equals("String[]")){
                 analysis.addReport(arrayNode, "Invalid identifier, must be an int[].");
                 return false;
             }
