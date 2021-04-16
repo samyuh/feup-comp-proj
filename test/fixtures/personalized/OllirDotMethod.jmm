@@ -1,15 +1,36 @@
 import io;
-import Static;
+import Fac;
 class AiVida extends Grr {
     int ai;
     int[] classArr;
+    AiVida fieldAi;
 
     public static void main(String[] args){
         int a;
-        //a = io.println(10,classArr[ai]);
-        //a = io.println(10,args[ai]);
+        int[] local;
+        AiVida aloha;
+        Fac f;
+
+        // Working
+
+        a = 1;
+        aloha = new AiVida();
+        f = new Fac();
+        local = new int[a];
+        a = io.println(10,classArr[ai]);
+        a = io.println(10,args[ai]);
         a = io.getWhatever(10,args[ai]) + 6;
-        //Static.println();
+        Fac.staticMethod();
+        classArr = new int[a];
+        fieldAi = new Aivida();
+        a = this.retornaInt(new int[a]);
+        ai = io.println();
+        ai = this.retornaInt(new int[a]);
+
+        // TODO:
+        //io.println(new AiVida());
+        //this.doSomething(1,io.getWhat()); // Is failing in the semantic tests
+
     }
 
 
@@ -19,6 +40,7 @@ class AiVida extends Grr {
         AiVida vida;
 
         // Working
+
         /*
         a = this.doSomething(1,2);
         a = this.doSomething(a + 2,2);
@@ -35,7 +57,6 @@ class AiVida extends Grr {
         a = vida.assumirExtend();
         */
 
-
         // TODO: all cases when the left side is not "this"
 
         //a = b.length;
@@ -45,7 +66,7 @@ class AiVida extends Grr {
         return a;
     }
 
-    /*
+
     public AiVida retornaDaClasse(){
         AiVida test;
         return test;
@@ -62,5 +83,5 @@ class AiVida extends Grr {
     public int doNothing(){
         return 1;
     }
-    */
+
 }

@@ -153,9 +153,10 @@ public class OllirEmitter {
     private void ollirIdentifierAssignment(String methodName, String name, JmmNode valueNode){
         Type type;
 
+        // LEFT NODE
         // Left side of the assignment is a Field: e.g. putfield(this, num_aux.i32, value).V;
         if((type = getFieldType(name)) != null){
-            sb.append(generatePutField(methodName, MyOllirUtils.ollirVar(name,type),valueNode));
+            sb.append(generatePutField(methodName, name, type, valueNode));
             return;
         }
 
@@ -169,21 +170,36 @@ public class OllirEmitter {
         // Left side of the assignment is a Local Variable or Parameter
         String leftSide = MyOllirUtils.ollirVar(name, type);
         String assignmentType = MyOllirUtils.ollirType(type);
+
+        // RIGHT NODE: Assigned value
         String rightSide;
+        boolean isNewObject = false;
         if(valueNode.getKind().equals("Dot"))
             rightSide = ollirDotMethod(methodName, valueNode, assignmentType);
+        else if(valueNode.getKind().equals("NewObject")){
+            rightSide = ollirNewObject(valueNode);
+            isNewObject = true;
+        }
+        else if(valueNode.getKind().equals("NewIntArray"))
+            rightSide = ollirNewIntArray(methodName, valueNode);
         else rightSide = ollirExpression(methodName, valueNode);
 
         sb.append(prefix()).append(leftSide).append(" :=").append(assignmentType);
         sb.append(" ").append(rightSide).append(";");
+
+        if(isNewObject)
+            sb.append("\n").append(ollirInitObject(leftSide));
     }
 
     private void ollirArrayAssignment(String methodName, JmmNode arrayIdentifier, JmmNode indexNode, JmmNode rightNode){
         String name = arrayIdentifier.get("name");
+
+        // LEFT NODE
         //  Left side of the assignment is a Field: e.g.putfield(this, A[i.i32].i32, ladoDoreito).V
-        if(getFieldType(name) != null){
+        Type type;
+        if((type = getFieldType(name)) != null){
             String leftSide = ollirArrayAccess(methodName,arrayIdentifier,indexNode);
-            sb.append(generatePutField(methodName, leftSide, rightNode));
+            sb.append(generatePutField(methodName, leftSide, type, rightNode));
             return;
         }
 
@@ -196,6 +212,8 @@ public class OllirEmitter {
 
         // Left side of the assignment is a Local Variable or Parameter
         String leftSide = ollirArrayAccess(methodName,arrayIdentifier,indexNode);
+
+        // RIGHT SIDE
         String rightSide = ollirExpression(methodName, rightNode);
 
         sb.append(prefix()).append(leftSide).append(" :=.i32 ").append(rightSide).append(";");
@@ -263,11 +281,15 @@ public class OllirEmitter {
         if(kind.equals("Dot"))
             return ollirDotMethod(methodName, node, null);
 
-        // "new" , "int" , "[" , Expression , "]"
-        // "new" , Identifier , "(" , ")"
-        // "!" , Expression
+        if(kind.equals("NewObject")){
+            return ollirNewObject(node);
+        }
 
-        // TODO: implement recursive expression subdivision, with auxiliar variables
+        if(kind.equals("NewIntArray"))
+            return ollirNewIntArray(methodName, node);
+
+        // TODO: "!" , Expression
+
         return "EXPRESSION";
     }
 
@@ -341,6 +363,7 @@ public class OllirEmitter {
                 if(param.getKind().equals("Dot"))
                     type = MyOllirUtils.ollirType(symbolTable.getParameters(invokedMethod).get(i).getType());
                 else type = getNodeType(methodName, param);
+
                 sb.append(newAuxiliarVar(type, methodName, param));
                 parameters += "t" + auxVarNumber + type;
             }
@@ -433,11 +456,44 @@ public class OllirEmitter {
         return leftValue + MyOllirUtils.ollirOperator(node) + rightValue;
     }
 
+    public String ollirInitObject(String var){
+        return prefix() + "invokespecial(" + var + ",\"<init>\").V;\n";
+    }
+
+    public String ollirNewObject(JmmNode node){
+        String className = node.getChildren().get(0).get("name");
+        return "new("+ className + ")"+ "." + className;
+    }
+
+    public String ollirNewIntArray(String methodName, JmmNode node){
+        JmmNode sizeNode = node.getChildren().get(0);
+        String size;
+        if(isField(sizeNode) || !sizeNode.getKind().equals("Identifier")){
+            String aux = newAuxiliarVar(".i32", methodName, sizeNode);
+            sb.append(aux);
+            size = "t" + auxVarNumber + ".i32";
+        } else size = ollirFromIdentifierNode(methodName, sizeNode);
+
+        return "new(array," + size + ").array.i32";
+    }
+
 
     // Get ollir putfield expression
-    private String generatePutField(String methodName, String field, JmmNode valueNode){
-        String value = ollirExpression(methodName, valueNode);
-        return prefix() + "putfield(this," + field + "," + value + ").V;";
+    private String generatePutField(String methodName, String field, Type type, JmmNode valueNode){
+        String value;
+        if(valueNode.getKind().equals("NewObject")){
+            String className = valueNode.getChildren().get(0).get("name");
+            sb.append(newAuxiliarVar("." + className, methodName, valueNode));
+            value = "t" + auxVarNumber + "." + className;
+            sb.append(ollirInitObject(value));
+        }
+        else if(valueNode.getNumChildren() > 0){
+            String typeStr = MyOllirUtils.ollirType(type);
+            sb.append(newAuxiliarVar(typeStr, methodName, valueNode));
+            value = "t" + auxVarNumber + typeStr;
+        } else value = ollirExpression(methodName, valueNode);
+
+        return prefix() + "putfield(this," + MyOllirUtils.ollirVar(field,type) + "," + value + ").V;";
     }
 
     // Get ollir getfield expression
@@ -454,6 +510,7 @@ public class OllirEmitter {
         auxVarNumber++;
         return prefix() + "t" + auxVarNumber + type + " :=" + type +" " + value + ";\n";
     }
+
 
     private Type getLocalVariableType(String methodName, String name){
         for (Symbol symb: symbolTable.getLocalVariables(methodName)){
@@ -538,6 +595,14 @@ public class OllirEmitter {
             }
 
             return ".i32";
+        }
+        if(kind.equals("Dot")){
+            JmmNode methodNode = node.getChildren().get(1);
+            if(methodNode.getKind().equals("Length")) return ".i32";
+            JmmNode methodIdentifier = methodNode.getChildren().get(0);
+            if(symbolTable.getMethods().contains(methodIdentifier.get("name")))
+                return MyOllirUtils.ollirType(symbolTable.getReturnType(methodIdentifier.get("name")));
+            return "undefined";
         }
 
         return "ERROR";
