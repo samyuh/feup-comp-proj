@@ -128,7 +128,6 @@ public class OllirEmitter {
                     break;
                 //...
                 default:
-                    sb.append(prefix());
                     sb.append(ollirExpression(methodName, statements.get(i))).append(";");
                     break;
             }
@@ -281,15 +280,13 @@ public class OllirEmitter {
             JmmNode indexNode = node.getChildren().get(1); // Array Index
             return ollirArrayAccess(methodName,accessedNode,indexNode);
         }
-
         // Dot Method
         if(kind.equals("Dot"))
             return ollirDotMethod(methodName, node, null);
-
-        if(kind.equals("NewObject")){
+        // New Object
+        if(kind.equals("NewObject"))
             return ollirNewObject(node);
-        }
-
+        // New Int Array
         if(kind.equals("NewIntArray"))
             return ollirNewIntArray(methodName, node);
 
@@ -368,6 +365,7 @@ public class OllirEmitter {
                 if(param.getKind().equals("Dot"))
                     type = MyOllirUtils.ollirType(symbolTable.getParameters(invokedMethod).get(i).getType());
                 else type = getNodeType(methodName, param);
+                // TODO: usar a estratégia do dot method de baixo
 
                 sb.append(newAuxiliarVar(type, methodName, param));
                 parameters += "t" + auxVarNumber + type;
@@ -380,6 +378,7 @@ public class OllirEmitter {
             else parameters += ollirExpression(methodName, param);
         }
 
+        if(expectedReturn == null) sb.append(prefix());
         return "invokevirtual(this,\"" + invokedMethod + "\"" + parameters + ")" + returnType;
     }
 
@@ -401,14 +400,25 @@ public class OllirEmitter {
         for(int i = 0; i < parametersNode.getNumChildren(); i++){
             JmmNode param = parametersNode.getChildren().get(i);
             parameters += ", ";
+
+            // Process parameter considering its node type
+            // Param is a complex node
             if(param.getNumChildren() > 0){
                 String type;
-                if(param.getKind().equals("Dot"))
-                    type = "NOT DONE"; // Get return type of method or assume int
-                else type = getNodeType(methodName, param);
-                sb.append(newAuxiliarVar(type, methodName, param));
+
+                // Param is a NewObject
+                if(param.getKind().equals("NewObject")){
+                    type = "." + param.getChildren().get(0).get("name");
+                    sb.append(newAuxiliarVar(type, methodName, param));
+                    sb.append(ollirInitObject("t" + auxVarNumber + type));
+                }
+                else {
+                    type = getNodeType(methodName, param);
+                    sb.append(newAuxiliarVar(type, methodName, param));
+                }
                 parameters += "t" + auxVarNumber + type;
             }
+            // Param is a field
             else if(isField(param)){
                 String type = MyOllirUtils.ollirType(getFieldType(param.get("name")));
                 sb.append(newAuxiliarVar(type, methodName, param));
@@ -417,6 +427,7 @@ public class OllirEmitter {
             else parameters += ollirExpression(methodName, param);
         }
 
+        if(expectedReturn == null) sb.append(prefix());
         return "invokestatic(" + importName + ", \"" + invokedMethod +"\"" + parameters + ")" + returnType;
     }
 
