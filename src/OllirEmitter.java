@@ -102,9 +102,14 @@ public class OllirEmitter {
         // Return Statement
         if(!methodName.equals("main")){
             JmmNode returnValue = methodNode.getChildren().get(bodyIdx+1).getChildren().get(0);
-            sb.append(prefix()).append("ret");
-            sb.append(returnTypeStr).append(" ");
-            sb.append(ollirExpression(methodName,returnValue)).append(";\n");
+            String returnStr;
+
+            if(returnValue.getNumChildren() > 0 || isField(returnValue)){
+                sb.append(newAuxiliarVar(returnTypeStr,methodName,returnValue));
+                returnStr = + auxVarNumber + returnTypeStr;
+            } else returnStr = ollirExpression(methodName,returnValue);
+
+            sb.append(prefix()).append("ret").append(returnTypeStr).append(" ").append(returnStr).append(";\n");
         }
 
         indent--;
@@ -259,8 +264,8 @@ public class OllirEmitter {
         // Terminals
         if(kind.equals("Identifier"))
             return ollirFromIdentifierNode(methodName, node);
-        if(kind.equals("True") || kind.equals("False"))
-            return kind.toLowerCase() + ".bool";
+        if(kind.equals("True"))  return "1.bool";
+        if(kind.equals("False")) return "0.bool";
         if(kind.equals("Number"))
             return node.get("value") + ".i32";
 
