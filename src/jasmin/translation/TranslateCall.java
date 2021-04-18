@@ -31,30 +31,39 @@ public class TranslateCall {
                     return anewarray(getVirtualReg(element, table), TranslateType.getJasminType(type, (Operand) element));
                 }
             case invokevirtual:
-                String objectName;
-                String methodCall;
-                StringBuilder stringBuilder = new StringBuilder();
+                return invokevirtual(callInstruction, table);
 
-                Element firstArg = callInstruction.getFirstArg();
-                stringBuilder.append(TranslateElement.getJasminInst(firstArg, table));
-                objectName = UtilsJasmin.getObjectName(firstArg);
-
-                methodCall = ((LiteralElement) callInstruction.getSecondArg()).getLiteral();
-                methodCall = methodCall.substring(1, methodCall.length()-1);
-
-
-                for (Element operand : callInstruction.getListOfOperands())
-                    stringBuilder.append(TranslateElement.getJasminInst(operand, table));
-
-
-                stringBuilder.append("invokevirtual " + objectName + "." + methodCall);
-
-                stringBuilder.append(UtilsJasmin.getArguments(callInstruction.getListOfOperands()));
-                stringBuilder.append(TranslateType.getJasminType(callInstruction.getReturnType()));
-                return stringBuilder.toString() + "\n";
+            case invokestatic:
+                return invokestatic(callInstruction, table);
             default:
                 return "";
         }
 
     }
+
+    private static String invokevirtual(CallInstruction callInstruction, HashMap<String, Descriptor> table){
+        String objectName;
+        String methodCall;
+        StringBuilder stringBuilder = new StringBuilder();
+
+        Element firstArg = callInstruction.getFirstArg();
+        stringBuilder.append(TranslateElement.getJasminInst(firstArg, table));
+        objectName = UtilsJasmin.getObjectName(firstArg);
+
+        methodCall = ((LiteralElement) callInstruction.getSecondArg()).getLiteral();
+        methodCall = methodCall.substring(1, methodCall.length()-1);
+
+
+        for (Element operand : callInstruction.getListOfOperands())
+            stringBuilder.append(TranslateElement.getJasminInst(operand, table));
+
+
+        stringBuilder.append("invokevirtual " + objectName + "." + methodCall);
+
+        stringBuilder.append(UtilsJasmin.getArguments(callInstruction.getListOfOperands()));
+        stringBuilder.append(TranslateType.getJasminType(callInstruction.getReturnType()));
+        return stringBuilder.toString() + "\n";
+    }
+
+    private static String invokestatic(CallInstruction )
 }
