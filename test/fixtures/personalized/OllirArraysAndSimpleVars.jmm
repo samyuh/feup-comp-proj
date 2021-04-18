@@ -2,21 +2,23 @@ import io;
 class Fac {
     int b;
     boolean fieldBool;
+    int[] arr;
 
     public int compFac(int num){
         int num_aux;
         int[] a;
         boolean localBool;
-
+        arr[b] = num_aux;
+        a[b] = num_aux;
+        //b = 3;
+        /*
         fieldBool = false;
         localBool = fieldBool;
-
-
         a[5] = num_aux;
         a[num_aux+4] = num_aux;
         a[num_aux] = b;
         a = 5;
-
+        */
 
         return num_aux;
     }

@@ -144,7 +144,7 @@ public class OllirEmitter {
         // Array Assignment
         if(left.getKind().equals("ArrayAssignment")){
             JmmNode arrayId = left.getChildren().get(0); // Array Identifier
-            JmmNode indexNode = left.getChildren().get(1).getChildren().get(0);
+            JmmNode indexNode = left.getChildren().get(1).getChildren().get(0); // Array Access Index
             ollirArrayAssignment(methodName, arrayId, indexNode, right);
             return;
         }
@@ -160,7 +160,7 @@ public class OllirEmitter {
         // LEFT NODE
         // Left side of the assignment is a Field: e.g. putfield(this, num_aux.i32, value).V;
         if((type = getFieldType(name)) != null){
-            sb.append(generatePutField(methodName, name, type, valueNode));
+            sb.append(generatePutField(methodName, MyOllirUtils.ollirVar(name, type), type, valueNode));
             return;
         }
 
@@ -196,13 +196,16 @@ public class OllirEmitter {
     }
 
     private void ollirArrayAssignment(String methodName, JmmNode arrayIdentifier, JmmNode indexNode, JmmNode rightNode){
-        String name = arrayIdentifier.get("name");
-
+        String name = arrayIdentifier.get("name"); // Name of the array
+        System.out.println("ARRAY ASSIGNMENT");
         // LEFT NODE
         //  Left side of the assignment is a Field: e.g.putfield(this, A[i.i32].i32, ladoDoreito).V
-        Type type;
+        Type type; // The type of the array
         if((type = getFieldType(name)) != null){
+            System.out.println("LEFT SIDE OF THE ASSIGNMENT IS A FIELD");
+            //test_arr[0] = 14;
             String leftSide = ollirArrayAccess(methodName,arrayIdentifier,indexNode);
+
             sb.append(generatePutField(methodName, leftSide, type, rightNode));
             return;
         }
@@ -228,7 +231,7 @@ public class OllirEmitter {
         String arrayStr;
         String indexValue;
         boolean isStringArray = false;
-
+        System.out.println("ARRAY ACCESS");
         // Array accessed
         if(isField(arrayNode) || !arrayNode.getKind().equals("Identifier")){
             sb.append(newAuxiliarVar(".array.i32", methodName, arrayNode));
@@ -495,7 +498,7 @@ public class OllirEmitter {
 
 
     // Get ollir putfield expression
-    private String generatePutField(String methodName, String field, Type type, JmmNode valueNode){
+    private String generatePutField(String methodName, String fieldNameAndType, Type type, JmmNode valueNode){
         String value;
         if(valueNode.getKind().equals("NewObject")){
             String className = valueNode.getChildren().get(0).get("name");
@@ -509,7 +512,7 @@ public class OllirEmitter {
             value = "t" + auxVarNumber + typeStr;
         } else value = ollirExpression(methodName, valueNode);
 
-        return prefix() + "putfield(this," + MyOllirUtils.ollirVar(field,type) + "," + value + ").V;";
+        return prefix() + "putfield(this," + fieldNameAndType + "," + value + ").V;";
     }
 
     // Get ollir getfield expression
