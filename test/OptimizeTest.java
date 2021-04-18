@@ -42,4 +42,10 @@ public class OptimizeTest {
         var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/OllirDotMethod.jmm"));
         TestUtils.noErrors(result.getReports());
     }
+
+    @Test
+    public void testDotMethods2(){
+        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/OllirDotMethod2.jmm"));
+        TestUtils.noErrors(result.getReports());
+    }
 }

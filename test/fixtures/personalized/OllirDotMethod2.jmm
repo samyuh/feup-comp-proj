@@ -1,0 +1,23 @@
+class AiVida extends Grr{
+    int[] c;
+
+    public static void main(String[] args){
+        int a;
+        a = args.length;
+    }
+
+    public int retornaInt(int[] paramArr){
+        // TODO: all cases when the left side is not "this"
+        int a;
+        int[] b;
+        b = new int[3];
+        a = b.length;
+        a = c.length;
+
+        //a = retornaDaClass().doNothing();
+        //a = b.get().get();
+        //a = this.doSomething(a,2).what();
+        return 2;
+    }
+
+}

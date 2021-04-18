@@ -197,12 +197,11 @@ public class OllirEmitter {
 
     private void ollirArrayAssignment(String methodName, JmmNode arrayIdentifier, JmmNode indexNode, JmmNode rightNode){
         String name = arrayIdentifier.get("name"); // Name of the array
-        System.out.println("ARRAY ASSIGNMENT");
+
         // LEFT NODE
         //  Left side of the assignment is a Field: e.g.putfield(this, A[i.i32].i32, ladoDoreito).V
         Type type; // The type of the array
         if((type = getFieldType(name)) != null){
-            System.out.println("LEFT SIDE OF THE ASSIGNMENT IS A FIELD");
             //test_arr[0] = 14;
             String leftSide = ollirArrayAccess(methodName,arrayIdentifier,indexNode);
 
@@ -231,7 +230,7 @@ public class OllirEmitter {
         String arrayStr;
         String indexValue;
         boolean isStringArray = false;
-        System.out.println("ARRAY ACCESS");
+
         // Array accessed
         if(isField(arrayNode) || !arrayNode.getKind().equals("Identifier")){
             sb.append(newAuxiliarVar(".array.i32", methodName, arrayNode));
@@ -292,10 +291,9 @@ public class OllirEmitter {
         // New Int Array
         if(kind.equals("NewIntArray"))
             return ollirNewIntArray(methodName, node);
-
         // TODO: "!" , Expression
 
-        return "EXPRESSION";
+        return "EXPRESSION NOT KNOWN";
     }
 
 
@@ -315,11 +313,18 @@ public class OllirEmitter {
             if(type.getName().equals(symbolTable.getClassName()))
                 return ollirClassOrSuperMethod(methodName, right, expectedType);
 
-            // Int Array
-            if(type.isArray() && type.getName().equals("int")){
+            // Array
+            // c is field; c.length;  c=left length = right
+            String aux;
+            if(type.isArray() && right.getKind().equals("Length")){
+                if(isField(left)){
+                    sb.append(newAuxiliarVar(MyOllirUtils.ollirType(type), methodName, left));
+                    aux = "t" + auxVarNumber + MyOllirUtils.ollirType(type);
+                } else aux = ollirExpression(methodName, left);
 
-            }
-            //MyOllirUtils.ollirType(type);
+                return "arraylength(" + aux + ").i32";
+            } else MyOllirUtils.report(node,"Invalid dot method call.");
+
         }
 
         // Import

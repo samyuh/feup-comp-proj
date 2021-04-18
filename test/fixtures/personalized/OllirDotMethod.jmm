@@ -15,7 +15,7 @@ class AiVida extends Grr {
         // io.println(new AiVida().doNothing());
 
         // Working
-
+        /*
         io.println(new AiVida());
         this.doSomething(1,io.getWhat());
         io.println(new int[6]);
@@ -33,7 +33,7 @@ class AiVida extends Grr {
         a = this.retornaInt(new int[a]);
         ai = io.println();
         ai = this.retornaInt(new int[a]);
-
+        */
     }
 
 
@@ -43,7 +43,7 @@ class AiVida extends Grr {
         AiVida vida;
 
         // Working
-
+        /*
         a = this.doSomething(1,2);
         a = this.doSomething(a + 2,2);
         a = this.doSomething(b[3+a],3);
@@ -57,15 +57,8 @@ class AiVida extends Grr {
         a = paramArr[2];
         a = vida.doNothing();
         a = vida.assumirExtend();
+        */
 
-
-
-        // TODO: all cases when the left side is not "this"
-
-        //a = b.length;
-        //a = retornaDaClass().doNothing();
-        //a = b.get().get();
-        //a = this.doSomething(a,2).what();
         return a;
     }
 
