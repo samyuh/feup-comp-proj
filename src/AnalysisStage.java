@@ -37,7 +37,7 @@ public class AnalysisStage implements JmmAnalysis {
         new SymbolTableVisitor().visit(node, analysis);
         //new UndefinedVarVisitor().visit(node, analysis);
         //new FuncNotFoundVisitor().visit(node, analysis);
-        new BadArgumentsVisitor().visit(node, analysis);
+        //new BadArgumentsVisitor().visit(node, analysis);
         new ArrayVisitor().visit(node,analysis);
 
         System.out.println("\nReports:");

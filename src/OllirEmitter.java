@@ -116,6 +116,10 @@ public class OllirEmitter {
         sb.append(prefix()).append("}\n");
     }
 
+    private void ifElseStatement() {
+
+    }
+
     private void visitStatements(String methodName, List<JmmNode> statements){
         for(int i = 1; i < statements.size(); i++){
             switch (statements.get(i).getKind()){
@@ -123,6 +127,7 @@ public class OllirEmitter {
                     assignmentStatement(methodName, statements.get(i));
                     break;
                 case("IfElse"):
+                    ifElseStatement();
                     break;
                 case("WhileStatment"):
                     break;
@@ -306,7 +311,8 @@ public class OllirEmitter {
             return ollirClassOrSuperMethod(methodName,right,expectedType);
 
         // Class Object Method
-        Type type;
+        Type type = getObjectType(methodName, left);
+        System.out.println(type);
         // Get the object type if it is a known variable
         if((type = getObjectType(methodName, left)) != null){
             // Object from the class
