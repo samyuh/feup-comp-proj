@@ -376,12 +376,20 @@ public class OllirEmitter {
             parameters += ", ";
             if(param.getNumChildren() > 0){
                 String type;
-                if(param.getKind().equals("Dot"))
-                    type = MyOllirUtils.ollirType(symbolTable.getParameters(invokedMethod).get(i).getType());
-                else type = getNodeType(methodName, param);
-                // TODO: usar a estratégia do dot method de baixo
 
-                sb.append(newAuxiliarVar(type, methodName, param));
+                // Param is a NewObject
+                if(param.getKind().equals("NewObject")){
+                    type = "." + param.getChildren().get(0).get("name");
+                    sb.append(newAuxiliarVar(type, methodName, param));
+                    sb.append(ollirInitObject("t" + auxVarNumber + type));
+                }
+                else if(param.getKind().equals("Dot"))
+                    type = MyOllirUtils.ollirType(symbolTable.getParameters(invokedMethod).get(i).getType());
+                else {
+                    type = getNodeType(methodName, param);
+                    sb.append(newAuxiliarVar(type, methodName, param));
+                }
+
                 parameters += "t" + auxVarNumber + type;
             }
             else if(isField(param)){

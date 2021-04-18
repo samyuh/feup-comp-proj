@@ -16,6 +16,7 @@ class AiVida extends Grr {
 
         // Working
         /*
+        this.test2(new AiVida());
         io.println(new AiVida());
         this.doSomething(1,io.getWhat());
         io.println(new int[6]);
@@ -36,6 +37,17 @@ class AiVida extends Grr {
         */
     }
 
+    public int test2(AiVida a){
+        return 2;
+    }
+
+    public AiVida test(){
+        AiVida lalala;
+        lalala = new AiVida();
+        return lalala;
+        // TODO
+        //return new AiVida();
+    }
 
     public int retornaInt(int[] paramArr){
         int a;
