@@ -31,7 +31,6 @@ public class FuncNotFoundVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
             }
         }
 
-
         // Check class methods
         if (nodeLeft.getKind().equals("This") && nodeRight.getKind().equals("DotMethod")){
             if(hasInheritance(analysis)) return true;

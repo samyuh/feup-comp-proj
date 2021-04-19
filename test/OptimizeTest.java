@@ -48,4 +48,10 @@ public class OptimizeTest {
         var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/OllirDotMethod2.jmm"));
         TestUtils.noErrors(result.getReports());
     }
+
+    @Test
+    public void testIfElse(){
+        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/OllirIfElse.jmm"));
+        TestUtils.noErrors(result.getReports());
+    }
 }

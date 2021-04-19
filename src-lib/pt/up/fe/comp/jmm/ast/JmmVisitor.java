@@ -25,7 +25,7 @@ import pt.up.fe.comp.jmm.JmmNode;
  * @param <D>
  * @param <R>
  */
-// TODO: definir uma função para cada tipo de função: identifier, types, etc.
+// TODO: definir uma funcao para cada tipo de funcao: identifier, types, etc.
 public interface JmmVisitor<D, R> {
 
     R visit(JmmNode jmmNode, D data);

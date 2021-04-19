@@ -317,7 +317,7 @@ void Statement() #void: {}
 
 void IfElseStatement() #IfElse: {}
 {
-    <IF> <OPENCURVEBRACKET> AndExpression() <CLOSECURVEBRACKET> Statement() <ELSE> Statement()
+    <IF> <OPENCURVEBRACKET> AndExpression() <CLOSECURVEBRACKET> Statement() #IfBlock <ELSE> Statement() #ElseBlock
 }
 
 void WhileStatment() #WhileStatment : {}

@@ -11,6 +11,7 @@ import visitor.Utils;
 
 public class OllirEmitter {
     static int auxVarNumber;
+    static int ifElseLabelNum;
     static int indent;
     SymbolTable symbolTable;
     List<Report> reports;
@@ -21,6 +22,7 @@ public class OllirEmitter {
         reports = new ArrayList<>();
         sb = new StringBuilder();
         auxVarNumber = 0;
+        ifElseLabelNum = 0;
         indent = 0;
     }
 
@@ -97,6 +99,7 @@ public class OllirEmitter {
         indent++;
         int bodyIdx = methodName.equals("main") ? methodNode.getNumChildren()-1 : methodNode.getNumChildren()-2;
         List<JmmNode> statements = methodNode.getChildren().get(bodyIdx).getChildren();
+        statements.remove(0);
         visitStatements(methodName, statements);
 
         // Return Statement
@@ -116,30 +119,47 @@ public class OllirEmitter {
         sb.append(prefix()).append("}\n");
     }
 
-    private void ifElseStatement() {
-
-    }
-
     private void visitStatements(String methodName, List<JmmNode> statements){
-        for(int i = 1; i < statements.size(); i++){
-            switch (statements.get(i).getKind()){
-                case("Assignment"):
-                    assignmentStatement(methodName, statements.get(i));
+        for (JmmNode statement : statements) {
+            switch (statement.getKind()) {
+                case ("Assignment"):
+                    assignmentStatement(methodName, statement);
                     break;
-                case("IfElse"):
-                    ifElseStatement();
+                case ("IfElse"):
+                    ifElseLabelNum++;
+                    ifElseStatement(methodName, statement);
                     break;
-                case("WhileStatment"):
+                case ("WhileStatment"):
                     break;
-                //...
                 default:
-                    sb.append(ollirExpression(methodName, statements.get(i))).append(";");
+                    sb.append(ollirExpression(methodName, statement)).append(";");
                     break;
             }
             sb.append("\n");
         }
     }
 
+    private void ifElseStatement(String methodName, JmmNode statement) {
+        String valueNum = "" + ifElseLabelNum;
+        JmmNode conditionNode = statement.getChildren().get(0);
+        JmmNode ifBlock = statement.getChildren().get(1);
+        JmmNode elseBlock = statement.getChildren().get(2);
+
+        //String condition = buildCondition(methodName, conditionNode);
+        String ifElseString = "if (" + ollirExpression(methodName, conditionNode) + ") goto then;\n";
+        sb.append(prefix()).append(ifElseString);
+        sb.append(prefix()).append("else").append(valueNum).append(":\n");
+        indent++;
+        visitStatements(methodName, elseBlock.getChildren());
+        sb.append(prefix()).append("goto endif;\n");
+        indent--;
+        sb.append(prefix()).append("then").append(valueNum).append(":\n");
+        indent++;
+        visitStatements(methodName, ifBlock.getChildren());
+        indent--;
+        sb.append(prefix()).append("endif").append(valueNum).append(":");
+        //indent++;
+    }
 
     // Convert assignment expression to ollir
     private void assignmentStatement(String methodName, JmmNode statement){
@@ -366,7 +386,7 @@ public class OllirEmitter {
                 else returnType = expectedReturn;
             }
         }
-        else  // TODO: acho que aqui só pode ser new ou Dot
+        else  // TODO: acho que aqui so pode ser new ou Dot
             return "DOT METHOD LEFT NOT ID";
 
         // Parameters
@@ -414,7 +434,7 @@ public class OllirEmitter {
             if(expectedReturn == null) returnType = ".V";
             else returnType = expectedReturn;
         }
-        else // TODO: acho que aqui só pode ser new ou Dot
+        else // TODO: acho que aqui so pode ser new ou Dot
             return "STATIC METHOD LEFT NOT ID";
 
         // Parameters
