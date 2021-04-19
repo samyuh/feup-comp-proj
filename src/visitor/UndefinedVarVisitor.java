@@ -16,8 +16,9 @@ public class UndefinedVarVisitor extends PreorderJmmVisitor<Analysis, Boolean>{
     public Boolean visitMethodParameters(JmmNode objectMethodParameters, Analysis analysis){
         String methodName = Utils.getParentMethodName(objectMethodParameters);
 
+        // Check each parameter of a method call
         for (JmmNode node: objectMethodParameters.getChildren()) {
-            if (node.getNumChildren() > 0)
+            if (node.getNumChildren() > 0 && !node.getKind().equals("Dot") && !node.getKind().equals("NewObject"))
                 validateExpression(methodName, node, analysis);
             else if (node.getKind().equals("Identifier"))
                 varIsDefined(methodName, analysis, node);
