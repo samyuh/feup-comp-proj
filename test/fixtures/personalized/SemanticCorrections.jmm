@@ -4,11 +4,13 @@ class TestSemantic extends Ola {
     public static void main(String[] args){
         int a;
         int[] b;
+
+        /*
         this.doSomething(1,io.getWhat());
         io.println(new Ola());
         io.println(new int[3]);
         this.doSomething(a, b.length);
-
+        */
         // TODO
         /*
         a = 0.length;
