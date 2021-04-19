@@ -21,7 +21,7 @@ public class TranslateElement {
            return getAccessArray(element, table);
         }
         // generates iload
-        else if (elementType == ElementType.INT32) {
+        else if (elementType == ElementType.INT32 || elementType == ElementType.STRING ) {
             ElementType typeVar = table.get(((Operand) element).getName()).getVarType().getTypeOfElement();
             if (typeVar == ElementType.ARRAYREF)
                 return getAccessArray(element, table);

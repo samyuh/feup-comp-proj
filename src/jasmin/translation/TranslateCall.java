@@ -5,6 +5,7 @@ import jasmin.UtilsJasmin;
 import org.specs.comp.ollir.*;
 import visitor.Utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static jasmin.InstSingleton.anewarray;
@@ -65,5 +66,28 @@ public class TranslateCall {
         return stringBuilder.toString() + "\n";
     }
 
-    private static String invokestatic(CallInstruction )
+    private static String invokestatic(CallInstruction callInstruction, HashMap<String, Descriptor> table){
+        ArrayList<Element> parameters = callInstruction.getListOfOperands();
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (Element parameter: parameters){
+            stringBuilder.append(TranslateElement.getJasminInst(parameter, table));
+        }
+
+        stringBuilder.append("invokestatic ");
+        stringBuilder.append(UtilsJasmin.getObjectName(callInstruction.getFirstArg())).append(".");
+
+        StringBuilder methodName = new StringBuilder(((LiteralElement)callInstruction.getSecondArg()).getLiteral());
+        methodName.deleteCharAt(methodName.length() -1);
+        methodName.deleteCharAt(0);
+        stringBuilder.append(methodName.toString()).append("(");
+
+        for (Element parameter: parameters){
+            stringBuilder.append(TranslateType.getJasminType(parameter.getType(), (Operand)parameter));
+        }
+        stringBuilder.append(")");
+        stringBuilder.append(TranslateType.getJasminType(callInstruction.getReturnType())).append("\n\n");
+
+        return stringBuilder.toString();
+    }
 }

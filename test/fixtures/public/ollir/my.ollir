@@ -17,7 +17,6 @@ myClass {
 	.method public m1(k.i32).V {
 		putfield(this, a.i32, k.i32).V;  // this.a = 2;
 
-		t2.String :=.String ldc("val = ").String;
 		t1.i32 :=.i32 invokevirtual(this,"get").i32;
 		invokestatic(io, "println", t2.String, t1.i32).V;  //io.println("val = ", this.get());
 
