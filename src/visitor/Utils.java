@@ -94,20 +94,21 @@ public class Utils {
 
     public static String getReturnValueMethod(JmmNode dotNode, Analysis analysis) {
         JmmNode leftNode = dotNode.getChildren().get(0);
+        JmmNode rigthNode = dotNode.getChildren().get(1);
+
         String parentMethodName = Utils.getParentMethodName(dotNode);
         String typeName = Utils.getVariableType(leftNode, analysis, parentMethodName);
         String className = analysis.getSymbolTable().getClassName();
 
-        String methodName = dotNode.getChildren().get(1).getChildren().get(0).get("name");
+        if(rigthNode.getKind().equals("Length")) return "int";
 
+        String methodName = dotNode.getChildren().get(1).getChildren().get(0).get("name");
         boolean containsMethodName = analysis.getSymbolTable().getMethods().contains(methodName);
 
         if (containsMethodName && (typeName.equals(className) || dotNode.getKind().equals("This"))) {
             Type returnType = analysis.getSymbolTable().getReturnType(methodName);
             return returnType.getName() + (returnType.isArray() ? "[]" : "");
         }
-
-        // TODO: Deal with length case, which returns an int
 
         return "undefined";
     }
