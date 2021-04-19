@@ -1,0 +1,13 @@
+import io;
+import Z;
+class TestSemantic extends Ola {
+    public static void main(String[] args){
+        this.doSomething(1,io.getWhat());
+        io.println(new Ola());
+        io.println(new int[3]);
+    }
+
+    public int doSomething(int a, int b){
+        return a + b;
+    }
+}

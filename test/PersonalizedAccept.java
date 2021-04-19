@@ -12,4 +12,13 @@ public class PersonalizedAccept {
         TestUtils.noErrors(jmmParser.getReports());
         System.out.println(jmmParser.getRootNode().toJson());
     }
+
+    @Test
+    public void SemanticTest(){
+        String jmmCode = SpecsIo.getResource("fixtures/personalized/SemanticCorrections.jmm");
+        JmmParserResult jmmParser = TestUtils.parse(jmmCode);
+        var analysisResult = TestUtils.analyse(jmmParser);
+        //System.out.println(jmmParser.getRootNode().toJson());
+        TestUtils.noErrors(analysisResult.getReports());
+    }
 }
