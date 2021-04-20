@@ -11,6 +11,8 @@ class AiVida extends Grr{
         // TODO: all cases when the left side is not "this"
         int a;
         int[] b;
+
+        c[2] = 4;
         // Working
         /*
         b = new int[3];

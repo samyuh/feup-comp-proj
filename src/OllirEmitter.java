@@ -222,36 +222,19 @@ public class OllirEmitter {
 
     private void ollirArrayAssignment(String methodName, JmmNode arrayIdentifier, JmmNode indexNode, JmmNode rightNode){
         String name = arrayIdentifier.get("name"); // Name of the array
+        Type type = getIdentifierType(methodName,name); // Type of the array
 
-        // LEFT NODE
-        //  Left side of the assignment is a Field: e.g.putfield(this, A[i.i32].i32, ladoDoreito).V
-        Type type; // The type of the array
-        if((type = getFieldType(name)) != null){
-            //test_arr[0] = 14;
-            String leftSide = ollirArrayAccess(methodName,arrayIdentifier,indexNode);
-
-            sb.append(generatePutField(methodName, leftSide, type, rightNode));
-            return;
-        }
-
-        // // Left side of the assignment is a Parameter: e.g. $1.A[i.i32].i32
-        if(getLocalVariableType(methodName, name) == null){
-            // Variable is a Parameter: $1.num_aux.i32 := .i32 1.i32;
-            int position = getParameterPosition(methodName,name);
-            name = MyOllirUtils.ollirParameter(name,position);
-        }
-
-        // Left side of the assignment is a Local Variable or Parameter
+        // LEFT SIDE
         String leftSide = ollirArrayAccess(methodName,arrayIdentifier,indexNode);
 
         // RIGHT SIDE
         String rightSide = ollirExpression(methodName, rightNode);
 
-        sb.append(prefix()).append(leftSide).append(" :=.i32 ").append(rightSide).append(";");
+        sb.append(prefix()).append(leftSide).append(" :=").append(MyOllirUtils.ollirType(type)).append(" ").append(rightSide).append(";");
     }
 
     // Get ollir representation for an array access
-    private String ollirArrayAccess(String methodName, JmmNode arrayNode, JmmNode node){
+    private String ollirArrayAccess(String methodName, JmmNode arrayNode, JmmNode indexNode){
         String arrayStr;
         String indexValue;
         boolean isStringArray = false;
@@ -273,11 +256,11 @@ public class OllirEmitter {
         }
 
         // Index
-        if(isField(node) || !node.getKind().equals("Identifier")){
-            String aux = newAuxiliarVar(".i32", methodName, node);
+        if(isField(indexNode) || !indexNode.getKind().equals("Identifier")){
+            String aux = newAuxiliarVar(".i32", methodName, indexNode);
             sb.append(aux);
             indexValue = "t" + auxVarNumber + ".i32";
-        } else indexValue = ollirFromIdentifierNode(methodName, node);
+        } else indexValue = ollirFromIdentifierNode(methodName, indexNode);
 
         return arrayStr + "[" + indexValue + "]" + (isStringArray ? ".String" : ".i32");
     }
