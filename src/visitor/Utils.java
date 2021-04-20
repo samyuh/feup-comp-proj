@@ -89,7 +89,9 @@ public class Utils {
                 kind.equals("Div") ||
                 kind.equals("Less") ||
                 kind.equals("And") ||
-                kind.equals("ArrayAccess");
+                kind.equals("ArrayAccess")||
+                kind.equals("ArrayExpression")||
+                kind.equals("ArrayAssignment");
     }
 
     public static String getReturnValueMethod(JmmNode dotNode, Analysis analysis) {
