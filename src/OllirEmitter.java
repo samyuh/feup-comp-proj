@@ -479,7 +479,6 @@ public class OllirEmitter {
     // Get the ollir expression of a boolean or maths expression
     public String ollirMathBooleanExpression(String methodName, JmmNode node, String type){
         JmmNode left = node.getChildren().get(0);
-        JmmNode right = node.getChildren().get(1);
 
         String leftValue, rightValue;
         // Process left node
@@ -488,11 +487,17 @@ public class OllirEmitter {
             leftValue = "t" + auxVarNumber + type;
         } else leftValue = ollirExpression(methodName,left);
 
-        // Process right node
-        if(right.getNumChildren() > 0 || isField(right)){
-            sb.append(newAuxiliarVar(type, methodName, right));
-            rightValue = "t" + auxVarNumber + type;
-        } else rightValue = ollirExpression(methodName, right);
+        if(node.getKind().equals("Not")){
+            rightValue = leftValue;
+        }
+        else{
+            // Process right node
+            JmmNode right = node.getChildren().get(1);
+            if(right.getNumChildren() > 0 || isField(right)){
+                sb.append(newAuxiliarVar(type, methodName, right));
+                rightValue = "t" + auxVarNumber + type;
+            } else rightValue = ollirExpression(methodName, right);
+        }
 
         return leftValue + MyOllirUtils.ollirOperator(node) + rightValue;
     }

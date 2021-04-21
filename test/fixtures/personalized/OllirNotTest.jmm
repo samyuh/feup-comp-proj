@@ -1,0 +1,16 @@
+import ioPlus;
+// This is a test to check if the ! is working correctly.
+class NotTest {
+	public static void main(String[] args) {
+	    boolean a;
+	    a = !a;
+		a = !true;
+        a = !!true && !false && a;
+        a = this.test() && false;
+        a = !this.test();
+	}
+
+	public boolean test(){
+	    return true;
+	}
+}

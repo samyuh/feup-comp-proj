@@ -54,4 +54,10 @@ public class OptimizeTest {
         var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/OllirIfElse.jmm"));
         TestUtils.noErrors(result.getReports());
     }
+
+    @Test
+    public void notTest(){
+        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/OllirNotTest.jmm"));
+        TestUtils.noErrors(result.getReports());
+    }
 }
