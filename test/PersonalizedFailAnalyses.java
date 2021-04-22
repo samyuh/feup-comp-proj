@@ -80,7 +80,7 @@ public class PersonalizedFailAnalyses {
 
     @Test
     public void FuncNotFoundVisitor() {
-        String jmmCode = SpecsIo.getResource("fixtures/personalized/FuncNotFoundVisitor.jmm");
+        String jmmCode = SpecsIo.getResource("fixtures/personalized/failSemantic/FuncNotFoundVisitor.jmm");
         JmmParserResult jmmParser = TestUtils.parse(jmmCode);
         var analysisResult = TestUtils.analyse(jmmParser);
         TestUtils.noErrors(analysisResult.getReports());
@@ -90,7 +90,7 @@ public class PersonalizedFailAnalyses {
 
     @Test
     public void badArguments() {
-        String jmmCode = SpecsIo.getResource("fixtures/personalized/BadArguments.jmm");
+        String jmmCode = SpecsIo.getResource("fixtures/personalized/failSemantic/BadArguments.jmm");
         JmmParserResult jmmParser = TestUtils.parse(jmmCode);
         var analysisResult = TestUtils.analyse(jmmParser);
         // System.out.println(jmmParser.getRootNode().toJson());
@@ -99,7 +99,7 @@ public class PersonalizedFailAnalyses {
 
     @Test
     public void arrayPersonalized() {
-        String jmmCode = SpecsIo.getResource("fixtures/personalized/arrayTest.jmm");
+        String jmmCode = SpecsIo.getResource("fixtures/personalized/failSemantic/arrayTest.jmm");
         JmmParserResult jmmParser = TestUtils.parse(jmmCode);
         var analysisResult = TestUtils.analyse(jmmParser);
         // System.out.println(jmmParser.getRootNode().toJson());
@@ -108,7 +108,7 @@ public class PersonalizedFailAnalyses {
 
     @Test
     public void methodPersonalized() {
-        String jmmCode = SpecsIo.getResource("fixtures/personalized/methodTest.jmm");
+        String jmmCode = SpecsIo.getResource("fixtures/personalized/failSemantic/methodTest.jmm");
         JmmParserResult jmmParser = TestUtils.parse(jmmCode);
         var analysisResult = TestUtils.analyse(jmmParser);
         // System.out.println(jmmParser.getRootNode().toJson());

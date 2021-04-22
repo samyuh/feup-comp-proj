@@ -27,37 +27,37 @@ public class OptimizeTest {
 
     @Test
     public void testArraysAndSimpleVars() {
-        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/OllirArraysAndSimpleVars.jmm"));
+        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/ollir/OllirArraysAndSimpleVars.jmm"));
         TestUtils.noErrors(result.getReports());
     }
 
     @Test
     public void testRecursionInAssignments(){
-        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/OllirRecursiveAssignment.jmm"));
+        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/ollir/OllirRecursiveAssignment.jmm"));
         TestUtils.noErrors(result.getReports());
     }
 
     @Test
     public void testDotMethods(){
-        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/OllirDotMethod.jmm"));
+        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/ollir/OllirDotMethod.jmm"));
         TestUtils.noErrors(result.getReports());
     }
 
     @Test
     public void testDotMethods2(){
-        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/OllirDotMethod2.jmm"));
+        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/ollir/OllirDotMethod2.jmm"));
         TestUtils.noErrors(result.getReports());
     }
 
     @Test
     public void testIfElse(){
-        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/OllirIfElse.jmm"));
+        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/ollir/OllirIfElse.jmm"));
         TestUtils.noErrors(result.getReports());
     }
 
     @Test
     public void notTest(){
-        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/OllirNotTest.jmm"));
+        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/ollir/OllirNotTest.jmm"));
         TestUtils.noErrors(result.getReports());
     }
 }

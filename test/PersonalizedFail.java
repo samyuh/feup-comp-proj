@@ -8,7 +8,7 @@ import static org.junit.Assert.assertEquals;
 public class PersonalizedFail {
     @Test
     public void WhileRecovery(){
-        String jmmCode = SpecsIo.getResource("fixtures/personalized/WhileRecovery");
+        String jmmCode = SpecsIo.getResource("fixtures/personalized/syntactic/WhileRecovery");
         JmmParserResult jmmParser = TestUtils.parse(jmmCode);
         TestUtils.mustFail(jmmParser.getReports());
         System.out.println(jmmParser.toJson());
