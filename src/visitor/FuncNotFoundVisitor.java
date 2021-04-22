@@ -16,14 +16,22 @@ public class FuncNotFoundVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
     public Boolean visitDot(JmmNode node, Analysis analysis) {
         JmmNode nodeLeft = node.getChildren().get(0);
         JmmNode nodeRight = node.getChildren().get(1);
+
+        // Check Length methods
+        if(nodeRight.getKind().equals("Length")) {
+            if(!validateLength(nodeLeft,analysis)){
+                analysis.addReport(node, "Built-in \"length\" is only valid over arrays.");
+                return false;
+            }
+            return true;
+        }
+
+        // Check imported methods
         if (nodeLeft.getKind().equals("Identifier")) {
             String nodeName = nodeLeft.get("name");
 
             // Check imported method
             if (!analysis.getSymbolTable().getImports().contains(nodeName)) {
-                // Length
-                if(nodeRight.getKind().equals("Length")) return true;
-
                 // Check if object
                 if(!checkObject(node, nodeName, analysis)){
                     analysis.addReport(nodeLeft,  "\"" + nodeName + "\" is not an import nor an object");
@@ -63,7 +71,7 @@ public class FuncNotFoundVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
     }
 
     public Boolean checkObject(JmmNode node, String nodeName, Analysis analysis) {
-        String methodName = getParentMethod(node);
+        String methodName = Utils.getParentMethodName(node);
 
         // Todo: fix error for length case
         JmmNode calledMethod = node.getChildren().get(1).getChildren().get(0);
@@ -95,19 +103,7 @@ public class FuncNotFoundVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
     }
 
     public Boolean isValidType(String typeName) {
-        // TODO: Verificar se as maiusculas estao certas
         return !typeName.equals("int") && !typeName.equals("String") && !typeName.equals("boolean");
-    }
-
-    public String getParentMethod(JmmNode node){
-        JmmNode currentNode = node;
-        while(!currentNode.getKind().equals("MethodGeneric") && ! currentNode.getKind().equals("MethodMain")) {
-            currentNode = currentNode.getParent();
-        }
-
-        if(currentNode.getKind().equals("MethodGeneric"))
-            return currentNode.getChildren().get(1).get("name");
-        return "main";
     }
 
     public void hasThisDotMethod(JmmNode node, Analysis analysis){
@@ -115,5 +111,11 @@ public class FuncNotFoundVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
         if (!analysis.getSymbolTable().getMethods().contains(identifier)) {
             analysis.addReport(node,"Function \"" + identifier + "\" is undefined");
         }
+    }
+
+    public Boolean validateLength(JmmNode left, Analysis analysis){
+        String type = Utils.getNodeType(left, analysis);
+        System.out.println("Type = " + type);
+        return type.equals("int[]") || type.equals("String[]");
     }
 }

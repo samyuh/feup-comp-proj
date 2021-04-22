@@ -95,4 +95,14 @@ public class FailSemanticTests {
         System.out.println(jmmParser.getRootNode().toJson());
     }
 
+    // Extra
+    @Test
+    public void missType(){
+        String jmmCode = SpecsIo.getResource("fixtures/public/fail/semantic/extra/miss_type.jmm");
+        JmmParserResult jmmParser = TestUtils.parse(jmmCode);
+        var analysisResult = TestUtils.analyse(jmmParser);
+        TestUtils.noErrors(analysisResult.getReports());
+        System.out.println(jmmParser.getRootNode().toJson());
+    }
+
 }

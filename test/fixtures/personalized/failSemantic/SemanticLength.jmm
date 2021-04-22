@@ -1,0 +1,24 @@
+/*  REASON:
+    Builtin "length" does not exist over simple types.
+*/
+
+class T {
+    public static void main(String[] args) {
+        int i;
+        i = i.length;       // Fail
+        i = 0.length;       // Fail
+        i = this.testNotArray().length; // Fail
+
+        i = (new int[2]).length;  // Accept
+        i = args.length;    // Accept
+        i = this.testArray().length; // Accept
+    }
+
+    public int testNotArray(){
+        return 1;
+    }
+
+    public int[] testArray(){
+        return new int[2];
+    }
+}

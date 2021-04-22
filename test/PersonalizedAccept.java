@@ -7,7 +7,7 @@ public class PersonalizedAccept {
 
     @Test
     public void NotPersonalized(){
-        String jmmCode = SpecsIo.getResource("fixtures/personalized/NotTest.jmm");
+        String jmmCode = SpecsIo.getResource("fixtures/personalized/syntactic/NotTest.jmm");
         JmmParserResult jmmParser = TestUtils.parse(jmmCode);
         TestUtils.noErrors(jmmParser.getReports());
         System.out.println(jmmParser.getRootNode().toJson());
@@ -15,7 +15,7 @@ public class PersonalizedAccept {
 
     @Test
     public void SemanticTest(){
-        String jmmCode = SpecsIo.getResource("fixtures/personalized/SemanticCorrections.jmm");
+        String jmmCode = SpecsIo.getResource("fixtures/personalized/failSemantic/SemanticCorrections.jmm");
         JmmParserResult jmmParser = TestUtils.parse(jmmCode);
         var analysisResult = TestUtils.analyse(jmmParser);
         //System.out.println(jmmParser.getRootNode().toJson());

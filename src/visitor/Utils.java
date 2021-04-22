@@ -76,11 +76,6 @@ public class Utils {
         return "main";
     }
 
-    public static Boolean isBoolean(JmmNode node) {
-        if (node.getKind().equals("True") || node.getKind().equals("False")) return true;
-        return false;
-    }
-
     public static boolean isMathExpression(String kind) {
         return kind.equals("Mult") || kind.equals("Add") || kind.equals("Sub") || kind.equals("Div");
     }
@@ -105,8 +100,7 @@ public class Utils {
         JmmNode leftNode = dotNode.getChildren().get(0);
         JmmNode rigthNode = dotNode.getChildren().get(1);
 
-        String parentMethodName = Utils.getParentMethodName(dotNode);
-        String typeName = Utils.getVariableType(leftNode, analysis, parentMethodName);
+        String typeName = Utils.getNodeType(leftNode, analysis);
         String className = analysis.getSymbolTable().getClassName();
 
         if(rigthNode.getKind().equals("Length")) return "int";
