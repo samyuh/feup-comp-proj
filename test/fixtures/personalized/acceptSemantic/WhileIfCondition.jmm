@@ -1,0 +1,119 @@
+class T {
+    boolean field;
+    public static void main(String[] a) {
+        int j;
+        boolean n;
+        T test;
+        n = true;
+        field = true;
+
+        if(true){
+            j = 2;
+        } else{
+            j = 2;
+        }
+
+        if (false){
+            j = 2;
+        } else{
+            j = 2;
+        }
+
+
+        if (n){
+            j = 2;
+        } else{
+            j = 2;
+        }
+
+        if (field){
+            j = 2; 
+        }else{
+            j = 2; 
+        }
+
+        if (this.returnBoolean()) {
+            j = 2;
+        } else {
+            j = 2;
+        }
+
+        if (test.returnBoolean()){
+            j = 2;
+        } else {
+            j = 2;
+        }
+
+        if (true && true){
+            j = 2;
+        } else {
+            j = 2;
+        }
+
+        if ( 2 < 2) {
+            j = 2;
+        } else {
+            j = 2;
+        }
+
+        if ( ! true ){
+            j = 2;
+        } else {
+            j = 2;
+        }
+
+        while(true){
+            j = 2;
+        }
+
+        while (false){
+            j = 2;
+        }
+
+
+        while (n){
+            j = 2;
+        }
+        while (field){
+            j = 2;
+        }
+
+        while (this.returnBoolean()) {
+            j = 2;
+        }
+
+        while (test.returnBoolean()){
+            j = 2;
+        }
+
+        while (true && true){
+            j = 2;
+        }
+        while ( 2 < 2) {
+            j = 2;
+        }
+
+        while ( ! true ){
+            j = 2;
+        }
+
+
+    }
+
+    public boolean returnBoolean(){
+        return true;
+    }
+
+    public boolean testParameter(boolean param){
+        while(param){
+            j = 2;
+        }
+        if(param){
+            j = 2;
+        } else{
+            j= 2;
+        }
+        return true;
+    }
+
+}

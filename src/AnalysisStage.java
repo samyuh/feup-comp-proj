@@ -39,6 +39,10 @@ public class AnalysisStage implements JmmAnalysis {
         new FuncNotFoundVisitor().visit(node, analysis);
         new BadArgumentsVisitor().visit(node, analysis);
         new ArrayVisitor().visit(node,analysis);
+        new AssignmentVisitor().visit(node, analysis);
+        new VerifyMathOperatorVisitor().visit(node, analysis);
+        new VerifyBoolOperatorVisitor().visit(node, analysis);
+        new WhileIfVisitorCondition().visit(node, analysis);
 
         System.out.println("\nReports:");
         for(Report report: analysis.getReports()){

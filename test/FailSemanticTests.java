@@ -38,9 +38,7 @@ public class FailSemanticTests {
         String jmmCode = SpecsIo.getResource("fixtures/public/fail/semantic/binop_incomp.jmm");
         JmmParserResult jmmParser = TestUtils.parse(jmmCode);
         var analysisResult = TestUtils.analyse(jmmParser);
-        System.out.println(jmmParser.toJson());
         TestUtils.noErrors(analysisResult.getReports());
-        System.out.println(jmmParser.getRootNode().toJson());
     }
 
     @Test
@@ -49,7 +47,6 @@ public class FailSemanticTests {
         JmmParserResult jmmParser = TestUtils.parse(jmmCode);
         var analysisResult = TestUtils.analyse(jmmParser);
         TestUtils.noErrors(analysisResult.getReports());
-        System.out.println(jmmParser.getRootNode().toJson());
     }
 
     @Test

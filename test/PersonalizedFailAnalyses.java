@@ -115,4 +115,35 @@ public class PersonalizedFailAnalyses {
         TestUtils.noErrors(analysisResult.getReports());
     }
 
+    @Test
+    public void var_lit_incomp(){
+        String jmmCode = SpecsIo.getResource("fixtures/personalized/varLitIncomp.jmm");
+        JmmParserResult jmmParser = TestUtils.parse(jmmCode);
+        var analysisResult = TestUtils.analyse(jmmParser);
+        System.out.println(jmmParser.toJson());
+        TestUtils.noErrors(analysisResult.getReports());
+        System.out.println(jmmParser.getRootNode().toJson());
+    }
+
+
+    @Test
+    public void VerifyMathOperatorVisitor(){
+        String jmmCode = SpecsIo.getResource("fixtures/personalized/failSemantic/VerifyMathOperator.jmm");
+        JmmParserResult jmmParser = TestUtils.parse(jmmCode);
+        var analysisResult = TestUtils.analyse(jmmParser);
+        System.out.println("EXPECTED 28: ACTUAL " + analysisResult.getReports().size());
+        TestUtils.noErrors(analysisResult.getReports());
+    }
+
+    @Test
+    public void whileIfCondition(){
+        String jmmCode = SpecsIo.getResource("fixtures/personalized/failSemantic/WhileIfCondition.jmm");
+        JmmParserResult jmmParser = TestUtils.parse(jmmCode);
+        var analysisResult = TestUtils.analyse(jmmParser);
+        System.out.println("EXPECTED 20: ACTUAL " + analysisResult.getReports().size());
+        TestUtils.noErrors(analysisResult.getReports());
+    }
+
+
+
 }
