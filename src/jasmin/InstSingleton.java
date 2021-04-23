@@ -50,6 +50,10 @@ public class InstSingleton {
         return aload(classReg) + "getfield " + TranslateType.getJasminType(type) + " " + fieldName + "\n";
     }
 
+    public static String putfield(String className, String varName, String type){
+        return "putfield " + className + "/" + varName + " " + type + "\n";
+    }
+
     public static String getOp(OperationType opType){
         return switch (opType) {
             case MUL -> "imul \n";
