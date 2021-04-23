@@ -1,6 +1,6 @@
 package jasmin.methods;
 
-import jasmin.InstSingleton;
+import jasmin.*;
 import org.specs.comp.ollir.*;
 
 import java.util.ArrayList;

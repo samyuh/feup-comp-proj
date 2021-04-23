@@ -24,14 +24,11 @@ public class BuildMethod extends JasminMethod {
     }
 
     public String getInstruction(Instruction inst, Method method){
-        switch (inst.getInstType()){
-            case ASSIGN:
-                return new BuildMethodAssigment(ollir, method).getInstructionAssign((AssignInstruction) inst);
-            case CALL:
-                return TranslateCall.getJasminInst((CallInstruction)inst, OllirAccesser.getVarTable(method)) + "\n";
-
-        }
-        return "";
+        return switch (inst.getInstType()) {
+            case ASSIGN -> new BuildMethodAssigment(ollir, method).getInstructionAssign((AssignInstruction) inst);
+            case CALL -> TranslateCall.getJasminInst((CallInstruction) inst, OllirAccesser.getVarTable(method)) + "\n";
+            default -> "";
+        };
     }
 
     public void addEnd() {

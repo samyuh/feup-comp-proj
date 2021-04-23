@@ -1,5 +1,6 @@
 package jasmin;
 
+import jasmin.translation.TranslateElement;
 import jasmin.translation.TranslateType;
 import org.specs.comp.ollir.*;
 
@@ -43,4 +44,24 @@ public class UtilsJasmin {
         return stringBuilder.toString();
     }
 
+    public static String getArgumentsNoComma(ArrayList<Element> parameters){
+        StringBuilder stringBuilder = new StringBuilder("(");
+        for (Element parameter: parameters){
+            stringBuilder.append(TranslateType.getJasminType(parameter.getType(), (Operand)parameter));
+        }
+        stringBuilder.append(")");
+        return stringBuilder.toString();
+    }
+
+    public static String getRemovedQuotes(String s){
+        return s.substring(1, s.length()-1);
+    }
+
+    public static String loadElements(ArrayList<Element> parameters, HashMap<String, Descriptor> table){
+        StringBuilder stringBuilder = new StringBuilder();
+        for(Element param : parameters){
+            stringBuilder.append(TranslateElement.getJasminInst(param, table));
+        }
+        return stringBuilder.toString();
+    }
 }

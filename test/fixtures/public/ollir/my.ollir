@@ -1,40 +1,77 @@
 myClass {
 	.field private a.i32;
 
-	.construct myClass().V {
-		invokespecial(this, "<init>").V;
+	.construct myClass().V {                    // .method public a <init>()V
+		invokespecial(this, "<init>").V;        // aload_0
+		                                        // invokespecial java/lang/Object.<init>()V;
+	}                                           // return
+	                                            // .end method
+
+	.method public get().i32 {                      // .method public get()I
+		t1.i32 :=.i32 getfield(this, a.i32).i32;    //* aload_0
+		ret.i32 t1.i32;                             // getfield I a
+	}                                               // istore_<t1>
+                                                    // iload_<t1>
+                                                    // ireturn
+
+	.method public put(n.i32).V {                   // .method public put(I)I
+		putfield(this, a.i32, $1.n.i32).V;          // iload <n>
+                                                    // putfield this/a I
 	}
 
-	.method public get().i32 {
-		t1.i32 :=.i32 getfield(this, a.i32).i32;
-		ret.i32 t1.i32;
-	}
+	.method public m1(k.i32).V {                            // .method public m1(I)V
+		putfield(this, a.i32, k.i32).V;                     // iload_<k>
+		                                                    // putfield this/a I
 
-	.method public put(n.i32).V {
-		putfield(this, a.i32, $1.n.i32).V;
-	}
+		t1.i32 :=.i32 invokevirtual(this,"get").i32;        // aload_0
+		                                                    // invokevirtual this.get(I)I;
+		                                                    // istore_<t1>
 
-	.method public m1(k.i32).V {
-		putfield(this, a.i32, k.i32).V;  // this.a = 2;
 
-		t1.i32 :=.i32 invokevirtual(this,"get").i32;
-		invokestatic(io, "println", t2.String, t1.i32).V;  //io.println("val = ", this.get());
+		invokestatic(io, "println", t2.String, t1.i32).V;   // io.println("val = ", this.get());
+                                                           // iload_<t2>
+                                                           // iload_<t1>
+                                                           // invokestatic io.println(LJava/lang/String;I)V
 
-		c1.myClass :=.myClass new(myClass,n.i32).myClass;
-		invokespecial(c1.myClass,"<init>").V;  // myClass c1 = new myClass(3);
+		c1.myClass :=.myClass new(myClass,n.i32).myClass;  // iload_<n>
+		                                                   // newarray myClass
+		                                                   // astore_<c1>
 
-		t3.i32 :=.i32 invokevirtual(c1.myClass, "get").i32;
-		invokestatic(io, "println", t2.String, t3.i32).V; // io.println("val = ", c1.get());
+		invokespecial(c1.myClass,"<init>").V;              // myClass c1 = new myClass(3);
+		                                                   // aload_<c1>
+		                                                   // invokespecial <init>V()
 
-		invokevirtual(c1.myClass, "put", k.i32).V;  // c1.put(2);
+		t3.i32 :=.i32 invokevirtual(c1.myClass, "get").i32; // aload_<c1>
+		                                                    // invokevirtual myClass.get()I
+		                                                    // istore_<t3>
 
-		t4.i32 :=.i32 invokevirtual(c1.myClass, "get").i32;
-		invokestatic(io, "println", t2.String, t4.i32).V; //io.println("val = ", c1.get());
-	}
+		invokestatic(io, "println", t2.String, t3.i32).V;  // io.println("val = ", c1.get());
+                                                           // iload_<t2>
+                                                           // iload_<t3>
+                                                           // invokestatic io.println(Ljava/lang/String;I)V
 
-	.method public static main(args.array.String).V {
-		A.myClass :=.myClass new(myClass).myClass;
-		invokespecial(A.myClass,"<init>").V;
-		invokevirtual(A.myClass,"m1").V;
+		invokevirtual(c1.myClass, "put", k.i32).V;         // iload_<k>
+		                                                   // aload_<c1>
+		                                                   // invokevirtual c1.put(I)V;
+
+		t4.i32 :=.i32 invokevirtual(c1.myClass, "get").i32;// aload_<c1>
+		                                                   // invokevirtual c1.get(I)I;
+		                                                   // istore_<t4>
+
+		invokestatic(io, "println", t2.String, t4.i32).V;  //io.println("val = ", c1.get());
+	}                                                      // iload_<t2>
+                                                           // iload_<t4>
+                                                           // invokestatic io.println(Ljava/lang/String;I)V
+
+	.method public static main(args.array.String).V {    // .method public static main([Ljava/lang/String;)V
+		A.myClass :=.myClass new(myClass).myClass;       // newarray myClass
+		                                                 // istore_<A>
+
+		invokespecial(A.myClass,"<init>").V;             // MyClass A =  new MyClass();
+		                                                 // aload_<A>
+		                                                 // invokespecial java/lang/Object.<init>()V;
+
+		invokevirtual(A.myClass,"m1").V;                  // aload_<A>
+		                                                 // invokevirtual A.m1()V;
 	}
 }

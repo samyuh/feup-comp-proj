@@ -1,16 +1,14 @@
 package jasmin.translation;
 
-import jasmin.InstSingleton;
+import jasmin.*;
 import jasmin.UtilsJasmin;
 import org.specs.comp.ollir.*;
-import visitor.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static jasmin.InstSingleton.anewarray;
-import static jasmin.UtilsJasmin.getDescriptor;
 import static jasmin.UtilsJasmin.getVirtualReg;
+import static jasmin.UtilsJasmin.loadElements;
 
 public class TranslateCall {
 
@@ -25,17 +23,19 @@ public class TranslateCall {
                 if (callInstruction.getListOfOperands().size() != 0) {
                     Element element = callInstruction.getListOfOperands().get(0);
                     Type type = element.getType();
-                    return anewarray(getVirtualReg(element, table), TranslateType.getJasminType(type));
+                    return InstSingleton.anewarray(getVirtualReg(element, table), TranslateType.getJasminType(type));
                 }else {
                     Element element = callInstruction.getFirstArg();
                     Type type = element.getType();
-                    return anewarray(getVirtualReg(element, table), TranslateType.getJasminType(type, (Operand) element));
+                    return InstSingleton.anewarray(getVirtualReg(element, table), TranslateType.getJasminType(type, (Operand) element));
                 }
             case invokevirtual:
                 return invokevirtual(callInstruction, table);
 
             case invokestatic:
                 return invokestatic(callInstruction, table);
+            case invokespecial:
+                return invokespecial(callInstruction, table);
             default:
                 return "";
         }
@@ -52,16 +52,16 @@ public class TranslateCall {
         objectName = UtilsJasmin.getObjectName(firstArg);
 
         methodCall = ((LiteralElement) callInstruction.getSecondArg()).getLiteral();
-        methodCall = methodCall.substring(1, methodCall.length()-1);
+        methodCall = UtilsJasmin.getRemovedQuotes(methodCall);
 
 
         for (Element operand : callInstruction.getListOfOperands())
             stringBuilder.append(TranslateElement.getJasminInst(operand, table));
 
 
-        stringBuilder.append("invokevirtual " + objectName + "." + methodCall);
+        stringBuilder.append("invokevirtual ").append(objectName).append(".").append(methodCall);
 
-        stringBuilder.append(UtilsJasmin.getArguments(callInstruction.getListOfOperands()));
+        stringBuilder.append(UtilsJasmin.getArgumentsNoComma(callInstruction.getListOfOperands()));
         stringBuilder.append(TranslateType.getJasminType(callInstruction.getReturnType()));
         return stringBuilder.toString() + "\n";
     }
@@ -77,17 +77,40 @@ public class TranslateCall {
         stringBuilder.append("invokestatic ");
         stringBuilder.append(UtilsJasmin.getObjectName(callInstruction.getFirstArg())).append(".");
 
-        StringBuilder methodName = new StringBuilder(((LiteralElement)callInstruction.getSecondArg()).getLiteral());
-        methodName.deleteCharAt(methodName.length() -1);
-        methodName.deleteCharAt(0);
-        stringBuilder.append(methodName.toString()).append("(");
-
-        for (Element parameter: parameters){
-            stringBuilder.append(TranslateType.getJasminType(parameter.getType(), (Operand)parameter));
-        }
-        stringBuilder.append(")");
+        String methodName = ((LiteralElement)callInstruction.getSecondArg()).getLiteral();
+        stringBuilder.append(UtilsJasmin.getRemovedQuotes(methodName));
+        stringBuilder.append(UtilsJasmin.getArgumentsNoComma(parameters));
         stringBuilder.append(TranslateType.getJasminType(callInstruction.getReturnType())).append("\n\n");
 
         return stringBuilder.toString();
     }
+
+    private static String invokespecial(CallInstruction callInstruction, HashMap<String, Descriptor> table){
+        StringBuilder stringBuilder = new StringBuilder();
+        ArrayList<Element> parameters = callInstruction.getListOfOperands();
+
+        String methodName = UtilsJasmin.getRemovedQuotes(((LiteralElement)callInstruction.getSecondArg()).getLiteral());
+        if (callInstruction.getFirstArg().getType().getTypeOfElement() != ElementType.THIS){
+            String load = TranslateElement.getJasminInst(callInstruction.getFirstArg(), table);
+            stringBuilder.append(load);
+            stringBuilder.append(loadElements(parameters, table));
+            stringBuilder.append("invokespecial ");
+            stringBuilder.append(methodName);
+            stringBuilder.append(UtilsJasmin.getArgumentsNoComma(parameters));
+            stringBuilder.append(TranslateType.getJasminType(callInstruction.getReturnType())).append(";");
+        }
+        else {
+            stringBuilder.append("invokespecial ");
+            stringBuilder.append("java/lang/Object.").append(methodName);
+            stringBuilder.append(UtilsJasmin.getArgumentsNoComma(parameters));
+            stringBuilder.append(TranslateType.getJasminType(callInstruction.getReturnType())).append(";");
+        }
+
+
+
+        return stringBuilder.toString();
+    }
+
+
+
 }

@@ -1,6 +1,6 @@
 package jasmin.methods;
 
-import jasmin.InstSingleton;
+import jasmin.*;
 import jasmin.translation.TranslateCall;
 import jasmin.translation.TranslateElement;
 import org.specs.comp.ollir.*;
