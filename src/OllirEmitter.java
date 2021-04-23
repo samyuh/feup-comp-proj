@@ -111,7 +111,7 @@ public class OllirEmitter {
 
             if(returnValue.getNumChildren() > 0 || isField(returnValue)){
                 sb.append(newAuxiliarVar(returnTypeStr,methodName,returnValue));
-                returnStr = + auxVarNumber + returnTypeStr;
+                returnStr = "t" + auxVarNumber + returnTypeStr;
             } else returnStr = ollirExpression(methodName,returnValue);
 
             sb.append(prefix()).append("ret").append(returnTypeStr).append(" ").append(returnStr).append(";\n");
@@ -341,8 +341,7 @@ public class OllirEmitter {
             return ollirClassOrSuperMethod(methodName,right,expectedType);
 
         // Class Object Method
-        Type type = getObjectType(methodName, left);
-        System.out.println(type);
+        Type type;
         // Get the object type if it is a known variable
         if((type = getObjectType(methodName, left)) != null){
             // Object from the class
@@ -506,12 +505,13 @@ public class OllirEmitter {
     // Get the ollir expression of a boolean or maths expression
     public String ollirMathBooleanExpression(String methodName, JmmNode node, String type){
         JmmNode left = node.getChildren().get(0);
+        String operandType = node.getKind().equals("Less") ? ".i32" : type;
 
         String leftValue, rightValue;
         // Process left node
         if(left.getNumChildren() > 0 || isField(left)){
-            sb.append(newAuxiliarVar(type, methodName, left));
-            leftValue = "t" + auxVarNumber + type;
+            sb.append(newAuxiliarVar(operandType, methodName, left));
+            leftValue = "t" + auxVarNumber + operandType;
         } else leftValue = ollirExpression(methodName,left);
 
         if(node.getKind().equals("Not")){
@@ -521,8 +521,8 @@ public class OllirEmitter {
             // Process right node
             JmmNode right = node.getChildren().get(1);
             if(right.getNumChildren() > 0 || isField(right)){
-                sb.append(newAuxiliarVar(type, methodName, right));
-                rightValue = "t" + auxVarNumber + type;
+                sb.append(newAuxiliarVar(operandType, methodName, right));
+                rightValue = "t" + auxVarNumber + operandType;
             } else rightValue = ollirExpression(methodName, right);
         }
 
