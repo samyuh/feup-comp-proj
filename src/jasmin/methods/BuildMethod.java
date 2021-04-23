@@ -2,6 +2,7 @@ package jasmin.methods;
 
 import jasmin.translation.TranslateCall;
 import jasmin.translation.TranslatePutField;
+import jasmin.translation.TranslateReturn;
 import org.specs.comp.ollir.*;
 
 import java.io.ObjectOutputStream;
@@ -30,6 +31,10 @@ public class BuildMethod extends JasminMethod {
             addEndLine();
         }
 
+        if (currentMethod.getReturnType().getTypeOfElement() == ElementType.VOID){
+            methodString.append("return\n\n");
+        }
+
         addEnd();
         return this.toString();
     }
@@ -39,10 +44,12 @@ public class BuildMethod extends JasminMethod {
      * @return Return the instruction as a string.
      */
     public String getInstruction(Instruction inst, Method method){
+        var table = OllirAccesser.getVarTable(method);
         return switch (inst.getInstType()) {
             case ASSIGN -> new BuildMethodAssigment(ollir, method).getInstructionAssign((AssignInstruction) inst);
-            case CALL -> TranslateCall.getJasminInst((CallInstruction) inst, OllirAccesser.getVarTable(method)) + "\n";
-            case PUTFIELD -> TranslatePutField.getJasminInst((PutFieldInstruction) inst, OllirAccesser.getVarTable(method)) + "\n";
+            case CALL -> TranslateCall.getJasminInst((CallInstruction) inst, table) + "\n";
+            case PUTFIELD -> TranslatePutField.getJasminInst((PutFieldInstruction) inst, table) + "\n";
+            case RETURN -> TranslateReturn.getJasminInst((ReturnInstruction) inst, table) + "\n";
             default -> "";
         };
     }

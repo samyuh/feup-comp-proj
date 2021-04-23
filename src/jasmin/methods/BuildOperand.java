@@ -1,10 +1,7 @@
 package jasmin.methods;
 
 import jasmin.*;
-import jasmin.translation.TranslateCall;
-import jasmin.translation.TranslateGetField;
-import jasmin.translation.TranslateLoadStore;
-import jasmin.translation.TranslateType;
+import jasmin.translation.*;
 import org.specs.comp.ollir.*;
 
 import java.util.HashMap;
@@ -59,6 +56,7 @@ public class BuildOperand extends JasminMethod {
     public void addGetField(GetFieldInstruction inst){
         methodString.append(TranslateGetField.getJasminInst(inst, table));
     }
+
 
 
 }
