@@ -1,9 +1,8 @@
 package jasmin.methods;
 
 import jasmin.*;
+import jasmin.translation.TranslateElement;
 import org.specs.comp.ollir.*;
-
-import java.util.ArrayList;
 
 public class BuildMethodAssigment extends JasminMethod{
     Method method;
@@ -13,14 +12,12 @@ public class BuildMethodAssigment extends JasminMethod{
     }
 
     public String getInstructionAssign(AssignInstruction assignInstruction){
-        String destName = ((Operand)assignInstruction.getDest()).getName();
         Instruction rhs = assignInstruction.getRhs();
         Element lhs = assignInstruction.getDest();
         var table = OllirAccesser.getVarTable(method);
-        int reg = table.get(destName).getVirtualReg();
 
         methodString.append(new BuildOperand(ollir, table, lhs).getOperand(rhs));
-        methodString.append(InstSingleton.istore(reg));
+        methodString.append(TranslateElement.getJasminStore(lhs, table));
 
         return this.toString();
     }

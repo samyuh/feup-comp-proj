@@ -53,14 +53,8 @@ public class BuildMethodScope extends JasminMethod{
         addEndLine();
     }
 
-    // TODO: only the default constructor?
     public void addScopeConstructor() {
         methodString.append("<init>()V");
-        addEndLine();
-        methodString.append("aload_0");
-        addEndLine();
-        methodString.append("return");
-        addEndLine();
     }
 
 }

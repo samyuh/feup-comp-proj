@@ -2,8 +2,11 @@ package jasmin.translation;
 
 import jasmin.*;
 import jasmin.UtilsJasmin;
+import jasmin.directives.ClassName;
+import jasmin.methods.BuildMethod;
 import org.specs.comp.ollir.*;
 
+import javax.lang.model.element.TypeElement;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -20,18 +23,9 @@ public class TranslateCall {
                 int arrayReg = getVirtualReg(arrayElement, table);
                 return InstSingleton.getArrayLength(arrayReg);
             case NEW:
-                if (callInstruction.getListOfOperands().size() != 0) {
-                    Element element = callInstruction.getListOfOperands().get(0);
-                    Type type = element.getType();
-                    return InstSingleton.anewarray(getVirtualReg(element, table), TranslateType.getJasminType(type));
-                }else {
-                    Element element = callInstruction.getFirstArg();
-                    Type type = element.getType();
-                    return InstSingleton.anewarray(getVirtualReg(element, table), TranslateType.getJasminType(type, (Operand) element));
-                }
+                return newCall(callInstruction, table);
             case invokevirtual:
                 return invokevirtual(callInstruction, table);
-
             case invokestatic:
                 return invokestatic(callInstruction, table);
             case invokespecial:
@@ -70,17 +64,16 @@ public class TranslateCall {
         ArrayList<Element> parameters = callInstruction.getListOfOperands();
         StringBuilder stringBuilder = new StringBuilder();
 
-        for (Element parameter: parameters){
-            stringBuilder.append(TranslateElement.getJasminInst(parameter, table));
-        }
+        stringBuilder.append(loadElements(parameters, table));
 
         stringBuilder.append("invokestatic ");
+        System.out.println((((ClassType)callInstruction.getFirstArg().getType()).getName()));
         stringBuilder.append(UtilsJasmin.getObjectName(callInstruction.getFirstArg())).append(".");
 
         String methodName = ((LiteralElement)callInstruction.getSecondArg()).getLiteral();
         stringBuilder.append(UtilsJasmin.getRemovedQuotes(methodName));
         stringBuilder.append(UtilsJasmin.getArgumentsNoComma(parameters));
-        stringBuilder.append(TranslateType.getJasminType(callInstruction.getReturnType())).append("\n\n");
+        stringBuilder.append(TranslateType.getJasminType(callInstruction.getReturnType()));
 
         return stringBuilder.toString();
     }
@@ -88,11 +81,8 @@ public class TranslateCall {
     private static String invokespecial(CallInstruction callInstruction, HashMap<String, Descriptor> table){
         StringBuilder stringBuilder = new StringBuilder();
         ArrayList<Element> parameters = callInstruction.getListOfOperands();
-
         String methodName = UtilsJasmin.getRemovedQuotes(((LiteralElement)callInstruction.getSecondArg()).getLiteral());
         if (callInstruction.getFirstArg().getType().getTypeOfElement() != ElementType.THIS){
-            String load = TranslateElement.getJasminInst(callInstruction.getFirstArg(), table);
-            stringBuilder.append(load);
             stringBuilder.append(loadElements(parameters, table));
             stringBuilder.append("invokespecial ");
             stringBuilder.append(methodName);
@@ -110,6 +100,34 @@ public class TranslateCall {
 
         return stringBuilder.toString();
     }
+
+    private static String newCall(CallInstruction callInstruction, HashMap<String, Descriptor> table){
+        StringBuilder instruction = new StringBuilder();
+        Type returnType = callInstruction.getReturnType();
+        String returnTypeString = TranslateType.getJasminType(returnType);
+
+        // It can be new array or new Class.
+        if (returnType.getTypeOfElement()  == ElementType.OBJECTREF){
+            instruction.append(InstSingleton.newCall(returnTypeString));
+            Instruction nextInstruction = BuildMethod.getNextInstruction();
+            if (nextInstruction.getInstType() == InstructionType.CALL && OllirAccesser.getCallInvocation(((CallInstruction) nextInstruction)) == CallType.invokespecial)
+                instruction.append("dup\n");
+            instruction.append(invokespecial((CallInstruction)nextInstruction, table));
+            BuildMethod.skipNextInstruction();
+            instruction.append("\n");
+            return instruction.toString();
+
+        } else {
+            if (callInstruction.getListOfOperands().size() != 0) {
+                Element element = callInstruction.getListOfOperands().get(0);
+                return InstSingleton.anewarray(getVirtualReg(element, table), returnTypeString);
+            } else {
+                Element element = callInstruction.getFirstArg();
+                return InstSingleton.anewarray(getVirtualReg(element, table), returnTypeString);
+            }
+        }
+    }
+
 
 
 

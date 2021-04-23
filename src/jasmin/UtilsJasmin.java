@@ -1,5 +1,6 @@
 package jasmin;
 
+import jasmin.methods.BuildMethod;
 import jasmin.translation.TranslateElement;
 import jasmin.translation.TranslateType;
 import org.specs.comp.ollir.*;
@@ -47,7 +48,7 @@ public class UtilsJasmin {
     public static String getArgumentsNoComma(ArrayList<Element> parameters){
         StringBuilder stringBuilder = new StringBuilder("(");
         for (Element parameter: parameters){
-            stringBuilder.append(TranslateType.getJasminType(parameter.getType(), (Operand)parameter));
+            stringBuilder.append(TranslateType.getJasminType(parameter.getType()));
         }
         stringBuilder.append(")");
         return stringBuilder.toString();
@@ -64,4 +65,5 @@ public class UtilsJasmin {
         }
         return stringBuilder.toString();
     }
+
 }

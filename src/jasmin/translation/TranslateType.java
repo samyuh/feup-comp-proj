@@ -5,16 +5,6 @@ import org.specs.comp.ollir.*;
 
 public class TranslateType {
 
-    public static String getJasminType(Type type, Operand operand) {
-
-        switch (type.getTypeOfElement()) {
-            case OBJECTREF:
-                return operand.getName();
-            default:
-               return getJasminType(type);
-        }
-    }
-
     public static String getJasminType(Type type) {
         switch (type.getTypeOfElement()) {
             case ARRAYREF:
@@ -22,6 +12,8 @@ public class TranslateType {
             case CLASS:
                 System.out.println("To implement");
                 return "";
+            case OBJECTREF:
+                return ((ClassType)type).getName();
             default:
                 return getJasminTypeVar(type, type.getTypeOfElement());
         }

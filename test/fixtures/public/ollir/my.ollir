@@ -23,23 +23,21 @@ myClass {
 		putfield(this, a.i32, k.i32).V;                     // iload_<k>
 		                                                    // putfield this/a I
 
-		t1.i32 :=.i32 invokevirtual(this,"get").i32;        // aload_0
-		                                                    // invokevirtual this.get(I)I;
-		                                                    // istore_<t1>
+		t1.i32 :=.i32 invokevirtual(this,"get").i32;        // aload_2
+		                                                    // invokevirtual this.get()I;
+		                                                    // istore_4
 
 
 		invokestatic(io, "println", t2.String, t1.i32).V;   // io.println("val = ", this.get());
-                                                           // iload_<t2>
-                                                           // iload_<t1>
+                                                           // iload_6
+                                                           // iload_4
                                                            // invokestatic io.println(LJava/lang/String;I)V
 
-		c1.myClass :=.myClass new(myClass,n.i32).myClass;  // iload_<n>
-		                                                   // newarray myClass
+		c1.myClass :=.myClass new(myClass).myClass;        // new MyClass
+		                                                   // dup
+		invokespecial(c1.myClass,"<init>").V;              // invokespecial <init>V()
 		                                                   // astore_<c1>
 
-		invokespecial(c1.myClass,"<init>").V;              // myClass c1 = new myClass(3);
-		                                                   // aload_<c1>
-		                                                   // invokespecial <init>V()
 
 		t3.i32 :=.i32 invokevirtual(c1.myClass, "get").i32; // aload_<c1>
 		                                                    // invokevirtual myClass.get()I
@@ -64,12 +62,10 @@ myClass {
                                                            // invokestatic io.println(Ljava/lang/String;I)V
 
 	.method public static main(args.array.String).V {    // .method public static main([Ljava/lang/String;)V
-		A.myClass :=.myClass new(myClass).myClass;       // newarray myClass
-		                                                 // istore_<A>
-
-		invokespecial(A.myClass,"<init>").V;             // MyClass A =  new MyClass();
+		A.myClass :=.myClass new(myClass).myClass;       // new myClass
+		                                                 // dup
+		invokespecial(A.myClass,"<init>").V;             // invokespecial java/lang/Object.<init>()V;
 		                                                 // aload_<A>
-		                                                 // invokespecial java/lang/Object.<init>()V;
 
 		invokevirtual(A.myClass,"m1").V;                  // aload_<A>
 		                                                 // invokevirtual A.m1()V;

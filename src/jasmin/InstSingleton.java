@@ -3,8 +3,6 @@ package jasmin;
 import jasmin.translation.TranslateType;
 import org.specs.comp.ollir.*;
 
-import java.util.HashMap;
-import java.util.concurrent.TransferQueue;
 
 public class InstSingleton {
 
@@ -12,6 +10,12 @@ public class InstSingleton {
         if (reg > 3)
             return "istore " + reg + "\n";
         return "istore_" + reg + "\n";
+    }
+
+    public static String astore(int reg){
+        if (reg > 3)
+            return "astore " + reg + "\n";
+        return "astore_" + reg + "\n";
     }
 
     public static String iload(int reg){
@@ -38,6 +42,10 @@ public class InstSingleton {
 
     }
 
+    public static String newCall(String className){
+        return "new " + className + "\n";
+    }
+
     public static String getfield(int classReg, Type type, String fieldName){
         return aload(classReg) + "getfield " + TranslateType.getJasminType(type) + " " + fieldName + "\n";
     }
@@ -61,6 +69,9 @@ public class InstSingleton {
        return aload(regArray) + iload(regVar);
     }
 
+    public static String getStoreArrayVar(int regArray, int regVar){
+        return aload(regArray) + iload(regVar) + "iastore" + "\n";
+    }
 
     public static String getArrayLength(int arrayReg){
         return aload(arrayReg) + "arraylength \n";

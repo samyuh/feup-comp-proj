@@ -9,11 +9,11 @@ import org.specs.comp.ollir.Method;
 
 public class BuildJasmin {
     protected StringBuilder jasminCode;
-    protected ClassUnit ollir;
+    public static ClassUnit ollir;
 
     public BuildJasmin(ClassUnit ollir){
         this.jasminCode = new StringBuilder();
-        this.ollir = ollir;
+        BuildJasmin.ollir = ollir;
     }
 
     public String build(){
@@ -22,12 +22,10 @@ public class BuildJasmin {
         // TODO: super directives
         // TODO: implements directives
         jasminCode.append(new ClassFields(ollir).getDirective());
+        jasminCode.append("\n");
         for (int i = 0 ; i < ollir.getNumMethods(); i++)
-            jasminCode.append(new BuildMethod(ollir).getMethod(i));
+            jasminCode.append(new BuildMethod(ollir).getMethod(i)).append("\n");
         return jasminCode.toString();
     }
-
-
-
 
 }
