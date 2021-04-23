@@ -1,8 +1,10 @@
 package jasmin.methods;
 
 import jasmin.translation.TranslateCall;
+import jasmin.translation.TranslatePutField;
 import org.specs.comp.ollir.*;
 
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 
@@ -15,8 +17,8 @@ public class BuildMethod extends JasminMethod {
     }
 
     /**
-     * Get the body of a method.
-     * @return Returns the body as a string.
+     * Get the instructions in the body of a method.
+     * @return Returns the body instructions as a string.
      */
     public String getMethod(int index) {
         currentMethod = ollir.getMethod(index);
@@ -32,10 +34,15 @@ public class BuildMethod extends JasminMethod {
         return this.toString();
     }
 
+    /**
+     * Calls the right method to translate the instruction
+     * @return Return the instruction as a string.
+     */
     public String getInstruction(Instruction inst, Method method){
         return switch (inst.getInstType()) {
             case ASSIGN -> new BuildMethodAssigment(ollir, method).getInstructionAssign((AssignInstruction) inst);
             case CALL -> TranslateCall.getJasminInst((CallInstruction) inst, OllirAccesser.getVarTable(method)) + "\n";
+            case PUTFIELD -> TranslatePutField.getJasminInst((PutFieldInstruction) inst, OllirAccesser.getVarTable(method)) + "\n";
             default -> "";
         };
     }
@@ -44,12 +51,20 @@ public class BuildMethod extends JasminMethod {
         methodString.append(".end method\n");
     }
 
+    /**
+     * Sometimes the current instruction needs the next to write the correct logic for the program.
+     * This function "looks" to the next, but don't consumes it.
+     * @return returns the next instruction.
+     */
     public static Instruction getNextInstruction(){
         if (currentMethod.getInstructions().size() >= currentIndex + 1)
             return currentMethod.getInstructions().get(currentIndex+1);
         return null;
     }
 
+    /**
+     * Consumes the next instruction.
+     */
     public static void skipNextInstruction(){
         currentIndex ++;
     }

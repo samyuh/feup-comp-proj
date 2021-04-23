@@ -2,10 +2,11 @@ package jasmin.methods;
 
 import jasmin.*;
 import jasmin.translation.TranslateCall;
-import jasmin.translation.TranslateElement;
+import jasmin.translation.TranslateGetField;
+import jasmin.translation.TranslateLoadStore;
+import jasmin.translation.TranslateType;
 import org.specs.comp.ollir.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class BuildOperand extends JasminMethod {
@@ -25,6 +26,7 @@ public class BuildOperand extends JasminMethod {
         switch (inst.getInstType()) {
             case BINARYOPER -> addBinaryOper((BinaryOpInstruction) inst);
             case NOPER -> addNoOper((SingleOpInstruction) inst);
+            case GETFIELD -> addGetField((GetFieldInstruction) inst);
             case CALL -> addCall((CallInstruction) inst);
         }
 
@@ -36,8 +38,8 @@ public class BuildOperand extends JasminMethod {
         Element rightElem = inst.getRightOperand();
         // a = b[i];
 
-        String leftInstruction = TranslateElement.getJasminInst(leftElem, table);
-        String rightInstruction = TranslateElement.getJasminInst(rightElem, table);
+        String leftInstruction = TranslateLoadStore.getLoadInst(leftElem, table);
+        String rightInstruction = TranslateLoadStore.getLoadInst(rightElem, table);
 
         methodString.append(leftInstruction);
         methodString.append(rightInstruction);
@@ -47,11 +49,15 @@ public class BuildOperand extends JasminMethod {
 
     public void addNoOper(SingleOpInstruction inst) {
         Element element = inst.getSingleOperand();
-        methodString.append(TranslateElement.getJasminInst(element, table));
+        methodString.append(TranslateLoadStore.getLoadInst(element, table));
     }
 
     public void addCall(CallInstruction callInstruction){
         methodString.append(TranslateCall.getJasminInst(callInstruction, table));
+    }
+
+    public void addGetField(GetFieldInstruction inst){
+        methodString.append(TranslateGetField.getJasminInst(inst, table));
     }
 
 

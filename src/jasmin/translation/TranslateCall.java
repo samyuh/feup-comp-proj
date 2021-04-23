@@ -2,11 +2,9 @@ package jasmin.translation;
 
 import jasmin.*;
 import jasmin.UtilsJasmin;
-import jasmin.directives.ClassName;
 import jasmin.methods.BuildMethod;
 import org.specs.comp.ollir.*;
 
-import javax.lang.model.element.TypeElement;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -42,7 +40,7 @@ public class TranslateCall {
         StringBuilder stringBuilder = new StringBuilder();
 
         Element firstArg = callInstruction.getFirstArg();
-        stringBuilder.append(TranslateElement.getJasminInst(firstArg, table));
+        stringBuilder.append(TranslateLoadStore.getLoadInst(firstArg, table));
         objectName = UtilsJasmin.getObjectName(firstArg);
 
         methodCall = ((LiteralElement) callInstruction.getSecondArg()).getLiteral();
@@ -50,7 +48,7 @@ public class TranslateCall {
 
 
         for (Element operand : callInstruction.getListOfOperands())
-            stringBuilder.append(TranslateElement.getJasminInst(operand, table));
+            stringBuilder.append(TranslateLoadStore.getLoadInst(operand, table));
 
 
         stringBuilder.append("invokevirtual ").append(objectName).append(".").append(methodCall);
@@ -67,7 +65,7 @@ public class TranslateCall {
         stringBuilder.append(loadElements(parameters, table));
 
         stringBuilder.append("invokestatic ");
-        System.out.println((((ClassType)callInstruction.getFirstArg().getType()).getName()));
+        //System.out.println((((ClassType)callInstruction.getFirstArg().getType()).getName()));
         stringBuilder.append(UtilsJasmin.getObjectName(callInstruction.getFirstArg())).append(".");
 
         String methodName = ((LiteralElement)callInstruction.getSecondArg()).getLiteral();
@@ -95,8 +93,6 @@ public class TranslateCall {
             stringBuilder.append(UtilsJasmin.getArgumentsNoComma(parameters));
             stringBuilder.append(TranslateType.getJasminType(callInstruction.getReturnType())).append(";");
         }
-
-
 
         return stringBuilder.toString();
     }

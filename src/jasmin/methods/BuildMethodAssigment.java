@@ -1,7 +1,6 @@
 package jasmin.methods;
 
-import jasmin.*;
-import jasmin.translation.TranslateElement;
+import jasmin.translation.TranslateLoadStore;
 import org.specs.comp.ollir.*;
 
 public class BuildMethodAssigment extends JasminMethod{
@@ -17,12 +16,10 @@ public class BuildMethodAssigment extends JasminMethod{
         var table = OllirAccesser.getVarTable(method);
 
         methodString.append(new BuildOperand(ollir, table, lhs).getOperand(rhs));
-        methodString.append(TranslateElement.getJasminStore(lhs, table));
+        methodString.append(TranslateLoadStore.getJasminStore(lhs, table));
 
         return this.toString();
     }
-
-
 
 
 }

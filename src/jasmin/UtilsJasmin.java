@@ -1,7 +1,6 @@
 package jasmin;
 
-import jasmin.methods.BuildMethod;
-import jasmin.translation.TranslateElement;
+import jasmin.translation.TranslateLoadStore;
 import jasmin.translation.TranslateType;
 import org.specs.comp.ollir.*;
 
@@ -61,7 +60,7 @@ public class UtilsJasmin {
     public static String loadElements(ArrayList<Element> parameters, HashMap<String, Descriptor> table){
         StringBuilder stringBuilder = new StringBuilder();
         for(Element param : parameters){
-            stringBuilder.append(TranslateElement.getJasminInst(param, table));
+            stringBuilder.append(TranslateLoadStore.getLoadInst(param, table));
         }
         return stringBuilder.toString();
     }
