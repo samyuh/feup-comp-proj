@@ -350,6 +350,6 @@ void WhileStatment() #WhileStatment : {}
         }
 
     }
-     Statement()
+     Statement() #WhileBody
 
 }

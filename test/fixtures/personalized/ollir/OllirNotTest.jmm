@@ -8,6 +8,7 @@ class NotTest {
         a = !!true && !false && a;
         a = this.test() && false;
         a = !this.test();
+        a = 1 < 5;
 	}
 
 	public boolean test(){

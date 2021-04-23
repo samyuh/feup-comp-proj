@@ -12,6 +12,7 @@ import visitor.Utils;
 public class OllirEmitter {
     static int auxVarNumber;
     static int ifElseLabelNum;
+    static int whileNum;
     static int indent;
     SymbolTable symbolTable;
     List<Report> reports;
@@ -23,6 +24,7 @@ public class OllirEmitter {
         sb = new StringBuilder();
         auxVarNumber = 0;
         ifElseLabelNum = 0;
+        whileNum = 0;
         indent = 0;
     }
 
@@ -115,7 +117,7 @@ public class OllirEmitter {
             sb.append(prefix()).append("ret").append(returnTypeStr).append(" ").append(returnStr).append(";\n");
         }
 
-        indent--;
+        indent = 1;
         sb.append(prefix()).append("}\n");
     }
 
@@ -130,13 +132,36 @@ public class OllirEmitter {
                     ifElseStatement(methodName, statement);
                     break;
                 case ("WhileStatment"):
+                    whileNum++;
+                    whileStatement(methodName, statement);
                     break;
                 default:
                     sb.append(ollirExpression(methodName, statement)).append(";");
                     break;
             }
+
             sb.append("\n");
         }
+    }
+
+    private void whileStatement(String methodName, JmmNode statement) {
+        String valueNum = "" + whileNum;
+        JmmNode conditionNode = statement.getChildren().get(0);
+        JmmNode bodyBlock = statement.getChildren().get(1);
+
+        int prevIndent = indent;
+        sb.append(prefix()).append("Loop" + valueNum + ":\n");
+        indent++;
+        String condition = ollirExpression(methodName, conditionNode);
+        sb.append(prefix()).append("if (" + condition + ") goto Body" + valueNum + ";\n");
+        sb.append(prefix()).append("goto EndLoop" + valueNum + ";\n");
+        indent = prevIndent;
+        sb.append(prefix()).append("Body" + valueNum + ":\n");
+        indent++;
+        visitStatements(methodName, bodyBlock.getChildren());
+        indent = prevIndent;
+        sb.append(prefix()).append("EndLoop" + valueNum + ":");
+        indent++;
     }
 
     private void ifElseStatement(String methodName, JmmNode statement) {
@@ -146,19 +171,22 @@ public class OllirEmitter {
         JmmNode elseBlock = statement.getChildren().get(2);
 
         //String condition = buildCondition(methodName, conditionNode);
-        String ifElseString = "if (" + ollirExpression(methodName, conditionNode) + ") goto then;\n";
+        String ifElseString = "if (" + ollirExpression(methodName, conditionNode) + ") " +
+                "goto then" + ifElseLabelNum + ";\n";
+        int prevIndent = indent;
         sb.append(prefix()).append(ifElseString);
+
         sb.append(prefix()).append("else").append(valueNum).append(":\n");
         indent++;
         visitStatements(methodName, elseBlock.getChildren());
         sb.append(prefix()).append("goto endif;\n");
-        indent--;
+        indent = prevIndent;
         sb.append(prefix()).append("then").append(valueNum).append(":\n");
         indent++;
         visitStatements(methodName, ifBlock.getChildren());
-        indent--;
+        indent = prevIndent;
         sb.append(prefix()).append("endif").append(valueNum).append(":");
-        //indent++;
+        indent++;
     }
 
     // Convert assignment expression to ollir
@@ -299,7 +327,6 @@ public class OllirEmitter {
         // New Int Array
         if(kind.equals("NewIntArray"))
             return ollirNewIntArray(methodName, node);
-        // TODO: "!" , Expression
 
         return "EXPRESSION NOT KNOWN";
     }

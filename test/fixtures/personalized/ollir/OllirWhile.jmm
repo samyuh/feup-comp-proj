@@ -1,0 +1,20 @@
+class Fac {
+    public boolean check(int[] A, int N, int T){
+        int i;
+        int j;
+        boolean all;
+
+        i = 0;
+        j = 0;
+        all = false;
+        while((i < N) && (A[i] < T)) {
+            i = i + 1;
+            while( i < 5){
+                j = i + 3;
+            }
+        }
+        if(i < N) all = true;
+        else all = false;
+        return all;
+    }
+}

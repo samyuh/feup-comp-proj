@@ -41,7 +41,7 @@ public class MyOllirUtils {
             case "Add":
                 return " +.i32 ";
             case "Less":
-                return " <.bool ";
+                return " <.i32 ";
             case "Sub":
                 return " -.i32 ";
             case "Mult":

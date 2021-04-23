@@ -60,4 +60,10 @@ public class OptimizeTest {
         var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/ollir/OllirNotTest.jmm"));
         TestUtils.noErrors(result.getReports());
     }
+
+    @Test
+    public void whileTest(){
+        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/ollir/OllirWhile.jmm"));
+        TestUtils.noErrors(result.getReports());
+    }
 }
