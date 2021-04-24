@@ -1,0 +1,29 @@
+import ioPlus;
+import M;
+class T {
+    int[] test_arr;
+    public static void main(String[] args) {
+        T fm;
+        M m;
+        int max;
+
+        max = m.oh_no();
+        fm = new T();
+        fm.build_test_arr();
+
+        max = fm.find_maximum(fm.get_array());
+        ioPlus.printResult(max);
+    }
+
+    public int find_maximum(int[] n){
+        return 1;
+    }
+
+    public int[] get_array(){
+        return test_arr;
+    }
+
+    public int build_test_arr() {
+        return 0;
+    }
+}

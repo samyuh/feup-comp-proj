@@ -38,42 +38,54 @@ public class OptimizeTest {
     }
 
     @Test
-    // to check
+    public void InvokeVirtualTest(){
+        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/ollir/OllirInvokeVirtual.jmm"));
+        TestUtils.noErrors(result.getReports());
+    }
+
+    @Test
+    public void FacTest(){
+        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/ollir/OllirFac.jmm"));
+        TestUtils.noErrors(result.getReports());
+    }
+
+    @Test
+    // TODO
     public void testLazysort(){
         var result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/Lazysort.jmm"));
         TestUtils.noErrors(result.getReports());
     }
 
     @Test
-    // to check
+    // TODO
     public void testLife(){
         var result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/Life.jmm"));
         TestUtils.noErrors(result.getReports());
     }
 
     @Test
-    // to check
+    // TODO
     public void testMonteCarloPi(){
         var result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/MonteCarloPi.jmm"));
         TestUtils.noErrors(result.getReports());
     }
 
     @Test
-    // to test
+    // TODO
     public void testQuickSort(){
         var result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/QuickSort.jmm"));
         TestUtils.noErrors(result.getReports());
     }
 
     @Test
-    // to test
+    // TODO
     public void testTicTacToe(){
         var result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/TicTacToe.jmm"));
         TestUtils.noErrors(result.getReports());
     }
 
     @Test
-    // to test
+    // TODO: Acho que há um erro no parser
     public void testWhileAndIF(){
         var result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/WhileAndIF.jmm"));
         TestUtils.noErrors(result.getReports());
@@ -120,4 +132,5 @@ public class OptimizeTest {
         var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/ollir/OllirWhile.jmm"));
         TestUtils.noErrors(result.getReports());
     }
+
 }
