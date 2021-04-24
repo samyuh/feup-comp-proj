@@ -153,7 +153,7 @@ public class OllirEmitter {
         int prevIndent = indent;
         sb.append(prefix()).append("Loop" + valueNum + ":\n");
         indent++;
-        String condition = ollirExpression(methodName, conditionNode);
+        String condition = buildCondition(methodName, conditionNode);
         sb.append(prefix()).append("if (" + condition + ") goto Body" + valueNum + ";\n");
         sb.append(prefix()).append("goto EndLoop" + valueNum + ";\n");
         indent = prevIndent;
@@ -171,8 +171,8 @@ public class OllirEmitter {
         JmmNode ifBlock = statement.getChildren().get(1);
         JmmNode elseBlock = statement.getChildren().get(2);
 
-        //String condition = buildCondition(methodName, conditionNode);
-        String ifElseString = "if (" + ollirExpression(methodName, conditionNode) + ") " +
+        String condition = buildCondition(methodName, conditionNode);
+        String ifElseString = "if (" + condition + ") " +
                 "goto then" + ifElseLabelNum + ";\n";
         int prevIndent = indent;
         sb.append(prefix()).append(ifElseString);
@@ -188,6 +188,20 @@ public class OllirEmitter {
         indent = prevIndent;
         sb.append(prefix()).append("endif").append(valueNum).append(":");
         indent++;
+    }
+
+    private String buildCondition(String methodName, JmmNode node){
+        if(isField(node) || node.getKind().equals("Dot")){
+            String type = ".bool";
+            sb.append(newAuxiliarVar(type, methodName, node));
+            return "t" + auxVarNumber + type + " &&.bool 1.bool";
+        }
+
+        String condition = ollirExpression(methodName, node);
+        if(!Utils.isBooleanExpression(node.getKind())){
+            condition += " &&.bool 1.bool";
+        }
+        return condition;
     }
 
     // Convert assignment expression to ollir

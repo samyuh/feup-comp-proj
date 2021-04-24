@@ -46,6 +46,8 @@ public class MyOllirUtils {
                 return " -.i32 ";
             case "Mult":
                 return " *.i32 ";
+            case "Div":
+                return " /.i32 ";
             case "And":
                 return " &&.bool ";
             case "Not":

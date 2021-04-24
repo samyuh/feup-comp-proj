@@ -64,7 +64,6 @@ public class OptimizeTest {
     }
 
     @Test
-    // TODO
     public void testMonteCarloPi(){
         var result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/MonteCarloPi.jmm"));
         TestUtils.noErrors(result.getReports());
