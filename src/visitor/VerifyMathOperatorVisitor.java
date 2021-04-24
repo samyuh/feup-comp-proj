@@ -35,13 +35,13 @@ public class VerifyMathOperatorVisitor extends PreorderJmmVisitor<Analysis, Bool
             if (!isAcceptedTypes(returnValueMethod))
                 analysis.addReport(node, "\"" + node + "\" invalid type.");
         }
-        else if (!isAcceptedTypes(Utils.getVariableType(node, analysis, parentMethodName))) {
+        else if (!node.getKind().equals("ArrayAccess") && !isAcceptedTypes(Utils.getVariableType(node, analysis, parentMethodName))) {
             analysis.addReport(node, "\"" + node + "\" invalid type.");
         }
     }
 
     private boolean isAcceptedTypes(String kind){
-        return kind.equals("undefined") || kind.equals("int") || kind.equals("int[]");
+        return kind.equals("undefined") || kind.equals("int");
     }
 
 

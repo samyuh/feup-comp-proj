@@ -8,11 +8,19 @@ public class ArrayVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
     public ArrayVisitor(){
         addVisit("ArrayAccess",this::visitArrayAccess);
         addVisit("NewIntArray", this::visitNewExpression);
-        addVisit("ArrayAssignment", this::visitArrayAccess);
+        addVisit("ArrayAssignment", this::visitArrayAssignment);
     }
 
     public Boolean visitArrayAccess(JmmNode arrayNode, Analysis analysis){
         JmmNode accessNode = arrayNode.getChildren().get(1);
+
+        return visitAccessedArray(arrayNode, analysis) &&
+                checkInsideBrackets(arrayNode, analysis ,accessNode,"access");
+
+    }
+
+    public Boolean visitArrayAssignment(JmmNode arrayNode, Analysis analysis){
+        JmmNode accessNode = arrayNode.getChildren().get(1).getChildren().get(0);
 
         return visitAccessedArray(arrayNode, analysis) &&
                 checkInsideBrackets(arrayNode, analysis ,accessNode,"access");
@@ -65,7 +73,7 @@ public class ArrayVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
         // a function that returns an int or another array access
         else if(!kind.equals("Number") && !Utils.isMathExpression(kind) &&
                 !kind.equals("ArrayAccess") && !returnIntMethod(node,analysis)) {
-            analysis.addReport(node, "Invalid array " + context + ". Index must be an integer.");
+            analysis.addReport(node, "Invalid array " + context + ". Must be an integer.");
             return false;
         }
         return true;

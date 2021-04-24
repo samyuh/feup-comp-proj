@@ -20,8 +20,15 @@ public class AssignmentVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
         JmmNode leftNode = assigmentNode.getChildren().get(0);
         JmmNode rightNode = assigmentNode.getChildren().get(1);
         String parentMethodName = Utils.getParentMethodName(assigmentNode);
-        String right;
-        String left = Utils.getVariableType(leftNode, analysis, parentMethodName);
+        String left, right;
+
+        if(leftNode.getKind().equals("Identifier")){
+            left = Utils.getVariableType(leftNode, analysis, parentMethodName);
+        } else {
+            // ArrayAssignment
+            JmmNode arrayIdentifier = leftNode.getChildren().get(0);
+            left = Utils.getVariableType(arrayIdentifier, analysis, parentMethodName).split("\\[")[0];
+        }
 
         // Check simple assignments j = false or j = i, where i is a boolean and j = this.bla();
         if (rightNode.getChildren().size() == 0) {
@@ -39,7 +46,7 @@ public class AssignmentVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
 
         else if (rightNode.getKind().equals("Dot")){
             String returnValueMethod = Utils.getReturnValueMethod(rightNode, analysis);
-            if (!returnValueMethod.equals("none") && !returnValueMethod.equals(left))
+            if (!returnValueMethod.equals("undefined") && !returnValueMethod.equals(left))
                 analysis.addReport(rightNode, "\"" + rightNode + "\" and \"" + leftNode + "\" incompatible types");
         }
 
