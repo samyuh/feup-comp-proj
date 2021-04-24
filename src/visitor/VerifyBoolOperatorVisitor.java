@@ -27,14 +27,14 @@ public class VerifyBoolOperatorVisitor extends PreorderJmmVisitor<Analysis, Bool
                 analysis.addReport(leftNode, "\"" + leftNode + "\" invalid type: expecting an int or an int[].");
         }
         else if (leftNode.getChildren().size() > 0 && !leftNode.getKind().equals("ArrayAccess") && !Utils.isMathExpression(leftNode.getKind())){
-            analysis.addReport(rightNode, "\"" + leftNode + "\" unexpected operator");
+            analysis.addReport(leftNode, "\"" + leftNode + "\" unexpected operator");
         }
         else if (rightNode.getKind().equals("Dot")){
             String returnValueMethod = Utils.getReturnValueMethod(rightNode, analysis);
             if (!returnValueMethod.equals("undefined") && !returnValueMethod.equals("int") && !returnValueMethod.equals("int[]"))
                 analysis.addReport(rightNode, "\"" + rightNode + "\" invalid type: expecting an int or an int[].");
         }
-        else if (rightNode.getChildren().size() > 0 && !rightNode.getKind().equals("ArrayAccess") && !Utils.isMathExpression(leftNode.getKind())) {
+        else if (rightNode.getChildren().size() > 0 && !rightNode.getKind().equals("ArrayAccess") && !Utils.isMathExpression(rightNode.getKind())) {
             analysis.addReport(rightNode, "\"" + rightNode + "\" unexpected operator");
         }
         else if (leftNode.getNumChildren() == 0 && rightNode.getNumChildren() == 0){
