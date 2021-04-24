@@ -9,7 +9,7 @@ public class PersonalizedFailAnalyses {
 
     @Test
     public void symbolTableTest() {
-        String jmmCode = SpecsIo.getResource("fixtures/personalized/SymbolTable.jmm");
+        String jmmCode = SpecsIo.getResource("fixtures/personalized/failSemantic/SymbolTable.jmm");
         JmmParserResult jmmParser = TestUtils.parse(jmmCode);
         var analysisResult = TestUtils.analyse(jmmParser);
         //TestUtils.noErrors(analysisResult.getReports());
@@ -70,7 +70,7 @@ public class PersonalizedFailAnalyses {
 
     @Test
     public void notDeclaredVariable() {
-        String jmmCode = SpecsIo.getResource("fixtures/personalized/SymbolTable.jmm");
+        String jmmCode = SpecsIo.getResource("fixtures/personalized/failSemantic/SymbolTable.jmm");
         JmmParserResult jmmParser = TestUtils.parse(jmmCode);
         var analysisResult = TestUtils.analyse(jmmParser);
         TestUtils.noErrors(analysisResult.getReports());
@@ -112,6 +112,43 @@ public class PersonalizedFailAnalyses {
         JmmParserResult jmmParser = TestUtils.parse(jmmCode);
         var analysisResult = TestUtils.analyse(jmmParser);
         // System.out.println(jmmParser.getRootNode().toJson());
+        TestUtils.noErrors(analysisResult.getReports());
+    }
+
+    @Test
+    public void var_lit_incomp(){
+        String jmmCode = SpecsIo.getResource("fixtures/personalized/varLitIncomp.jmm");
+        JmmParserResult jmmParser = TestUtils.parse(jmmCode);
+        var analysisResult = TestUtils.analyse(jmmParser);
+        System.out.println(jmmParser.toJson());
+        TestUtils.noErrors(analysisResult.getReports());
+        System.out.println(jmmParser.getRootNode().toJson());
+    }
+
+
+    @Test
+    public void VerifyMathOperatorVisitor(){
+        String jmmCode = SpecsIo.getResource("fixtures/personalized/failSemantic/VerifyMathOperator.jmm");
+        JmmParserResult jmmParser = TestUtils.parse(jmmCode);
+        var analysisResult = TestUtils.analyse(jmmParser);
+        System.out.println("EXPECTED 28: ACTUAL " + analysisResult.getReports().size());
+        TestUtils.noErrors(analysisResult.getReports());
+    }
+
+    @Test
+    public void whileIfCondition(){
+        String jmmCode = SpecsIo.getResource("fixtures/personalized/failSemantic/WhileIfCondition.jmm");
+        JmmParserResult jmmParser = TestUtils.parse(jmmCode);
+        var analysisResult = TestUtils.analyse(jmmParser);
+        System.out.println("EXPECTED 20: ACTUAL " + analysisResult.getReports().size());
+        TestUtils.noErrors(analysisResult.getReports());
+    }
+
+    @Test
+    public void lengthTest(){
+        String jmmCode = SpecsIo.getResource("fixtures/personalized/failSemantic/SemanticLength.jmm");
+        JmmParserResult jmmParser = TestUtils.parse(jmmCode);
+        var analysisResult = TestUtils.analyse(jmmParser);
         TestUtils.noErrors(analysisResult.getReports());
     }
 }

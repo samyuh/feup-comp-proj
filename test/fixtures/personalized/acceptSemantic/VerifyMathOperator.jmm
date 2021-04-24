@@ -1,0 +1,72 @@
+/*  REASON:
+    Incompatible types for binary operation.
+*/
+
+class T {
+    int n;
+    public static void main(String[] a) {
+
+        int j;
+        int k ;
+        T obj;
+
+        k = 2;
+        n = 2;
+
+
+        // Simple expressions.
+        j = 1 + 2 + 3;
+        j = 1 * 2 + 3 / 4;
+        j = 1 - 1;
+
+        // Local variables.
+        j = k;
+        j = k * k;
+        j = k - k;
+
+        // Fields.
+        j = n;
+        j = n + k;
+        j = n * 1;
+
+        // Functions this with int.
+        j = this.returnInt() + 2;
+        j = 2 + this.returnInt();
+        j = k * this.returnInt();
+        j = n + k * this.returnInt();
+
+        // Function this with int[].
+        j = this.returnInt() + 2;
+        j = 2 + this.returnInt();
+        j = k * this.returnInt();
+        j = n + k * this.returnInt();
+
+        // Function returning int and object.
+         j = obj.returnInt() + 2;
+         j = 2 + obj.returnInt();
+         j = k * obj.returnInt();
+         j = n + k * obj.returnInt();
+
+        // Function returning int[] and object.
+         j = this.returnInt() + 2;
+         j = 2 + this.returnInt();
+         j = k * this.returnInt();
+         j = n + k * this.returnInt();
+
+    }
+
+    public int returnInt(){
+        return 1;
+    }
+
+    public int[] returnArrayInt(){
+        int[] j;
+        return j[1];
+    }
+
+    public int testLocalVariables(int m){
+        int j;
+        j = m * 2;
+        return j;
+    }
+}

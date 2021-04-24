@@ -1,0 +1,123 @@
+class T {
+    int field;
+    public static void main(String[] a) {
+        int j;
+        boolean n;
+        T test;
+        int[] array;
+        n = true;
+        array = new int[0];
+        field = 1;
+
+        if(j){
+            j = 2;
+        } else{
+            j = 2;
+        }
+
+        if (1){
+            j = 2;
+        } else{
+            j = 2;
+        }
+
+
+
+        if (array){
+            j = 2;
+        } else{
+            j = 2;
+        }
+
+        if (test){
+            j = 2;
+        }else{
+            j = 2;
+        }
+        
+        if (field){
+            j = 2;
+        }else{
+            j = 2; 
+        }
+
+        if (this.returnInt()) {
+            j = 2;
+        } else {
+            j = 2;
+        }
+
+        if (test.returnInt()){
+            j = 2;
+        } else {
+            j = 2;
+        }
+
+        if (1*1){
+            j = 2;
+        }else{
+            j = 2;
+        }
+
+        if (1+1){
+            j = 2;
+        } else{
+            j = 2;
+        }
+
+         while(j){
+             j = 2;
+         }
+
+         while (1){
+             j = 2;
+         }
+
+         while (array){
+             j = 2;
+         }
+
+         while (test){
+             j = 2;
+         }
+
+         while (field){
+             j = 2;
+         }
+
+         while (this.returnInt()) {
+             j = 2;
+         }
+
+         while (test.returnInt()){
+             j = 2;
+         }
+
+         while (1*1){
+             j = 2;
+         }
+
+         while (1+1){
+             j = 2;
+         }
+
+    }
+
+
+    public int returnInt(){
+        return 1;
+    }
+
+    public boolean testParameter(int param){
+        while(param){
+            j = 2;
+        }
+        if(param){
+            j = 2;
+        } else{
+            j= 2;
+        }
+        return true;
+    }
+
+}

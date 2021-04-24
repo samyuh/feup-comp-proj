@@ -5,6 +5,8 @@ class T  {
         int c;
         T t;
 
+        r[m] = y;
+        a[true] = 5;
         t = new T();
         a = new int[0];
         c = a[4];        // First test -> Array access must be an integer

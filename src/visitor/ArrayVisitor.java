@@ -8,6 +8,7 @@ public class ArrayVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
     public ArrayVisitor(){
         addVisit("ArrayAccess",this::visitArrayAccess);
         addVisit("NewIntArray", this::visitNewExpression);
+        addVisit("ArrayAssignment", this::visitArrayAccess);
     }
 
     public Boolean visitArrayAccess(JmmNode arrayNode, Analysis analysis){

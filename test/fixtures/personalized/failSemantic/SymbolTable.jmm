@@ -12,11 +12,12 @@ class T extends treta {
     public static void main(String[] s) {
         int[] a;
         int c;
-        a = b - c + d;
+        a = b - c + d;      // b,d undefined
+        a = (nao - eu + existe) * 6 + 2 / piu;  // nao, eu, existe undefined
         // This is valid in Java
         a = new int[0];
-        c = truru[2];
-        c = a.getLen(d);
+        c = truru[2]; // truru undefined
+        c = a.getLen(d); // d undefined, TODO: getLen not an array method
 
     }
 
@@ -36,14 +37,15 @@ class T extends treta {
         int[] v1;
         Boolean v2;
         String v3;
-        v = v3 + undeclaredVar - 7 - m * (5 + kkk);
+        v = v3 + undeclaredVar - 7 - m * (5 + kkk); // v,undelcaredVar,m,kkk undefined
+        a = (b + 6 + c) * 5;
 
-        return j;
+        return (returnVal + 5) * lul; // returnVal, lul undefined
     }
 
     /*
-        public Report ola(){
-            Report r = new Report();
+        public Report ola(){ // TODO: Report no imported
+            Report r = new Report(); // TODO: Report no imported
             return r;
         }
     */

@@ -11,6 +11,7 @@ public class UndefinedVarVisitor extends PreorderJmmVisitor<Analysis, Boolean>{
     public UndefinedVarVisitor(){
         addVisit("MethodDeclaration", this::visitMethodDeclaration);
         addVisit("ObjectMethodParameters", this::visitMethodParameters);
+        addVisit("Return", this::visitReturn);
     }
 
     public Boolean visitMethodParameters(JmmNode objectMethodParameters, Analysis analysis){
@@ -27,13 +28,26 @@ public class UndefinedVarVisitor extends PreorderJmmVisitor<Analysis, Boolean>{
         return true;
     }
 
-
-    public Boolean visitMethodDeclaration(JmmNode MethodDeclarationNode, Analysis analysis){
-        JmmNode methodScope = MethodDeclarationNode.getChildren().get(0); // MethodMain or MethodGeneric
+    public Boolean visitMethodDeclaration(JmmNode methodDeclarationNode, Analysis analysis){
+        JmmNode methodScope = methodDeclarationNode.getChildren().get(0); // MethodMain or MethodGeneric
         String methodName = getMethodName(methodScope); // Get method name
         JmmNode methodBody = getMethodBody(methodScope);
 
         validateAssignments(methodName, methodBody, analysis);
+
+        return true;
+    }
+
+    public Boolean visitReturn(JmmNode returnNode, Analysis analysis){
+        JmmNode node = returnNode.getChildren().get(0);
+        String methodName = Utils.getParentMethodName(returnNode);
+
+        if (node.getNumChildren() > 0 && !node.getKind().equals("Dot") && !node.getKind().equals("NewObject")) {
+            validateExpression(methodName, node, analysis);
+        }
+        else if (node.getKind().equals("Identifier")){
+            varIsDefined(methodName, analysis, node);
+        }
 
         return true;
     }
@@ -60,25 +74,25 @@ public class UndefinedVarVisitor extends PreorderJmmVisitor<Analysis, Boolean>{
         }
     }
 
-    public Boolean validateExpression(String methodName, JmmNode node, Analysis analysis) {
+    public void validateExpression(String methodName, JmmNode node, Analysis analysis) {
         JmmNode left, right;
 
-        while (true) {
-            left = node.getChildren().get(0);
-            if (left.getKind().equals("Identifier"))
-                varIsDefined(methodName, analysis, left);
+        left = node.getChildren().get(0);
+        validateNode(methodName,left,analysis);
 
-            if(node.getNumChildren() == 1) break;
+        if(node.getNumChildren() == 1) return;
 
-            right = node.getChildren().get(1);
-            if (right.getKind().equals("Identifier")) {
-                varIsDefined(methodName, analysis, right);
-                break;
-            } else if (Utils.isOperator(right.getKind()) || right.getKind().equals("NewIntArray")) {
-                node = right;
-            }  else break;
+        right = node.getChildren().get(1);
+        validateNode(methodName,right,analysis);
+
+    }
+
+    public void validateNode(String methodName, JmmNode node, Analysis analysis){
+        if (node.getKind().equals("Identifier")) {
+            varIsDefined(methodName, analysis, node);
+        } else if (Utils.isOperator(node.getKind()) || node.getKind().equals("NewIntArray")) {
+            validateExpression(methodName, node, analysis);
         }
-        return true;
     }
 
     /**
