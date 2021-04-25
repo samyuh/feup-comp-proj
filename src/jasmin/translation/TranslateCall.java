@@ -41,7 +41,7 @@ public class TranslateCall {
 
         Element firstArg = callInstruction.getFirstArg();
         stringBuilder.append(TranslateLoadStore.getLoadInst(firstArg, table));
-        objectName = UtilsJasmin.getObjectName(firstArg);
+        objectName = UtilsJasmin.getOperandName(firstArg);
 
         methodCall = ((LiteralElement) callInstruction.getSecondArg()).getLiteral();
         methodCall = UtilsJasmin.getRemovedQuotes(methodCall);
@@ -65,8 +65,7 @@ public class TranslateCall {
         stringBuilder.append(loadElements(parameters, table));
 
         stringBuilder.append("invokestatic ");
-        //System.out.println((((ClassType)callInstruction.getFirstArg().getType()).getName()));
-        stringBuilder.append(UtilsJasmin.getObjectName(callInstruction.getFirstArg())).append(".");
+        stringBuilder.append(UtilsJasmin.getOperandName(callInstruction.getFirstArg())).append(".");
 
         String methodName = ((LiteralElement)callInstruction.getSecondArg()).getLiteral();
         stringBuilder.append(UtilsJasmin.getRemovedQuotes(methodName));

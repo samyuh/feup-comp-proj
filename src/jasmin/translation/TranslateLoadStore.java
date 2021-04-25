@@ -28,7 +28,7 @@ public class TranslateLoadStore {
             return getLoadArrayAccess(element, table);
         }
         // generates iload
-        else if (elementType == ElementType.INT32 || elementType == ElementType.STRING) {
+        else if (elementType == ElementType.INT32 || elementType == ElementType.STRING || elementType == ElementType.BOOLEAN) {
             ElementType typeVar = table.get(((Operand) element).getName()).getVarType().getTypeOfElement();
 
             // Array accesses are treated as integers. Thus, this verification is necessary.
@@ -52,9 +52,10 @@ public class TranslateLoadStore {
      */
     public static String getJasminStore(Element element, HashMap<String, Descriptor> table) {
         ElementType elementType = element.getType().getTypeOfElement();
+
         if (elementType == ElementType.ARRAYREF) {
             return getStoreArrayAccess(element, table);
-        } else if (elementType == ElementType.INT32 || elementType == ElementType.STRING) {
+        } else if (elementType == ElementType.INT32 || elementType == ElementType.STRING || elementType == ElementType.BOOLEAN) {
             ElementType typeVar = table.get(((Operand) element).getName()).getVarType().getTypeOfElement();
             if (typeVar == ElementType.ARRAYREF)
                 return getStoreArrayAccess(element, table);
@@ -66,7 +67,7 @@ public class TranslateLoadStore {
             int register = UtilsJasmin.getVirtualReg(element, table);
             return InstSingleton.astore(register);
         }
-        return "bla";
+        return element.toString();
     }
 
     /**

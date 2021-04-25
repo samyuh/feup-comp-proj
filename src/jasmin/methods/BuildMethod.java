@@ -50,7 +50,7 @@ public class BuildMethod extends JasminMethod {
             case CALL -> TranslateCall.getJasminInst((CallInstruction) inst, table) + "\n";
             case PUTFIELD -> TranslatePutField.getJasminInst((PutFieldInstruction) inst, table) + "\n";
             case RETURN -> TranslateReturn.getJasminInst((ReturnInstruction) inst, table) + "\n";
-            default -> "";
+            default -> inst.getInstType().toString();
         };
     }
 

@@ -13,6 +13,11 @@ public class UtilsJasmin {
         ClassType classType = (ClassType) element.getType();
         return classType.getName();
     }
+
+    public static String getOperandName(Element element){
+        Operand operand = (Operand) element;
+        return operand.getName();
+    }
     public static Descriptor getDescriptor(Element element, HashMap<String, Descriptor> table){
         return table.get(((Operand) element).getName());
     }
