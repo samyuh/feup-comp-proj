@@ -154,7 +154,8 @@ public class TestUtils {
                 .filter(report -> report.getType() == ReportType.ERROR)
                 .findFirst()
                 .ifPresent(report -> {
-                    throw new RuntimeException("Found at least one error report: " + report);
+                    throw new RuntimeException("Found at least one error report: " + report,
+                            report.getException().get());
                 });
     }
 
