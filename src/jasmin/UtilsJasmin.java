@@ -70,4 +70,7 @@ public class UtilsJasmin {
         return stringBuilder.toString();
     }
 
+    public static boolean isBooleanOp(OperationType opType){
+        return opType == OperationType.AND || opType == OperationType.NOT || opType == OperationType.LTH ;
+    }
 }

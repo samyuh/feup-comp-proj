@@ -37,11 +37,15 @@ public class BuildOperand extends JasminMethod {
 
         String leftInstruction = TranslateLoadStore.getLoadInst(leftElem, table);
         String rightInstruction = TranslateLoadStore.getLoadInst(rightElem, table);
+        OperationType opType = inst.getUnaryOperation().getOpType();
 
-        methodString.append(leftInstruction);
-        methodString.append(rightInstruction);
+        if (!UtilsJasmin.isBooleanOp(opType)) {
+            methodString.append(leftInstruction);
+            methodString.append(rightInstruction);
 
-        methodString.append(InstSingleton.getOp(inst.getUnaryOperation().getOpType()));
+            methodString.append(InstSingleton.getOp(opType));
+        }else
+            methodString.append(TranslateBooleanOp.getJasminInst(leftInstruction, rightInstruction, opType));
     }
 
     public void addNoOper(SingleOpInstruction inst) {
@@ -56,7 +60,5 @@ public class BuildOperand extends JasminMethod {
     public void addGetField(GetFieldInstruction inst){
         methodString.append(TranslateGetField.getJasminInst(inst, table));
     }
-
-
 
 }

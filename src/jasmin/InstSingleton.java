@@ -65,29 +65,11 @@ public class InstSingleton {
             case ADD -> "iadd \n";
             case SUB -> "isub \n";
             case DIV -> "idiv \n";
-            case AND -> "iand \n";
-            case NOT -> "ineg \n";
-            case OR -> "ior \n";
-            case LTH -> lth();
             default -> opType.name();
         };
     }
 
-    public static String lth(){
-        StringBuilder stringBuilder = new StringBuilder();
-        // Since there are two labels for this instruction, we must multiply it by two to avoid repetitions.
-        String label_1 = "IFICMP_"+BuildMethod.currentIndex*2;
-        String label_2 = "IFICMP_"+(BuildMethod.currentIndex*2+1);
-        // In case of success jump.
-        stringBuilder.append("if_icmplt ").append(label_1).append("\n");
-        stringBuilder.append(iconst("0"));
-        stringBuilder.append("goto ").append(label_2).append("\n");
-        stringBuilder.append(label(label_1));
-        stringBuilder.append(iconst("1"));
-        stringBuilder.append(label(label_2));
 
-        return stringBuilder.toString();
-    }
 
     public static String getAccessArrayVar(int regArray, int regVar){
        return aload(regArray) + iload(regVar);
