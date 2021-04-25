@@ -1,0 +1,13 @@
+class myClass {
+    public int sum(int[] A){
+        int sum;
+        int i;
+        sum = 0;
+        i = 0;
+        while(i < A.length) {
+            sum = sum + A[i];
+            i = i + 1;
+        }
+        return sum;
+    }
+}

@@ -115,7 +115,6 @@ public class FuncNotFoundVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
 
     public Boolean validateLength(JmmNode left, Analysis analysis){
         String type = Utils.getNodeType(left, analysis);
-        System.out.println("Type = " + type);
         return type.equals("int[]") || type.equals("String[]");
     }
 }

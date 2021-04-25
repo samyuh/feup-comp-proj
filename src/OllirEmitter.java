@@ -116,7 +116,7 @@ public class OllirEmitter {
             } else returnStr = ollirExpression(methodName,returnValue);
 
             sb.append(prefix()).append("ret").append(returnTypeStr).append(" ").append(returnStr).append(";\n");
-        }
+        } else sb.append(prefix()).append("ret.V;\n");
 
         indent = 1;
         sb.append(prefix()).append("}\n");
@@ -160,6 +160,7 @@ public class OllirEmitter {
         sb.append(prefix()).append("Body" + valueNum + ":\n");
         indent++;
         visitStatements(methodName, bodyBlock.getChildren());
+        sb.append(prefix()).append("goto Loop" + valueNum + ";\n");
         indent = prevIndent;
         sb.append(prefix()).append("EndLoop" + valueNum + ":");
         indent++;

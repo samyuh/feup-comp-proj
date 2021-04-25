@@ -1,0 +1,15 @@
+class myClass {
+    public boolean check(int[] A, int N, int T){
+        int i;
+        boolean all;
+        i = 0;
+        all  = false;
+        while((i < N) && (A[i] < T)) {
+            i = i + 1;
+        }
+        if(i < N) all = true;
+        else all = false;
+
+        return all;
+    }
+}

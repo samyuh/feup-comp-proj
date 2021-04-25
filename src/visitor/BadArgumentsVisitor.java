@@ -27,11 +27,12 @@ public class BadArgumentsVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
 
     public void hasCorrectParameters(JmmNode node, Analysis analysis, String methodName){
         List<Symbol> parameters = analysis.getSymbolTable().getParameters(methodName);
+        boolean hasSuper = analysis.getSymbolTable().getSuper() != null;
         int providedArgs = node.getNumChildren();
         int requiredArgs = parameters.size();
         if(providedArgs != requiredArgs){
-            analysis.addReport(node,"Wrong number of arguments. " +
-                    "Provided: " + providedArgs + " Required: " + requiredArgs);
+            if(!hasSuper)
+                analysis.addReport(node,"Wrong number of arguments. " + "Provided: " + providedArgs + " Required: " + requiredArgs);
             return;
         }
 

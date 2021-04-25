@@ -50,16 +50,26 @@ public class OptimizeTest {
     }
 
     @Test
-    // TODO
-    public void testLazysort(){
-        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/Lazysort.jmm"));
+    public void MyClass1(){
+        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/ollir/OllirClass1.jmm"));
         TestUtils.noErrors(result.getReports());
     }
 
     @Test
-    // TODO
-    public void testLife(){
-        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/Life.jmm"));
+    public void MyClass2(){
+        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/ollir/OllirClass2.jmm"));
+        TestUtils.noErrors(result.getReports());
+    }
+
+    @Test
+    public void MyClass3(){
+        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/ollir/OllirClass3.jmm"));
+        TestUtils.noErrors(result.getReports());
+    }
+
+    @Test
+    public void MyClass4(){
+        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/ollir/OllirClass4.jmm"));
         TestUtils.noErrors(result.getReports());
     }
 
@@ -70,21 +80,6 @@ public class OptimizeTest {
     }
 
     @Test
-    // TODO
-    public void testQuickSort(){
-        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/QuickSort.jmm"));
-        TestUtils.noErrors(result.getReports());
-    }
-
-    @Test
-    // TODO
-    public void testTicTacToe(){
-        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/TicTacToe.jmm"));
-        TestUtils.noErrors(result.getReports());
-    }
-
-    @Test
-    // TODO: Acho que há um erro no parser
     public void testWhileAndIF(){
         var result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/WhileAndIF.jmm"));
         TestUtils.noErrors(result.getReports());
@@ -129,6 +124,34 @@ public class OptimizeTest {
     @Test
     public void whileTest(){
         var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/ollir/OllirWhile.jmm"));
+        TestUtils.noErrors(result.getReports());
+    }
+
+    @Test
+    // TODO: needs sanitizer because there is a variable staring with $ and in ollir it is not allowed
+    public void testLazysort(){
+        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/Lazysort.jmm"));
+        TestUtils.noErrors(result.getReports());
+    }
+
+    @Test
+    // TODO: needs sanitizer because there is a variable 'ret' and in ollir it is a special word
+    public void testLife(){
+        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/Life.jmm"));
+        TestUtils.noErrors(result.getReports());
+    }
+
+    @Test
+    // TODO: fails due to method override
+    public void testQuickSort(){
+        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/QuickSort.jmm"));
+        TestUtils.noErrors(result.getReports());
+    }
+
+    @Test
+    // TODO: needs sanitizer because there is a variable 'array' and in ollir it is a special word
+    public void testTicTacToe(){
+        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/TicTacToe.jmm"));
         TestUtils.noErrors(result.getReports());
     }
 

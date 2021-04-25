@@ -1,0 +1,29 @@
+import io;
+class myClass {
+    int a;
+
+    public int get(){
+        return a;
+    }
+    public int put(int n){
+        a = n;
+        return a;
+    }
+
+    public int m1(){
+        myClass c1;
+        a = 2;
+        io.println(this.get());
+        c1 = new myClass();
+        io.println(c1.get());
+        c1.put(2);
+        io.println(c1.get());
+        return a;
+    }
+
+    public static void main(String[] args){
+        myClass A;
+        A = new myClass();
+        A.m1();
+    }
+}
