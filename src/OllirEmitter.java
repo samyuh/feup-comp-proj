@@ -1,4 +1,3 @@
-import jdk.swing.interop.SwingInterOpUtils;
 import pt.up.fe.comp.jmm.JmmNode;
 import pt.up.fe.comp.jmm.analysis.table.Symbol;
 import pt.up.fe.comp.jmm.analysis.table.SymbolTable;
@@ -35,7 +34,7 @@ public class OllirEmitter {
     public String visit(JmmNode node){
         boolean hasImports = node.getNumChildren() == 2;
 
-        sb.append(symbolTable.getClassName()).append("{\n");
+        sb.append(MyOllirUtils.sanitizer(symbolTable.getClassName())).append("{\n");
         indent++;
         visitFields();
         classConstructor();
@@ -57,7 +56,7 @@ public class OllirEmitter {
     private void visitFields(){
         for(Symbol field : symbolTable.getFields()){
             sb.append(prefix()).append(".field private ");
-            sb.append(field.getName());
+            sb.append(MyOllirUtils.sanitizer(field.getName()));
             sb.append(MyOllirUtils.ollirType(field.getType()));
             sb.append(";\n");
         }
@@ -65,7 +64,7 @@ public class OllirEmitter {
 
     private void classConstructor(){
         sb.append(prefix()).append(".construct ");
-        sb.append(symbolTable.getClassName());
+        sb.append(MyOllirUtils.sanitizer(symbolTable.getClassName()));
         sb.append("().V {\n");
         indent++;
         sb.append(prefix()).append("invokespecial(this, \"<init>\").V;\n\t}\n");
@@ -80,13 +79,13 @@ public class OllirEmitter {
             methodName = "main";
         }
         else methodName = methodNode.getChildren().get(1).get("name");
-        sb.append(methodName);
+        sb.append(MyOllirUtils.sanitizer(methodName));
 
         // Parameters
         sb.append("(");
         List<Symbol> parameters = symbolTable.getParameters(methodName);
         for(int i = 0; i < parameters.size(); i++){
-            sb.append(parameters.get(i).getName());
+            sb.append(MyOllirUtils.sanitizer(parameters.get(i).getName()));
             sb.append(MyOllirUtils.ollirType(parameters.get(i).getType()));
             if(i < parameters.size()-1) sb.append(", ");
         }
@@ -227,18 +226,20 @@ public class OllirEmitter {
         Type type;
 
         // LEFT NODE
-        // Left side of the assignment is a Field: e.g. putfield(this, num_aux.i32, value).V;
+        // Left side of the assignment is a Field
         if((type = getFieldType(name)) != null){
-            sb.append(generatePutField(methodName, MyOllirUtils.ollirVar(name, type), type, valueNode));
+            sb.append(generatePutField(methodName, MyOllirUtils.ollirVar(MyOllirUtils.sanitizer(name), type), type, valueNode));
             return;
         }
 
-        // Left side of the assignment is a Parameter: e.g. $1.num_aux.i32 := .i32 1.i32;
+        // Left side of the assignment is a Parameter
         if((type = getLocalVariableType(methodName, name)) == null){
             int position = getParameterPosition(methodName,name);
             type = getParameterType(methodName, position);
             name = MyOllirUtils.ollirParameter(name,position);
         }
+        // Left side of the assignment is a Local Variable
+         else name = MyOllirUtils.sanitizer(name);
 
         // Left side of the assignment is a Local Variable or Parameter
         String leftSide = MyOllirUtils.ollirVar(name, type);
@@ -257,7 +258,7 @@ public class OllirEmitter {
             rightSide = ollirNewIntArray(methodName, valueNode);
         else rightSide = ollirExpression(methodName, valueNode);
 
-        sb.append(prefix()).append(leftSide).append(" :=").append(assignmentType);
+        sb.append(prefix()).append(leftSide).append(" :=").append(MyOllirUtils.sanitizerType(assignmentType));
         sb.append(" ").append(rightSide).append(";");
 
         if(isNewObject)
@@ -297,7 +298,7 @@ public class OllirEmitter {
                      isStringArray = true;
                 }
                 arrayStr = MyOllirUtils.ollirParameter(arrayStr, pos);
-            }
+            } else arrayStr = MyOllirUtils.sanitizer(arrayStr);
         }
 
         // Index
@@ -433,6 +434,8 @@ public class OllirEmitter {
                 if(expectedReturn == null) returnType = ".V";
                 else returnType = expectedReturn;
             }
+
+            invokedMethod = MyOllirUtils.sanitizer(invokedMethod);
         }
         else  // TODO: acho que aqui so pode ser new ou Dot
             return "DOT METHOD LEFT NOT ID";
@@ -447,7 +450,7 @@ public class OllirEmitter {
 
                 // Param is a NewObject
                 if(param.getKind().equals("NewObject")){
-                    type = "." + param.getChildren().get(0).get("name");
+                    type = "." + MyOllirUtils.sanitizer(param.getChildren().get(0).get("name"));
                     sb.append(newAuxiliarVar(type, methodName, param));
                     sb.append(ollirInitObject("t" + auxVarNumber + type));
                 } else {
@@ -478,7 +481,7 @@ public class OllirEmitter {
 
         String invokedMethod, returnType;
         if(methodNode.getKind().equals("Identifier")){
-            invokedMethod = methodNode.get("name");
+            invokedMethod = MyOllirUtils.sanitizer(methodNode.get("name"));
             if(expectedReturn == null) returnType = ".V";
             else returnType = expectedReturn;
         }
@@ -498,7 +501,7 @@ public class OllirEmitter {
 
                 // Param is a NewObject
                 if(param.getKind().equals("NewObject")){
-                    type = "." + param.getChildren().get(0).get("name");
+                    type = "." + MyOllirUtils.sanitizer(param.getChildren().get(0).get("name"));
                     sb.append(newAuxiliarVar(type, methodName, param));
                     sb.append(ollirInitObject("t" + auxVarNumber + type));
                 }
@@ -594,14 +597,14 @@ public class OllirEmitter {
 
         // GetField
         if((type = getFieldType(name)) != null)
-            return generateGetField(name, type);
+            return generateGetField(MyOllirUtils.sanitizer(name), type);
 
         if((type = getLocalVariableType(methodName, name)) == null){
            // Parameter
            int position = getParameterPosition(methodName,name);
            type = getParameterType(methodName, position);
            name = MyOllirUtils.ollirParameter(name, position);
-        }
+        } else name = MyOllirUtils.sanitizer(name);
 
         // Local Variable
         return MyOllirUtils.ollirVar(name,type);
@@ -639,7 +642,7 @@ public class OllirEmitter {
     }
 
     public String ollirNewObject(JmmNode node){
-        String className = node.getChildren().get(0).get("name");
+        String className = MyOllirUtils.sanitizer(node.getChildren().get(0).get("name"));
         return "new("+ className + ")"+ "." + className;
     }
 
@@ -660,7 +663,7 @@ public class OllirEmitter {
     private String generatePutField(String methodName, String fieldNameAndType, Type type, JmmNode valueNode){
         String value;
         if(valueNode.getKind().equals("NewObject")){
-            String className = valueNode.getChildren().get(0).get("name");
+            String className = MyOllirUtils.sanitizer(valueNode.getChildren().get(0).get("name"));
             sb.append(newAuxiliarVar("." + className, methodName, valueNode));
             value = "t" + auxVarNumber + "." + className;
             sb.append(ollirInitObject(value));
@@ -682,6 +685,7 @@ public class OllirEmitter {
     // Create a new auxiliar variable
     private String newAuxiliarVar(String type, String methodName, JmmNode node){
         String value;
+
         if(node.getKind().equals("Dot"))
             value = ollirDotMethod(methodName, node, type);
         else value = ollirExpression(methodName, node);

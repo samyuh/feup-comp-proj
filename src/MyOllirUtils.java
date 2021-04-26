@@ -6,6 +6,35 @@ import pt.up.fe.comp.jmm.report.Stage;
 
 public class MyOllirUtils {
 
+    public static String sanitizerType(String typeName) {
+
+        if(typeName.contains(".i32") || typeName.contains(".String") || typeName.contains(".bool")) {
+            return typeName;
+        }
+
+        return sanitizer(typeName);
+    }
+
+    public static String sanitizer(String varName) {
+        if (varName.contains("$")) {
+            varName = varName.replaceAll("\\$","SPEC_0");
+        }
+        if (varName.contains("ret")) {
+            varName = varName.replaceAll("ret","SPEC_1");
+        }
+        if (varName.contains("array")) {
+            varName = varName.replaceAll("array","SPEC_2");
+        }
+        if (varName.contains("bool")) {
+            varName = varName.replaceAll("bool","SPEC_3");
+        }
+        if (varName.contains("i32")) {
+            varName = varName.replaceAll("i32","SPEC_4");
+        }
+
+        return varName;
+    }
+
     public static String ollirType(Type type){
         String typeStr = "";
         if(type.isArray())
@@ -22,7 +51,7 @@ public class MyOllirUtils {
                 typeStr += ".V";
                 break;
             default:
-                typeStr += "." + type.getName();
+                typeStr += MyOllirUtils.sanitizerType("." + type.getName());
                 break;
         }
         return typeStr;
@@ -33,7 +62,7 @@ public class MyOllirUtils {
     }
 
     public static String ollirParameter(String name, int position){
-        return "$" + position + "." + name;
+        return "$" + position + "." + MyOllirUtils.sanitizer(name);
     }
 
     public static String ollirOperator(JmmNode node){

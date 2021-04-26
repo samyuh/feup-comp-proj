@@ -128,28 +128,24 @@ public class OptimizeTest {
     }
 
     @Test
-    // TODO: needs sanitizer because there is a variable staring with $ and in ollir it is not allowed
     public void testLazysort(){
         var result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/Lazysort.jmm"));
         TestUtils.noErrors(result.getReports());
     }
 
     @Test
-    // TODO: needs sanitizer because there is a variable 'ret' and in ollir it is a special word
     public void testLife(){
         var result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/Life.jmm"));
         TestUtils.noErrors(result.getReports());
     }
 
     @Test
-    // TODO: fails due to method override
     public void testQuickSort(){
         var result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/QuickSort.jmm"));
         TestUtils.noErrors(result.getReports());
     }
 
     @Test
-    // TODO: needs sanitizer because there is a variable 'array' and in ollir it is a special word
     public void testTicTacToe(){
         var result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/TicTacToe.jmm"));
         TestUtils.noErrors(result.getReports());
