@@ -35,7 +35,12 @@ public class OllirEmitter {
     public String visit(JmmNode node){
         boolean hasImports = node.getNumChildren() == 2;
 
-        sb.append(symbolTable.getClassName()).append("{\n");
+        String superClass = symbolTable.getSuper();
+        if (superClass != null) {
+            sb.append(symbolTable.getClassName()).append(" extends ").append(superClass).append(" {\n");
+        } else
+            sb.append(symbolTable.getClassName()).append(" {\n");
+
         indent++;
         visitFields();
         classConstructor();
