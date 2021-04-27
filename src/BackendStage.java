@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import jasmin.BuildJasmin;
 import org.specs.comp.ollir.ClassUnit;
 import org.specs.comp.ollir.OllirErrorException;
 
@@ -41,8 +42,9 @@ public class BackendStage implements JasminBackend {
             ollirClass.show(); // print to console main information about the input OLLIR
 
             // Convert the OLLIR to a String containing the equivalent Jasmin code
-            String jasminCode = ""; // Convert node ...
+            String jasminCode = new BuildJasmin(ollirClass).build(); // Convert node ...
 
+            System.out.println(jasminCode);
             // More reports from this stage
             List<Report> reports = new ArrayList<>();
 
