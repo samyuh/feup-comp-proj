@@ -29,6 +29,7 @@ public class TranslateLoadStore {
         }
         // generates iload
         else if (elementType == ElementType.INT32 || elementType == ElementType.STRING || elementType == ElementType.BOOLEAN) {
+            System.out.println(table.get(((Operand)element).getName()));
             ElementType typeVar = table.get(((Operand) element).getName()).getVarType().getTypeOfElement();
 
             // Array accesses are treated as integers. Thus, this verification is necessary.

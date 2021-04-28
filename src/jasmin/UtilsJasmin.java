@@ -71,6 +71,6 @@ public class UtilsJasmin {
     }
 
     public static boolean isBooleanOp(OperationType opType){
-        return opType == OperationType.AND || opType == OperationType.NOT || opType == OperationType.LTH ;
+        return opType == OperationType.ANDB || opType == OperationType.NOTB || opType == OperationType.LTH ;
     }
 }

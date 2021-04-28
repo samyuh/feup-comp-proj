@@ -39,5 +39,145 @@ public class BackendTest {
 
          */
     }
+    // Freaking error
+    @Test
+    public void ArraysAndSimpleVar() {
 
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/ArraysAndSimpleVars.ollir"))
+                , null, new ArrayList<>()));
+
+    }
+    // Freaking error
+    @Test
+    public void DotMethod() {
+
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/DotMethod.ollir"))
+                , null, new ArrayList<>()));
+
+    }
+
+
+    @Test
+    public void DotMethod2() {
+
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/DotMethod2.ollir"))
+                , null, new ArrayList<>()));
+
+    }
+
+
+    // Freaking error
+    @Test
+    public void FindMaximum() {
+
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/FindMaximum.ollir"))
+                , null, new ArrayList<>()));
+
+    }
+
+    // OK.
+    @Test
+    public void HelloWorld() {
+
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/HelloWorld.ollir"))
+                , null, new ArrayList<>()));
+
+    }
+
+    @Test
+    public void IfElse() {
+
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/IfElse.ollir"))
+                , null, new ArrayList<>()));
+
+    }
+
+    @Test
+    public void InvokeVirtualTest() {
+
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/InvokeVirtualTest.ollir"))
+                , null, new ArrayList<>()));
+
+    }
+
+    @Test
+    public void MonteCarloPi() {
+
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/MonteCarloPi.ollir"))
+                , null, new ArrayList<>()));
+
+    }
+
+    @Test
+    public void MyClass() {
+
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/MyClass.ollir"))
+                , null, new ArrayList<>()));
+
+    }
+
+    @Test
+    public void MyClass2() {
+
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/MyClass2.ollir"))
+                , null, new ArrayList<>()));
+
+    }
+
+    @Test
+    public void MyClass3() {
+
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/MyClass3.ollir"))
+                , null, new ArrayList<>()));
+
+    }
+
+    @Test
+    public void MyClass4() {
+
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/MyClass4.ollir"))
+                , null, new ArrayList<>()));
+
+    }
+
+    // Seems ok... Needs to check the registers.
+    @Test
+    public void NotTest() {
+
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/NotTest.ollir"))
+                , null, new ArrayList<>()));
+
+    }
+
+    @Test
+    public void RecursionInAssigments() {
+
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/RecursionInAssigments.ollir"))
+                , null, new ArrayList<>()));
+
+    }
+    // Ok
+    @Test
+    public void Simple() {
+
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/Simple.ollir"))
+                , null, new ArrayList<>()));
+
+    }
+
+    @Test
+    public void While() {
+
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/While.ollir"))
+                , null, new ArrayList<>()));
+
+    }
+
+    @Test
+    public void WhileAndIf() {
+
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/WhileAndIf.ollir"))
+                , null, new ArrayList<>()));
+
+    }
 }

@@ -14,8 +14,9 @@ public class TranslateBooleanOp {
     public static String getJasminInst(String leftInst, String rightInst, OperationType opType){
         StringBuilder stringBuilder = new StringBuilder();
         if (opType == OperationType.LTH) stringBuilder.append(lthInst(leftInst, rightInst));
-        else if (opType == OperationType.AND) andInst(leftInst, rightInst);
-        else if (opType == OperationType.NOT) notInst(rightInst);
+        else if (opType == OperationType.ANDB) stringBuilder.append(andInst(leftInst, rightInst));
+        // TODO: do we also have to support the NOT?
+        else if (opType == OperationType.NOTB ) stringBuilder.append(notInst(rightInst));
         return stringBuilder.toString();
     }
 
@@ -34,7 +35,6 @@ public class TranslateBooleanOp {
         stringBuilder.append(InstSingleton.label(label_1));
         stringBuilder.append(InstSingleton.iconst("0"));
         stringBuilder.append(InstSingleton.label(label_2));
-
         return stringBuilder.toString();
     }
     public static String andInst(String leftInst, String rightInst){

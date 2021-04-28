@@ -1,0 +1,42 @@
+WhileAndIF{
+	.construct WhileAndIF().V {
+		invokespecial(this, "<init>").V;
+	}
+	.method public static main(args.array.String).V{
+		a.i32 :=.i32 20.i32;
+		b.i32 :=.i32 10.i32;
+		t1.i32 :=.i32 10.i32;
+		d.array.i32 :=.array.i32 new(array,t1.i32).array.i32;
+		if (a.i32 <.i32 b.i32) goto then1;
+		else1:
+			c.i32 :=.i32 b.i32 -.i32 1.i32;
+			goto endif1;
+		then1:
+			c.i32 :=.i32 a.i32 -.i32 1.i32;
+		endif1:
+			Loop1:
+				t2.i32 :=.i32 0.i32 -.i32 1.i32;
+				if (t2.i32 <.i32 c.i32) goto Body1;
+				goto EndLoop1;
+			Body1:
+				d[c.i32].i32 :=.i32 a.i32 -.i32 b.i32;
+				c.i32 :=.i32 c.i32 -.i32 1.i32;
+				a.i32 :=.i32 a.i32 -.i32 1.i32;
+				b.i32 :=.i32 b.i32 -.i32 1.i32;
+				goto Loop1;
+			EndLoop1:
+				c.i32 :=.i32 0.i32;
+				Loop2:
+					t3.i32 :=.i32 arraylength(d.array.i32).i32;
+					if (c.i32 <.i32 t3.i32) goto Body2;
+					goto EndLoop2;
+				Body2:
+					t4.i32 :=.i32 d[c.i32].i32;
+					invokestatic(io, "println", t4.i32).V;
+					c.i32 :=.i32 c.i32 +.i32 1.i32;
+					goto Loop2;
+				EndLoop2:
+					ret.V;
+	}
+}
+

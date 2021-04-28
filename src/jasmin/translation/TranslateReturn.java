@@ -12,10 +12,13 @@ public class TranslateReturn {
         if (returnInst.hasReturnValue()){
             Element operand = returnInst.getOperand();
             stringBuilder.append(TranslateLoadStore.getLoadInst(operand, table));
-            ElementType elementType = returnInst.getElementType();
+            ElementType elementType = returnInst.getOperand().getType().getTypeOfElement();
             if (elementType == ElementType.INT32 || elementType == ElementType.BOOLEAN){
+                System.out.println("ireturn " + elementType);
                 stringBuilder.append("ireturn");
             } else {
+
+                System.out.println("areturn " + elementType);
                 stringBuilder.append("areturn");
             }
             return stringBuilder.toString();

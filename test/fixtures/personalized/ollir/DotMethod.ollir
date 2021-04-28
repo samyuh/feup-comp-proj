@@ -1,0 +1,36 @@
+AiVida{
+	.field private ai.i32;
+	.field private classArr.array.i32;
+	.field private fieldAi.AiVida;
+	.construct AiVida().V {
+		invokespecial(this, "<init>").V;
+	}
+	.method public static main(args.array.String).V{
+	    ret.V;
+	}
+	.method public test2(a.AiVida).i32{
+		ret.i32 2.i32;
+	}
+	.method public test().AiVida{
+		lalala.AiVida :=.AiVida new(AiVida).AiVida;
+		invokespecial(lalala.AiVida,"<init>").V;
+
+		ret.AiVida lalala.AiVida;
+	}
+	.method public retornaInt(paramArr.array.i32).i32{
+	    a.i32 :=.i32 1.i32;
+		ret.i32 a.i32;
+	}
+	.method public retornaDaClasse().AiVida{
+        lalala.AiVida :=.AiVida new(AiVida).AiVida;
+        invokespecial(test.AiVida,"<init>").V;
+		ret.AiVida test.AiVida;
+	}
+
+	.method public doSomething(a.i32, b.i32).i32{
+		ret.i32 23.i32;
+	}
+	.method public doNothing().i32{
+		ret.i32 1.i32;
+	}
+}

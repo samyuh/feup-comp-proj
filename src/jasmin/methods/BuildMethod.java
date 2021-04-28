@@ -8,7 +8,10 @@ import org.specs.comp.ollir.*;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-
+/**
+ * Class responsible for translating a specific method.
+ * It will call all the necessary method to translate all the instructions.
+ */
 public class BuildMethod extends JasminMethod {
 
     public static int currentIndex = 0;
@@ -29,10 +32,6 @@ public class BuildMethod extends JasminMethod {
             Instruction inst = instructions.get(currentIndex);
             methodString.append(getInstruction(inst, currentMethod));
             addEndLine();
-        }
-
-        if (currentMethod.getReturnType().getTypeOfElement() == ElementType.VOID){
-            methodString.append("return\n\n");
         }
 
         addEnd();

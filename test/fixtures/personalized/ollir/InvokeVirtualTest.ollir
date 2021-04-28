@@ -1,0 +1,35 @@
+T{
+	.field private test_arr.array.i32;
+	.construct T().V {
+		invokespecial(this, "<init>").V;
+	}
+	.method public static main(args.array.String).V{
+		max.i32 :=.i32 invokevirtual(m.M, "oh_no").i32;
+		fm.T :=.T new(T).T;
+		invokespecial(fm.T,"<init>").V;
+
+		invokevirtual(fm.T,"build_test_arr").i32;
+		t1.array.i32 :=.array.i32 invokevirtual(fm.T,"get_array").array.i32;
+		max.i32 :=.i32 invokevirtual(fm.T,"find_maximum", t1.array.i32).i32;
+		invokestatic(ioPlus, "printResult", max.i32).V;
+		ret.V;
+	}
+	.method public find_maximum(n.array.i32).i32{
+		ret.i32 1.i32;
+	}
+	.method public get_array().array.i32{
+		t2.array.i32 :=.array.i32 getfield(this,test_arr.array.i32).array.i32;
+		ret.array.i32 t2.array.i32;
+	}
+	.method public build_test_arr().i32{
+		ret.i32 0.i32;
+	}
+}
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by com.google.gson.internal.bind.ReflectiveTypeAdapterFactory (file:/C:/Users/julia/Documents/comp2021-3a/libs/gson-2.8.2.jar) to field java.lang.Throwable.detailMessage
+WARNING: Please consider reporting this to the maintainers of com.google.gson.internal.bind.ReflectiveTypeAdapterFactory
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+BUILD SUCCESSFUL in 2s
+6 actionable tasks: 1 executed, 5 up-to-date
+9:59:20 PM: Task execution finished ':test --tests "OptimizeTest.InvokeVirtualTest"'.
