@@ -28,7 +28,7 @@ public class BackendTest {
     @Test
     public void testHelloWorld() {
 
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/public/ollir/myclass4.ollir"))
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/public/jasmin/myclass4.ollir"))
                 , null, new ArrayList<>()));
         /*
         var result = TestUtils.backend(SpecsIo.getResource("fixtures/public/HelloWorld.jmm"));
@@ -43,15 +43,15 @@ public class BackendTest {
     @Test
     public void ArraysAndSimpleVar() {
 
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/ArraysAndSimpleVars.ollir"))
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/jasmin/ArraysAndSimpleVars.ollir"))
                 , null, new ArrayList<>()));
 
     }
-    // Freaking error
+    // OK
     @Test
     public void DotMethod() {
 
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/DotMethod.ollir"))
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/jasmin/DotMethod.ollir"))
                 , null, new ArrayList<>()));
 
     }
@@ -60,7 +60,7 @@ public class BackendTest {
     @Test
     public void DotMethod2() {
 
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/DotMethod2.ollir"))
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/jasmin/DotMethod2.ollir"))
                 , null, new ArrayList<>()));
 
     }
@@ -70,7 +70,7 @@ public class BackendTest {
     @Test
     public void FindMaximum() {
 
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/FindMaximum.ollir"))
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/jasmin/FindMaximum.ollir"))
                 , null, new ArrayList<>()));
 
     }
@@ -79,7 +79,7 @@ public class BackendTest {
     @Test
     public void HelloWorld() {
 
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/HelloWorld.ollir"))
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/jasmin/HelloWorld.ollir"))
                 , null, new ArrayList<>()));
 
     }
@@ -87,7 +87,7 @@ public class BackendTest {
     @Test
     public void IfElse() {
 
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/IfElse.ollir"))
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/jasmin/IfElse.ollir"))
                 , null, new ArrayList<>()));
 
     }
@@ -95,7 +95,7 @@ public class BackendTest {
     @Test
     public void InvokeVirtualTest() {
 
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/InvokeVirtualTest.ollir"))
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/jasmin/InvokeVirtualTest.ollir"))
                 , null, new ArrayList<>()));
 
     }
@@ -103,7 +103,7 @@ public class BackendTest {
     @Test
     public void MonteCarloPi() {
 
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/MonteCarloPi.ollir"))
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/jasmin/MonteCarloPi.ollir"))
                 , null, new ArrayList<>()));
 
     }
@@ -111,7 +111,7 @@ public class BackendTest {
     @Test
     public void MyClass() {
 
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/MyClass.ollir"))
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/jasmin/MyClass.ollir"))
                 , null, new ArrayList<>()));
 
     }
@@ -119,7 +119,7 @@ public class BackendTest {
     @Test
     public void MyClass2() {
 
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/MyClass2.ollir"))
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/jasmin/MyClass2.ollir"))
                 , null, new ArrayList<>()));
 
     }
@@ -127,7 +127,7 @@ public class BackendTest {
     @Test
     public void MyClass3() {
 
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/MyClass3.ollir"))
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/jasmin/MyClass3.ollir"))
                 , null, new ArrayList<>()));
 
     }
@@ -135,7 +135,7 @@ public class BackendTest {
     @Test
     public void MyClass4() {
 
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/MyClass4.ollir"))
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/jasmin/MyClass4.ollir"))
                 , null, new ArrayList<>()));
 
     }
@@ -144,7 +144,7 @@ public class BackendTest {
     @Test
     public void NotTest() {
 
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/NotTest.ollir"))
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/jasmin/NotTest.ollir"))
                 , null, new ArrayList<>()));
 
     }
@@ -152,7 +152,7 @@ public class BackendTest {
     @Test
     public void RecursionInAssigments() {
 
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/RecursionInAssigments.ollir"))
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/jasmin/RecursionInAssigments.ollir"))
                 , null, new ArrayList<>()));
 
     }
@@ -160,7 +160,7 @@ public class BackendTest {
     @Test
     public void Simple() {
 
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/Simple.ollir"))
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/jasmin/Simple.ollir"))
                 , null, new ArrayList<>()));
 
     }
@@ -168,7 +168,7 @@ public class BackendTest {
     @Test
     public void While() {
 
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/While.ollir"))
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/jasmin/While.ollir"))
                 , null, new ArrayList<>()));
 
     }
@@ -176,7 +176,7 @@ public class BackendTest {
     @Test
     public void WhileAndIf() {
 
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir/WhileAndIf.ollir"))
+        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/jasmin/WhileAndIf.ollir"))
                 , null, new ArrayList<>()));
 
     }
