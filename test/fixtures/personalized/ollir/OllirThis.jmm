@@ -1,0 +1,17 @@
+import io;
+import A;
+class myClass extends Ola {
+    public int ola(myClass a){
+        return 1;
+    }
+
+    public int adeus(){
+        myClass a;
+        A test;
+
+        a = this;
+        io.adeus(this);
+        test.adeus(this);
+        return this.ola(this);
+    }
+}

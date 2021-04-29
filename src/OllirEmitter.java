@@ -327,6 +327,8 @@ public class OllirEmitter {
         if(kind.equals("False")) return "0.bool";
         if(kind.equals("Number"))
             return node.get("value") + ".i32";
+        if(kind.equals("This"))
+            return "$0.this." + symbolTable.getClassName();
 
         // Math and Boolean Expressions
         if(Utils.isMathExpression(kind))
@@ -447,7 +449,7 @@ public class OllirEmitter {
         for(int i = 0; i < parametersNode.getNumChildren(); i++){
             JmmNode param = parametersNode.getChildren().get(i);
             parameters += ", ";
-            if(param.getNumChildren() > 0){
+            if(param.getNumChildren() > 0 || param.getKind().equals("This")){
                 String type;
 
                 // Param is a NewObject
@@ -457,6 +459,7 @@ public class OllirEmitter {
                     sb.append(ollirInitObject("t" + auxVarNumber + type));
                 } else {
                     type = getNodeType(methodName, param);
+
                     if(type.equals("undefined")){
                         type = MyOllirUtils.ollirType(symbolTable.getParameters(invokedMethod).get(i).getType());
                     }
@@ -498,7 +501,7 @@ public class OllirEmitter {
 
             // Process parameter considering its node type
             // Param is a complex node
-            if(param.getNumChildren() > 0){
+            if(param.getNumChildren() > 0 || param.getKind().equals("This")){
                 String type;
 
                 // Param is a NewObject
@@ -537,7 +540,7 @@ public class OllirEmitter {
             sb.append(newAuxiliarVar(leftType, methodName, left));
             sb.append(ollirInitObject("t" + auxVarNumber + leftType));
             leftValue = "t" + auxVarNumber + leftType;
-        }else if(isField(left)){
+        } else if(isField(left)){
             leftType = MyOllirUtils.ollirType(getFieldType(left.get("name")));
             sb.append(newAuxiliarVar(leftType, methodName, left));
             leftValue = "t" + auxVarNumber + leftType;
@@ -564,7 +567,7 @@ public class OllirEmitter {
             parameters += ", ";
 
             // Param is a complex node
-            if(param.getNumChildren() > 0){
+            if(param.getNumChildren() > 0 || param.getKind().equals("This")){
                 String type;
 
                 // Param is a NewObject
@@ -761,6 +764,7 @@ public class OllirEmitter {
     private String getNodeType(String methodName, JmmNode node){
         String kind = node.getKind();
 
+        if(kind.equals("This")) return "." + symbolTable.getClassName();
         if(Utils.isMathExpression(kind)) return ".i32";
         if(Utils.isBooleanExpression(kind)) return ".bool";
         if(kind.equals("NewIntArray")) return ".array.i32";
