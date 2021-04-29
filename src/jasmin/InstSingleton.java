@@ -42,7 +42,7 @@ public class InstSingleton {
     public static String aload(int reg){
         if (reg > 3 || reg < 0)
             return "aload " + reg + "\n";
-        return "aload_"+reg + "\n";
+        return "aload_"+ reg + "\n";
     }
 
     public static String label(String label){

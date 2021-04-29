@@ -5,6 +5,7 @@ import jasmin.translation.TranslatePutField;
 import jasmin.translation.TranslateReturn;
 import org.specs.comp.ollir.*;
 
+import javax.lang.model.element.TypeElement;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
@@ -28,10 +29,15 @@ public class BuildMethod extends JasminMethod {
         currentMethod = ollir.getMethod(index);
         methodString.append(new BuildMethodScope(ollir, currentMethod).getScope());
         ArrayList<Instruction> instructions = currentMethod.getInstructions();
+        Instruction inst = null;
         for (currentIndex = 0; currentIndex < instructions.size(); currentIndex++) {
-            Instruction inst = instructions.get(currentIndex);
+            inst = instructions.get(currentIndex);
             methodString.append(getInstruction(inst, currentMethod));
             addEndLine();
+        }
+
+        if (inst.getInstType() != InstructionType.RETURN && currentMethod.getReturnType().getTypeOfElement() == ElementType.VOID){
+            methodString.append("return\n");
         }
 
         addEnd();

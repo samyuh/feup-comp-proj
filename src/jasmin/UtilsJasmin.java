@@ -34,22 +34,8 @@ public class UtilsJasmin {
         return desc.getVirtualReg();
     }
 
-    public static String getArguments(ArrayList<Element> params){
 
-        StringBuilder stringBuilder = new StringBuilder("(");
-        for (Element param: params) {
-            Type type = param.getType();
-            stringBuilder.append(TranslateType.getJasminType(type));
-            stringBuilder.append(",");
-        }
-        if (params.size() > 0 )
-            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-
-        stringBuilder.append(")");
-        return stringBuilder.toString();
-    }
-
-    public static String getArgumentsNoComma(ArrayList<Element> parameters){
+    public static String getArguments(ArrayList<Element> parameters){
         StringBuilder stringBuilder = new StringBuilder("(");
         for (Element parameter: parameters){
             stringBuilder.append(TranslateType.getJasminType(parameter.getType()));

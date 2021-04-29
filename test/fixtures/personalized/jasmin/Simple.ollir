@@ -17,6 +17,7 @@ Simple{
 		c.i32 :=.i32 invokevirtual(s.Simple,"add", a.i32, b.i32).i32;
 		// check println path
 		invokestatic(io, "println", c.i32).V;
+		ret.V;
 	}
 	.method public constInstr().i32{
 		c.i32 :=.i32 0.i32;

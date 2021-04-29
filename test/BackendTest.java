@@ -39,6 +39,24 @@ public class BackendTest {
 
          */
     }
+
+
+    // OK.
+    @Test
+    public void HelloWorld() {
+
+        var result = TestUtils.backend(SpecsIo.getResource("fixtures/public/HelloWorld.jmm"));
+        TestUtils.noErrors(result.getReports());
+         result.run();
+    }
+
+    @Test
+    public void Simple() {
+        var result = TestUtils.backend(SpecsIo.getResource("fixtures/public/Simple.jmm"));
+        TestUtils.noErrors(result.getReports());
+        result.run();
+    }
+
     // Freaking error
     @Test
     public void ArraysAndSimpleVar() {
@@ -75,14 +93,7 @@ public class BackendTest {
 
     }
 
-    // OK.
-    @Test
-    public void HelloWorld() {
 
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/jasmin/HelloWorld.ollir"))
-                , null, new ArrayList<>()));
-
-    }
 
     @Test
     public void IfElse() {
@@ -156,14 +167,8 @@ public class BackendTest {
                 , null, new ArrayList<>()));
 
     }
-    // Ok
-    @Test
-    public void Simple() {
 
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/jasmin/Simple.ollir"))
-                , null, new ArrayList<>()));
 
-    }
 
     @Test
     public void While() {
