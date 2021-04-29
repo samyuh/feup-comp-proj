@@ -31,7 +31,7 @@ public class FuncNotFoundVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
             String nodeName = nodeLeft.get("name");
 
             // Check imported method
-            if (!analysis.getSymbolTable().getImports().contains(nodeName)) {
+            if (!Utils.hasImport(nodeName, analysis.getSymbolTable())) {
                 // Check if object
                 if(!checkObject(node, nodeName, analysis)){
                     analysis.addReport(nodeLeft,  "\"" + nodeName + "\" is not an import nor an object");
@@ -60,7 +60,7 @@ public class FuncNotFoundVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
                 objectName.equals(analysis.getSymbolTable().getSuper())) return true;
 
         // Check if it is an import
-        if (analysis.getSymbolTable().getImports().contains(objectName)) return true;
+        if (Utils.hasImport(objectName, analysis.getSymbolTable())) return true;
 
         analysis.addReport(objectNode,  "\"" + objectName + "\" is not an import nor an object");
         return false;

@@ -12,6 +12,37 @@ public class UndefinedVarVisitor extends PreorderJmmVisitor<Analysis, Boolean>{
         addVisit("MethodDeclaration", this::visitMethodDeclaration);
         addVisit("ObjectMethodParameters", this::visitMethodParameters);
         addVisit("Return", this::visitReturn);
+        addVisit("VarDeclaration", this::visitVarDeclaration); // EXTRA
+        addVisit("Extends", this::visitExtends);
+    }
+
+    // EXTRA
+    public Boolean visitVarDeclaration(JmmNode node, Analysis analysis){
+        JmmNode typeNode = node.getChildren().get(0);
+
+        String typeStr = typeNode.get("type");
+        if (!isClassInstance(typeStr)) return true;
+
+        if (Utils.hasImport(typeStr, analysis.getSymbolTable()) ||
+                analysis.getSymbolTable().getClassName().equals(typeStr)){
+            return true;
+        };
+
+        analysis.addReport(node, "Type \"" + typeStr + "\" is missing.");
+        return false;
+    }
+
+    public Boolean visitExtends(JmmNode node, Analysis analysis) {
+        String nodeName = node.get("name");
+
+        if(Utils.hasImport(nodeName, analysis.getSymbolTable())) return true;
+
+        analysis.addReport(node, "Extend class \"" + nodeName + "\" is not being imported");
+        return false;
+    }
+
+    public Boolean isClassInstance(String typeStr){
+        return !typeStr.equals("int") && !typeStr.equals("int[]") && !typeStr.equals("String") && !typeStr.equals("boolean");
     }
 
     public Boolean visitMethodParameters(JmmNode objectMethodParameters, Analysis analysis){

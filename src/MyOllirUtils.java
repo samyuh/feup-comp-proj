@@ -62,4 +62,8 @@ public class MyOllirUtils {
                 Integer.parseInt(node.get("line")), Integer.parseInt(node.get("col")),message);
     }
 
+    public static Report warning(JmmNode node, String message){
+        return new Report(ReportType.WARNING, Stage.LLIR,
+                Integer.parseInt(node.get("line")), Integer.parseInt(node.get("col")),message);
+    }
 }

@@ -34,6 +34,13 @@ public class OllirEmitter {
     public String visit(JmmNode node){
         boolean hasImports = node.getNumChildren() == 2;
 
+        // Imports
+        List<String> stringImports = symbolTable.getImports();
+        for(String importName : stringImports) {
+            sb.append("import ").append(importName).append(";\n");
+        }
+
+        // Extend
         String superClass = symbolTable.getSuper();
         if (superClass != null) {
             sb.append(symbolTable.getClassName()).append(" extends ").append(superClass).append(" {\n");
@@ -358,7 +365,7 @@ public class OllirEmitter {
             case "NewIntArray":
                 return ollirNewIntArray(methodName, node);
             default:
-                MyOllirUtils.report(node,"Unknown method call.");
+                MyOllirUtils.warning(node,"Unknown expression");
                 return "INVALID EXPRESSION";
         }
     }
@@ -392,7 +399,7 @@ public class OllirEmitter {
 
             // Object from other class
             if(type.getName().equals(symbolTable.getSuper()) ||
-                    symbolTable.getImports().contains(type.getName())){
+                    Utils.hasImport(type.getName(), symbolTable)){
                 return ollirVirtual(methodName, left, right, expectedType);
             }
         }
@@ -403,10 +410,10 @@ public class OllirEmitter {
         }
 
         // Import
-        if(left.getKind().equals("Identifier") && symbolTable.getImports().contains(left.get("name")))
+        if(left.getKind().equals("Identifier") && Utils.hasImport(left.get("name"), symbolTable))
             return ollirStaticMethod(methodName, left.get("name"), right, expectedType);
 
-        MyOllirUtils.report(node,"Invalid dot method call.");
+        MyOllirUtils.warning(node,"Couldn't parse method call.");
         return "INVALID DOT METHOD CALL";
     }
 
@@ -433,7 +440,7 @@ public class OllirEmitter {
             // Class Method
             if(symbolTable.getMethods().contains(invokedMethod)){
                 returnType = MyOllirUtils.ollirType(symbolTable.getReturnType(invokedMethod));
-                if(expectedReturn!= null && !returnType.equals(expectedReturn)){
+                if(expectedReturn != null && !returnType.equals(expectedReturn)){
                     reports.add(MyOllirUtils.report(dotMethodNode,
                             "Method return type is not the expected."));
                 }
@@ -447,8 +454,10 @@ public class OllirEmitter {
                 else returnType = expectedReturn;
             }
         }
-        else  // TODO: acho que aqui so pode ser new ou Dot
-            return "DOT METHOD LEFT NOT ID";
+        else {
+            MyOllirUtils.warning(methodNode, "Couldn't parse method call");
+            return "Invalid Method Call";
+        }
 
         // Parameters
         String parameters = "";
@@ -496,8 +505,10 @@ public class OllirEmitter {
             if(expectedReturn == null) returnType = ".V";
             else returnType = expectedReturn;
         }
-        else // TODO: acho que aqui so pode ser new ou Dot
-            return "STATIC METHOD LEFT NOT ID";
+        else {
+            MyOllirUtils.warning(methodNode, "Couldn't parse method call");
+            return "Invalid Method Call";
+        }
 
         // Parameters
         String parameters = "";
@@ -563,8 +574,11 @@ public class OllirEmitter {
             if(expectedReturn == null) returnType = ".V";
             else returnType = expectedReturn;
         }
-        else // TODO: acho que aqui so pode ser new ou Dot
-            return "STATIC METHOD LEFT NOT ID";
+        else {
+            MyOllirUtils.warning(methodNode, "Couldn't parse method call");
+            return "Invalid Method Call";
+        }
+
 
         // Parameters
         String parameters = "";
@@ -748,7 +762,6 @@ public class OllirEmitter {
 
     // Get the type of an object
     private Type getObjectType(String methodName, JmmNode node){
-        // TODO: deal with dot case
         if(!node.getKind().equals("Identifier")) return null;
 
         Type type = getIdentifierType(methodName, node.get("name"));

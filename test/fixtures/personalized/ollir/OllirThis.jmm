@@ -1,5 +1,7 @@
 import io;
 import A;
+import Ola;
+
 class myClass extends Ola {
     myClass fieldClass;
     int i;
@@ -8,12 +10,12 @@ class myClass extends Ola {
         return 1;
     }
 
-    public myClass adeus2(int n){
+    public myClass adeus(int n){
         myClass a;
         A test;
 
         i = n;
-        //fieldClass = this;
+        fieldClass = this;
 
         a = this;
         io.adeus(this);
