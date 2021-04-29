@@ -1,17 +1,24 @@
 import io;
 import A;
 class myClass extends Ola {
+    myClass fieldClass;
+    int i;
+
     public int ola(myClass a){
         return 1;
     }
 
-    public int adeus(){
+    public myClass adeus2(int n){
         myClass a;
         A test;
+
+        i = n;
+        //fieldClass = this;
 
         a = this;
         io.adeus(this);
         test.adeus(this);
-        return this.ola(this);
+        this.ola(this);
+        return this;
     }
 }
