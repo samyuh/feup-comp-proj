@@ -90,7 +90,7 @@ public class TranslateCall {
         else {
             stringBuilder.append(TranslateLoadStore.getLoadInst(classElement, table));
             stringBuilder.append("invokespecial ");
-            stringBuilder.append("java/lang/Object.");
+            stringBuilder.append(InstSingleton.extend);
         }
         stringBuilder.append(methodName);
         stringBuilder.append(UtilsJasmin.getArguments(parameters));

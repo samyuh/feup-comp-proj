@@ -264,7 +264,7 @@ public class OllirEmitter {
             case "Dot":
                 rightSide = ollirDotMethod(methodName, valueNode, assignmentType);
                 break;
-            case "New Object":
+            case "NewObject":
                 rightSide = ollirNewObject(valueNode);
                 isNewObject = true;
                 break;

@@ -3,6 +3,8 @@ class myClass {
     int a;
 
     public int get(){
+        int lala;
+        lala = 1 * 5 + 6 / (6 + 5);
         return a;
     }
     public int put(int n){
