@@ -1,4 +1,4 @@
-AiVida{
+AiVida extends Foo{
 	.field private ai.i32;
 	.field private classArr.array.i32;
 	.field private fieldAi.AiVida;
