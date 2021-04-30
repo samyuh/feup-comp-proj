@@ -14,10 +14,17 @@ public class BadArgumentsVisitor extends PreorderJmmVisitor<Analysis, Boolean> {
     }
 
     public Boolean visitDotMethod(JmmNode node, Analysis analysis){
+
         String methodName = node.getChildren().get(0).get("name");
         JmmNode parametersNode = node.getChildren().get(1);
 
         if (!analysis.getSymbolTable().getMethods().contains(methodName)) return true;
+
+        // Check left side
+        JmmNode parentNode = node.getParent();
+        JmmNode left = parentNode.getChildren().get(0);
+
+        if (!Utils.getNodeType(left, analysis).equals(analysis.getSymbolTable().getClassName())) return true;
 
         // Check arguments of method calls
         hasCorrectParameters(parametersNode, analysis , methodName);

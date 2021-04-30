@@ -1,5 +1,7 @@
 import io;
 import Fac;
+import Grr;
+
 class AiVida extends Grr {
     int ai;
     int[] classArr;

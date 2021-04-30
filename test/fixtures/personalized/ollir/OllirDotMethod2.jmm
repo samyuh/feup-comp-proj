@@ -1,4 +1,5 @@
 import io;
+import Grr;
 class AiVida extends Grr{
     int[] c;
 

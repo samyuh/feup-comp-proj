@@ -4,6 +4,7 @@ import analysis.Analysis;
 import analysis.MySymbolTable;
 import pt.up.fe.comp.jmm.JmmNode;
 import pt.up.fe.comp.jmm.analysis.table.Symbol;
+import pt.up.fe.comp.jmm.analysis.table.SymbolTable;
 import pt.up.fe.comp.jmm.analysis.table.Type;
 
 import java.util.List;
@@ -59,6 +60,7 @@ public class Utils {
             case "NewIntArray":
                 return "int[]";
             default:
+                // Identifier
                 String parentMethodName = getParentMethodName(node);
                 return getVariableType(node,analysis,parentMethodName);
         }
@@ -114,5 +116,14 @@ public class Utils {
         }
 
         return "undefined";
+    }
+
+
+    public static boolean hasImport(String checkImport, SymbolTable symbolTable){
+        for(String importName : symbolTable.getImports()) {
+            String[] splitImport = importName.split("\\.");
+            if (splitImport[splitImport.length - 1].equals(checkImport)) return true;
+        }
+        return false;
     }
 }

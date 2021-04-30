@@ -128,6 +128,12 @@ public class OptimizeTest {
     }
 
     @Test
+    public void testThis(){
+        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/ollir/OllirThis.jmm"));
+        TestUtils.noErrors(result.getReports());
+    }
+
+    @Test
     // TODO: needs sanitizer because there is a variable staring with $ and in ollir it is not allowed
     public void testLazysort(){
         var result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/Lazysort.jmm"));
