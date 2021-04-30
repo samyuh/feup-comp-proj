@@ -6,6 +6,7 @@ import org.specs.comp.ollir.*;
 
 
 public class InstSingleton {
+    public static String extend;
 
     public static String istore(int reg){
         if (reg > 3 || reg < 0)
@@ -89,6 +90,5 @@ public class InstSingleton {
     public static String getArrayLength(int arrayReg){
         return aload(arrayReg) + "arraylength \n";
     }
-
 
 }

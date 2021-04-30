@@ -119,5 +119,14 @@ public class MySymbolTable implements SymbolTable {
         methodTypes.put(methodName, returnType);
     }
 
+    public boolean containsField(String varName){
+        for (Symbol field : fields) {
+            if (field.getName().equals(varName))
+                return true;
+        }
+        return false;
+    }
+
+
 
 }

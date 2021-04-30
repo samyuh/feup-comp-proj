@@ -8,7 +8,7 @@ import pt.up.fe.comp.jmm.ast.PreorderJmmVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
-
+// TODO: If there're two variables with the same name and same scope, we should return a report.
 public class SymbolTableVisitor extends PreorderJmmVisitor<Analysis,Boolean> {
 
     public SymbolTableVisitor(){
@@ -44,7 +44,14 @@ public class SymbolTableVisitor extends PreorderJmmVisitor<Analysis,Boolean> {
         for (int i = 0 ; i < jmmNode.getChildren().size(); i++){
             JmmNode varDeclaration = jmmNode.getChildren().get(i);
             Symbol symbol = parseVariable(varDeclaration);
-            analysis.getSymbolTable().addField(symbol);
+
+            // Detect duplicate fields
+            if (analysis.getSymbolTable().containsField(symbol.getName())){
+                analysis.addReport(varDeclaration, "Duplicate field \"" + symbol.getName() + "\"");
+            }
+            else {
+                analysis.getSymbolTable().addField(symbol);
+            }
         }
         return true;
     }
@@ -67,7 +74,7 @@ public class SymbolTableVisitor extends PreorderJmmVisitor<Analysis,Boolean> {
 
         // Parse method body
         JmmNode methodBody = jmmNode.getChildren().get(1);
-        List<Symbol> localVariables = parseMethodBody(methodBody);
+        List<Symbol> localVariables = parseMethodBody("main", methodBody, analysis);
 
         analysis.getSymbolTable().addLocalVariables("main", localVariables);
 
@@ -84,39 +91,65 @@ public class SymbolTableVisitor extends PreorderJmmVisitor<Analysis,Boolean> {
         else returnType = new Type(type, false);
 
         // Parse parameters
-        List<Symbol> parameters = parseMethodParameters(jmmNode);
+        List<Symbol> parameters = parseMethodParameters(name, jmmNode, analysis);
         analysis.getSymbolTable().addMethod(name, parameters);
         analysis.getSymbolTable().addMethodType(name, returnType);
 
         // Parse method body
         JmmNode methodBody = jmmNode.getChildren().get(3);
-        List<Symbol> localVariables = parseMethodBody(methodBody);
+        List<Symbol> localVariables = parseMethodBody(name, methodBody, analysis);
         analysis.getSymbolTable().addLocalVariables(name, localVariables);
 
         return true;
     }
 
-    public List<Symbol> parseMethodParameters(JmmNode jmmNode){
+    public List<Symbol> parseMethodParameters(String methodName, JmmNode jmmNode, Analysis analysis){
         List<Symbol> parametersSymbols = new ArrayList<>();
         JmmNode parametersNode = jmmNode.getChildren().get(2);
 
         for (int i = 0 ; i < parametersNode.getNumChildren(); i ++){
             JmmNode methodParameter = parametersNode.getChildren().get(i);
             Symbol symbol = parseVariable(methodParameter);
+
+            if (containsParam(parametersSymbols, symbol.getName())) {
+                analysis.addReport(methodParameter, "Duplicate argument name \"" + symbol.getName() +  "\"");
+            }
             parametersSymbols.add(symbol);
         }
 
         return parametersSymbols;
     }
 
-    public List<Symbol> parseMethodBody(JmmNode methodBody){
+    public boolean containsParam(List<Symbol> parameters, String varName){
+        for (Symbol variable: parameters ){
+            if (variable.getName().equals(varName))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean containsLocal(List<Symbol> locals, String varName){
+        for (Symbol variable: locals){
+            if (variable.getName().equals(varName))
+                return true;
+        }
+        return false;
+    }
+
+    public List<Symbol> parseMethodBody(String methodName, JmmNode methodBody, Analysis analysis){
         JmmNode varDeclarations = methodBody.getChildren().get(0);
         List<Symbol> declarations = new ArrayList<>();
 
         for (int i = 0; i < varDeclarations.getChildren().size(); i++) {
             JmmNode varDeclaration = varDeclarations.getChildren().get(i);
             Symbol symbol = parseVariable(varDeclaration);
-            declarations.add(symbol);
+
+            // Detect duplicate localVariables
+            if (containsLocal(declarations, symbol.getName())) {
+                analysis.addReport(varDeclaration, "Duplicate local variable \"" + symbol.getName() +  "\"");
+            } else {
+                declarations.add(symbol);
+            }
         }
 
         return declarations;

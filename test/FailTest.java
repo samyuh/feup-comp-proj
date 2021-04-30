@@ -1,8 +1,11 @@
 import org.junit.Test;
 import pt.up.fe.comp.TestUtils;
 import pt.up.fe.comp.jmm.JmmParserResult;
-import pt.up.fe.comp.jmm.report.ReportType;
+import pt.up.fe.comp.jmm.ollir.OllirResult;
+import pt.up.fe.comp.jmm.ollir.OllirUtils;
 import pt.up.fe.specs.util.SpecsIo;
+
+import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -59,7 +62,6 @@ public class FailTest {
         TestUtils.mustFail(jmmParser.getReports());
         System.out.println(jmmParser.toJson());
     }
-
 
 
 }

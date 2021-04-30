@@ -1,5 +1,5 @@
 myClass{
-	.construct myClass().V {
+	.construct myClass().V{
 		invokespecial(this, "<init>").V;
 	}
 	.method public sum(A.array.i32).i32{

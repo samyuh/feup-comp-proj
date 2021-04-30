@@ -1,0 +1,18 @@
+import M;
+
+class T extends M {
+    int b;
+    M b;
+    public static void main(String[] s) {
+        // Repeated Local
+        int a;
+        int a;
+        a = 0;
+    }
+
+    public int repeatedParam(int c, boolean c){
+        return 1;
+    }
+ }
+
+

@@ -34,7 +34,12 @@ public class BuildJasmin {
     }
 
     private void addClassSuper(){
-        jasminCode.append(".super java/lang/Object");
+        if (ollir.getSuperClass() != null)
+            InstSingleton.extend = ollir.getSuperClass();
+        else
+            InstSingleton.extend = "java/lang/Object";
+
+        jasminCode.append(".super ").append(InstSingleton.extend).append("\n");
     }
 
 }

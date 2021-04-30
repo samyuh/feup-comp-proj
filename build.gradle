@@ -81,5 +81,7 @@ build.dependsOn copyJar
 
 
 dependencies {
+
+    implementation 'junit:junit:4.12'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }

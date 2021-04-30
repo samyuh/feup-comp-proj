@@ -1,3 +1,5 @@
+package personalizedTests;
+
 import org.junit.Test;
 import pt.up.fe.comp.TestUtils;
 import pt.up.fe.comp.jmm.JmmParserResult;
@@ -147,6 +149,15 @@ public class PersonalizedFailAnalyses {
     @Test
     public void lengthTest(){
         String jmmCode = SpecsIo.getResource("fixtures/personalized/failSemantic/SemanticLength.jmm");
+        JmmParserResult jmmParser = TestUtils.parse(jmmCode);
+        var analysisResult = TestUtils.analyse(jmmParser);
+        TestUtils.noErrors(analysisResult.getReports());
+    }
+
+    // Check repeated var names.
+    @Test
+    public void repeatedVar() {
+        String jmmCode = SpecsIo.getResource("fixtures/personalized/failSemantic/repeatedVar.jmm");
         JmmParserResult jmmParser = TestUtils.parse(jmmCode);
         var analysisResult = TestUtils.analyse(jmmParser);
         TestUtils.noErrors(analysisResult.getReports());
