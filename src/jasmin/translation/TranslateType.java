@@ -26,7 +26,6 @@ public class TranslateType {
 
         translation.append("[".repeat(Math.max(0, type.getNumDimensions())));
 
-        //TODO: fix when the class is from an import
         translation.append(getJasminTypeVar(type, type.getTypeOfElements()));
         return translation.toString();
 

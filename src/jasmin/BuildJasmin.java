@@ -18,7 +18,6 @@ public class BuildJasmin {
 
         addClassName();
         addClassSuper();
-        // TODO: implements directives
         jasminCode.append(new ClassFields(ollir).getDirective());
         jasminCode.append("\n");
         for (int i = 0 ; i < ollir.getNumMethods(); i++)

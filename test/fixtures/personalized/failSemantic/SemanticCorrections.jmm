@@ -11,7 +11,6 @@ class TestSemantic extends Ola {
         io.println(new int[3]);
         this.doSomething(a, b.length);
         */
-        // TODO
         /*
         a = 0.length;
         io.println(new Z());

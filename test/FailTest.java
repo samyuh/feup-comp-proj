@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-// TODO: for the while loop tests generated error recovery
 public class FailTest {
 
     @Test

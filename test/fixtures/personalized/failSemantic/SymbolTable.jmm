@@ -17,7 +17,7 @@ class T extends treta {
         // This is valid in Java
         a = new int[0];
         c = truru[2]; // truru undefined
-        c = a.getLen(d); // d undefined, TODO: getLen not an array method
+        c = a.getLen(d); // d undefined
 
     }
 
@@ -44,8 +44,8 @@ class T extends treta {
     }
 
     /*
-        public Report ola(){ // TODO: Report no imported
-            Report r = new Report(); // TODO: Report no imported
+        public Report ola(){
+            Report r = new Report();
             return r;
         }
     */

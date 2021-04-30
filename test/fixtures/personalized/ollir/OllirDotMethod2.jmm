@@ -9,7 +9,7 @@ class AiVida extends Grr{
     }
 
     public int retornaInt(int[] paramArr){
-        // TODO: all cases when the left side is not "this"
+
         int a;
         int[] b;
 
@@ -26,10 +26,6 @@ class AiVida extends Grr{
         b[b.length - 1] = 3;
         */
 
-        // TODO
-        //a = retornaDaClass().doNothing();
-        //a = b.get().get();
-        //a = this.doSomething(a,2).what();
         return 2;
     }
 

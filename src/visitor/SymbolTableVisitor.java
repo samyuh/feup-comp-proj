@@ -8,7 +8,6 @@ import pt.up.fe.comp.jmm.ast.PreorderJmmVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
-// TODO: If there're two variables with the same name and same scope, we should return a report.
 public class SymbolTableVisitor extends PreorderJmmVisitor<Analysis,Boolean> {
 
     public SymbolTableVisitor(){

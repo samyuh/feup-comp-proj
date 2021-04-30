@@ -13,8 +13,7 @@ class AiVida extends Grr {
         AiVida aloha;
         Fac f;
 
-        // TODO:
-        // io.println(new AiVida().doNothing());
+        io.println(new AiVida().doNothing());
 
         // Working
         /*
@@ -46,9 +45,8 @@ class AiVida extends Grr {
     public AiVida test(){
         AiVida lalala;
         lalala = new AiVida();
-        return lalala;
-        // TODO
-        //return new AiVida();
+
+        return new AiVida();
     }
 
     public int retornaInt(int[] paramArr){

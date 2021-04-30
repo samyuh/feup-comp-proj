@@ -15,7 +15,6 @@ public abstract class JasminDirective {
     public abstract String getDirective();
 
     protected String getAccessModifiers(AccessModifiers accessModifier){
-        // TODO: if it's default, what to do?
         return switch (accessModifier) {
             case PUBLIC -> "public";
             case PRIVATE -> "private";

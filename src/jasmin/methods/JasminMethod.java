@@ -14,7 +14,6 @@ public abstract class JasminMethod {
     }
 
     protected String getAccessModifiers(AccessModifiers accessModifier, Method method){
-        // TODO: if it's default, what to do?
         return switch (accessModifier) {
             case PUBLIC -> "public";
             case PRIVATE -> "private";
