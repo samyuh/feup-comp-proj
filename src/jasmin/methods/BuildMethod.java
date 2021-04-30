@@ -50,13 +50,19 @@ public class BuildMethod extends JasminMethod {
      */
     public String getInstruction(Instruction inst, Method method){
         var table = OllirAccesser.getVarTable(method);
-        return switch (inst.getInstType()) {
-            case ASSIGN -> new BuildMethodAssigment(ollir, method).getInstructionAssign((AssignInstruction) inst);
-            case CALL -> TranslateCall.getJasminInst((CallInstruction) inst, table) + "\n";
-            case PUTFIELD -> TranslatePutField.getJasminInst((PutFieldInstruction) inst, table) + "\n";
-            case RETURN -> TranslateReturn.getJasminInst((ReturnInstruction) inst, table) + "\n";
-            default -> inst.getInstType().toString();
-        };
+
+        switch (inst.getInstType()) {
+            case ASSIGN:
+                return new BuildMethodAssigment(ollir, method).getInstructionAssign((AssignInstruction) inst);
+            case CALL:
+                return TranslateCall.getJasminInst((CallInstruction) inst, table) + "\n";
+            case PUTFIELD:
+                return TranslatePutField.getJasminInst((PutFieldInstruction) inst, table) + "\n";
+            case RETURN:
+                return TranslateReturn.getJasminInst((ReturnInstruction) inst, table) + "\n";
+            default:
+                return inst.getInstType().toString();
+        }
     }
 
     public void addEnd() {

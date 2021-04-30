@@ -14,12 +14,18 @@ public abstract class JasminMethod {
     }
 
     protected String getAccessModifiers(AccessModifiers accessModifier, Method method){
-        return switch (accessModifier) {
-            case PUBLIC -> "public";
-            case PRIVATE -> "private";
-            case DEFAULT -> method.isConstructMethod() ? "public" : "private";
-            case PROTECTED -> "protected";
-        };
+        switch (accessModifier) {
+            case PUBLIC:
+                return  "public";
+            case PRIVATE:
+                return "private";
+            case DEFAULT:
+                return method.isConstructMethod() ? "public" : "private";
+            case PROTECTED:
+                return "protected";
+            default:
+                return "";
+        }
     }
 
     public void addEndLine(){

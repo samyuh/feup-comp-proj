@@ -15,12 +15,18 @@ public abstract class JasminDirective {
     public abstract String getDirective();
 
     protected String getAccessModifiers(AccessModifiers accessModifier){
-        return switch (accessModifier) {
-            case PUBLIC -> "public";
-            case PRIVATE -> "private";
-            case DEFAULT -> "private";
-            case PROTECTED -> "protected";
-        };
+        switch (accessModifier) {
+            case PUBLIC:
+                return "public";
+            case PRIVATE:
+                return "private";
+            case DEFAULT:
+                return "private";
+            case PROTECTED:
+                return "protected";
+            default:
+                return "";
+        }
     }
 
 
@@ -29,7 +35,4 @@ public abstract class JasminDirective {
         return directiveString.toString();
     }
 
-    public void addEndLine(){
-        directiveString.append("\n");
-    }
 }

@@ -68,13 +68,18 @@ public class InstSingleton {
     }
 
     public static String getOp(OperationType opType){
-        return switch (opType) {
-            case MUL -> "imul \n";
-            case ADD -> "iadd \n";
-            case SUB -> "isub \n";
-            case DIV -> "idiv \n";
-            default -> opType.name();
-        };
+        switch (opType) {
+            case MUL:
+                return "imul \n";
+            case ADD:
+                return "iadd \n";
+            case SUB:
+                return "isub \n";
+            case DIV:
+                return "idiv \n";
+            default:
+                return opType.name();
+        }
     }
 
 

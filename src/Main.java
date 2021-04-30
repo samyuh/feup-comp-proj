@@ -1,9 +1,11 @@
 
+import pt.up.fe.comp.TestUtils;
 import pt.up.fe.comp.jmm.JmmParser;
 import pt.up.fe.comp.jmm.JmmParserResult;
 import pt.up.fe.comp.jmm.report.Report;
 import pt.up.fe.comp.jmm.report.ReportType;
 import pt.up.fe.comp.jmm.report.Stage;
+import pt.up.fe.specs.util.SpecsIo;
 
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -37,10 +39,13 @@ public class Main implements JmmParser {
 
     public static void main(String[] args) {
         System.out.println("Executing with args: " + Arrays.toString(args));
-        if (args[0].contains("fail")) {
-            throw new RuntimeException("It's supposed to fail");
-        }
+        String fileName = args[0];
 
+        System.out.println("Working Directory = " + System.getProperty("user.dir"));
+
+        var result = TestUtils.backend(SpecsIo.read(fileName));
+        TestUtils.noErrors(result.getReports());
+        result.run();
     }
 
 

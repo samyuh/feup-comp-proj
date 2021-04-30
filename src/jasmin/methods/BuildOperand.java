@@ -21,10 +21,18 @@ public class BuildOperand extends JasminMethod {
     public String getOperand(Instruction inst) {
 
         switch (inst.getInstType()) {
-            case BINARYOPER -> addBinaryOper((BinaryOpInstruction) inst);
-            case NOPER -> addNoOper((SingleOpInstruction) inst);
-            case GETFIELD -> addGetField((GetFieldInstruction) inst);
-            case CALL -> addCall((CallInstruction) inst);
+            case BINARYOPER:
+                addBinaryOper((BinaryOpInstruction) inst);
+                break;
+            case NOPER:
+                addNoOper((SingleOpInstruction) inst);
+                break;
+            case GETFIELD:
+                addGetField((GetFieldInstruction) inst);
+                break;
+            case CALL:
+                addCall((CallInstruction) inst);
+                break;
         }
 
         return super.toString();
