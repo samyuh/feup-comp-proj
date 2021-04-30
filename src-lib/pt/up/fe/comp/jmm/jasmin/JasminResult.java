@@ -1,7 +1,9 @@
 package pt.up.fe.comp.jmm.jasmin;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import pt.up.fe.comp.TestUtils;
@@ -71,9 +73,11 @@ public class JasminResult {
      * 
      * @param classpath
      *            additional paths for the classpath
+     * @param args
+     *            arguments for the Jasmin program
      * @return the output that is printed by the Jasmin program
      */
-    public String run(List<String> classpath) {
+    public String run(List<String> args, List<String> classpath) {
         // Compile
         var classFile = compile();
 
@@ -87,6 +91,13 @@ public class JasminResult {
 
         var classname = SpecsIo.removeExtension(classFile.getName());
 
+        var command = new ArrayList<String>();
+        command.add("java");
+        command.add("-cp");
+        command.add(classpathArg);
+        command.add(classname);
+        command.addAll(args);
+
         var output = SpecsSystem.runProcess(Arrays.asList("java", "-cp", classpathArg, classname), true, true);
 
         return output.getOutput();
@@ -95,9 +106,20 @@ public class JasminResult {
     /**
      * Compiles and runs the current Jasmin code.
      * 
+     * @param classpath
+     *            additional paths for the classpath
+     * @return the output that is printed by the Jasmin program
+     */
+    public String run(List<String> args) {
+        return run(args, Arrays.asList(TestUtils.getLibsClasspath()));
+    }
+
+    /**
+     * Compiles and runs the current Jasmin code.
+     * 
      * @return the output that is printed by the Jasmin program
      */
     public String run() {
-        return run(Arrays.asList(TestUtils.getLibsClasspath()));
+        return run(Collections.emptyList());
     }
 }
