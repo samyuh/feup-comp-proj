@@ -65,6 +65,7 @@ public class Report {
     public String toJson() {
         Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
+                .excludeFieldsWithoutExposeAnnotation()
                 .create();
         return gson.toJson(this, Report.class);
     }

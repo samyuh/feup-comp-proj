@@ -29,6 +29,7 @@ public class JmmParserResult {
     public String toJson() {
         Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
+                .excludeFieldsWithoutExposeAnnotation()
                 .registerTypeAdapter(JmmNode.class, new JmmSerializer())
                 .create();
         return gson.toJson(this, JmmParserResult.class);
