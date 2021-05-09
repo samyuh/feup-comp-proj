@@ -38,14 +38,19 @@ public class OptimizationStage implements JmmOptimization {
         return new OllirResult(semanticsResult, ollirCode, ollirEmitter.getReports());
     }
 
+    // Before toOllir
     @Override
     public JmmSemanticsResult optimize(JmmSemanticsResult semanticsResult) {
         // THIS IS JUST FOR CHECKPOINT 3
         return semanticsResult;
     }
 
+    // Coloração de grafos.
+    // After toOllir - apply the algorithm to check the min number of register.
+    // Which register each variable must have.
     @Override
     public OllirResult optimize(OllirResult ollirResult) {
+        // Get var table. We can modify the vartable.
         // THIS IS JUST FOR CHECKPOINT 3
         return ollirResult;
     }

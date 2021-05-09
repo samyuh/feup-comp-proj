@@ -5,7 +5,7 @@ import jasmin.translation.TranslateType;
 import org.specs.comp.ollir.*;
 
 
-public class InstSingleton {
+public class InstSingleton  {
     public static String extend;
 
     public static String istore(int reg){
@@ -28,7 +28,6 @@ public class InstSingleton {
 
     public static String iconst(String number){
         int constant = Integer.parseInt(number);
-
         if (constant == -1)
             return "iconst_m1\n";
         if (constant <= 5 && constant >= -1)
@@ -39,6 +38,7 @@ public class InstSingleton {
             return "sipush " + number + "\n";
         return "ldc " + number + "\n";
     }
+
 
     public static String aload(int reg){
         if (reg > 3 || reg < 0)
@@ -55,6 +55,10 @@ public class InstSingleton {
 
     }
 
+    public static String gotoInst(String label){
+        return "goto " + label + "\n";
+    }
+
     public static String newCall(String className){
         return "new " + className + "\n";
     }
@@ -66,6 +70,8 @@ public class InstSingleton {
     public static String putfield(String className, String varName, String type){
         return "putfield " + className + "/" + varName + " " + type + "\n";
     }
+
+
 
     public static String getOp(OperationType opType){
         switch (opType) {

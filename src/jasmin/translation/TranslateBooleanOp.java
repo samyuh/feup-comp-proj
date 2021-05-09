@@ -10,8 +10,7 @@ import org.specs.comp.ollir.OperationType;
 // This class is responsible for translating boolean operations.
 public class TranslateBooleanOp {
 
-
-    public static String getJasminInst(String leftInst, String rightInst, OperationType opType){
+    public static  String getJasminInst(String leftInst, String rightInst, OperationType opType){
         StringBuilder stringBuilder = new StringBuilder();
         if (opType == OperationType.LTH) stringBuilder.append(lthInst(leftInst, rightInst));
         else if (opType == OperationType.ANDB) stringBuilder.append(andInst(leftInst, rightInst));
