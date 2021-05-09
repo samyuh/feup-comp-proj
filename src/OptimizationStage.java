@@ -1,14 +1,12 @@
-import java.util.ArrayList;
-import java.util.List;
-
-import analysis.MySymbolTable;
 import pt.up.fe.comp.jmm.JmmNode;
 import pt.up.fe.comp.jmm.analysis.JmmSemanticsResult;
 import pt.up.fe.comp.jmm.analysis.table.SymbolTable;
 import pt.up.fe.comp.jmm.ollir.JmmOptimization;
 import pt.up.fe.comp.jmm.ollir.OllirResult;
-import pt.up.fe.comp.jmm.report.Report;
-import pt.up.fe.specs.util.SpecsIo;
+import visitor.ConstantPropagationVisitor;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Copyright 2021 SPeCS.
@@ -40,7 +38,43 @@ public class OptimizationStage implements JmmOptimization {
 
     @Override
     public JmmSemanticsResult optimize(JmmSemanticsResult semanticsResult) {
-        // THIS IS JUST FOR CHECKPOINT 3
+        List<JmmNode> classNodeChildren = semanticsResult.getRootNode().getChildren().get(1).getChildren();
+        List<JmmNode> methods = classNodeChildren.subList(2, classNodeChildren.size());
+        ConstantPropagationVisitor constantVisitor = new ConstantPropagationVisitor();
+        HashMap<String, Integer> constants = new HashMap<>();
+
+        for(JmmNode methodNode : methods){
+            JmmNode methodType = methodNode.getChildren().get(0);
+
+            JmmNode methodBody;
+            if(methodType.getKind().equals("MethodMain")){
+                methodBody = methodType.getChildren().get(1);
+            } else { // TODO: In GenericMethods, apply constant propagation also
+                methodBody = methodType.getChildren().get(3);
+            }
+
+            // Loop through method body
+            List<JmmNode> nodes =  methodBody.getChildren().subList(1, methodBody.getChildren().size());
+            for(JmmNode node: nodes){
+                // Assignment
+                if(node.getKind().equals("Assignment")){
+                    JmmNode assignmentRight = node.getChildren().get(1);
+                    // Constant
+                    if(assignmentRight.getKind().equals("Number")){
+                        constants.put(node.getChildren().get(0).get("name"), Integer.parseInt(assignmentRight.get("value")));
+                    } // TODO: deal with array assignment
+                    else { // Expression
+                        System.out.println("visit assignment right" + assignmentRight);
+                        constantVisitor.visit(assignmentRight, constants);
+                    }
+                }
+                else { // Other Nodes
+                    constantVisitor.visit(node, constants);
+                }
+            }
+        }
+
+        System.out.println(semanticsResult.getRootNode().toJson());
         return semanticsResult;
     }
 

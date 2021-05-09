@@ -20,7 +20,7 @@ public class OllirEmitter {
 
     public OllirEmitter(SymbolTable symbolTable){
         this.symbolTable = symbolTable;
-        reports = new ArrayList<>();
+        reports = new ArrayList<Report>();
         sb = new StringBuilder();
         auxVarNumber = 0;
         ifElseLabelNum = 0;

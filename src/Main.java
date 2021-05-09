@@ -45,6 +45,7 @@ public class Main implements JmmParser {
 
         var result = TestUtils.backend(SpecsIo.read(fileName));
         TestUtils.noErrors(result.getReports());
+
         result.run();
     }
 
