@@ -41,7 +41,7 @@ public class OptimizationStage implements JmmOptimization {
         List<JmmNode> classNodeChildren = semanticsResult.getRootNode().getChildren().get(1).getChildren();
         List<JmmNode> methods = classNodeChildren.subList(2, classNodeChildren.size());
         ConstantPropagationVisitor constantVisitor = new ConstantPropagationVisitor();
-        HashMap<String, Integer> constants = new HashMap<>();
+        HashMap<String, String> constants = new HashMap<>();
 
         for(JmmNode methodNode : methods){
             JmmNode methodType = methodNode.getChildren().get(0);
@@ -54,27 +54,10 @@ public class OptimizationStage implements JmmOptimization {
             }
 
             // Loop through method body
-            List<JmmNode> nodes =  methodBody.getChildren().subList(1, methodBody.getChildren().size());
-            for(JmmNode node: nodes){
-                // Assignment
-                if(node.getKind().equals("Assignment")){
-                    JmmNode assignmentRight = node.getChildren().get(1);
-                    // Constant
-                    if(assignmentRight.getKind().equals("Number")){
-                        constants.put(node.getChildren().get(0).get("name"), Integer.parseInt(assignmentRight.get("value")));
-                    } // TODO: deal with array assignment
-                    else { // Expression
-                        System.out.println("visit assignment right" + assignmentRight);
-                        constantVisitor.visit(assignmentRight, constants);
-                    }
-                }
-                else { // Other Nodes
-                    constantVisitor.visit(node, constants);
-                }
-            }
+            constantVisitor.visit(methodBody, constants);
         }
 
-        System.out.println(semanticsResult.getRootNode().toJson());
+        //System.out.println(semanticsResult.getRootNode().toJson());
         return semanticsResult;
     }
 
