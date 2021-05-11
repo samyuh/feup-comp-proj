@@ -25,7 +25,7 @@ public class Main implements JmmParser {
 
 
            if (!grammar.getHasError()){
-                //root.dump("");
+                root.dump("");
            }
 
             return new JmmParserResult(root, reportList);

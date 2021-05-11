@@ -3,12 +3,26 @@ class Fac extends X{
     public static void main(String[] args){
         int a;
         int b;
-        int c;
+        //int c;
         a = 4;
-        b = a;
-        c = a + 5;
-        c = a + 6 + 8;
-        c = 3 + b + 9; //run many times to change b eventually
+        //b = 5;
+
+        // Working Tests
+         b = a;
+        // c = a + 5;
+        // c = a + 6 + 8;
+        // a = 5 - a / a;
+        // c = a + 4;
+        // a = 2;
+        // b = a + 3;
+        //b = X.getAnInt(a);
+        //b = X.getAnInt(this.ola(a), a);
+
+        //c = 3 + b + 9; //run many times to change b eventually
+    }
+
+    public int ola(int x){
+        return 2;
     }
 
 }
