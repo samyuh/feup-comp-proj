@@ -15,7 +15,6 @@ public class PersonalizedJasmin {
 
         TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir_to_convert/ArraysAndSimpleVars.ollir"))
                 , null, new ArrayList<>()));
-
     }
 
     // OK

@@ -1,5 +1,7 @@
 package jasmin.methods;
 
+import jasmin.InstSingleton;
+import jasmin.translation.TranslateBranch;
 import jasmin.translation.TranslateCall;
 import jasmin.translation.TranslatePutField;
 import jasmin.translation.TranslateReturn;
@@ -8,6 +10,7 @@ import org.specs.comp.ollir.*;
 import javax.lang.model.element.TypeElement;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class responsible for translating a specific method.
@@ -31,6 +34,7 @@ public class BuildMethod extends JasminMethod {
         ArrayList<Instruction> instructions = currentMethod.getInstructions();
         Instruction inst = null;
         for (currentIndex = 0; currentIndex < instructions.size(); currentIndex++) {
+            methodString.append(getLabels(instructions.get(currentIndex)));
             inst = instructions.get(currentIndex);
             methodString.append(getInstruction(inst, currentMethod));
             addEndLine();
@@ -60,9 +64,24 @@ public class BuildMethod extends JasminMethod {
                 return TranslatePutField.getJasminInst((PutFieldInstruction) inst, table) + "\n";
             case RETURN:
                 return TranslateReturn.getJasminInst((ReturnInstruction) inst, table) + "\n";
+            case BRANCH:
+                return TranslateBranch.getJasminInst((CondBranchInstruction) inst, table, method) + "\n";
+            case GOTO:
+                return InstSingleton.gotoInst(((GotoInstruction)inst).getLabel());
             default:
                 return inst.getInstType().toString();
         }
+    }
+
+    public String getLabels(Instruction instruction){
+        StringBuilder stringBuilder = new StringBuilder();
+        var labels = currentMethod.getLabels(instruction);
+        labels.forEach((label)->{
+            stringBuilder.append(label).append(":\n");
+        });
+
+        return stringBuilder.toString();
+
     }
 
     public void addEnd() {
@@ -81,10 +100,22 @@ public class BuildMethod extends JasminMethod {
     }
 
     /**
+     * This method is responsible for returning the label of the next instruction.
+     * @return The name of the next label instruction.
+     */
+    public static List<String> getNextInstructionLabels(){
+        Instruction nextInstruction = getNextInstruction();
+        return currentMethod.getLabels(nextInstruction);
+    }
+    /**
      * Consumes the next instruction.
      */
     public static void skipNextInstruction(){
         currentIndex ++;
+    }
+
+    public static String getCurrentIndex(){
+        return String.valueOf(currentIndex);
     }
 
 

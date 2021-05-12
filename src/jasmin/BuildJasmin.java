@@ -20,8 +20,10 @@ public class BuildJasmin {
         addClassSuper();
         jasminCode.append(new ClassFields(ollir).getDirective());
         jasminCode.append("\n");
+
         for (int i = 0 ; i < ollir.getNumMethods(); i++)
             jasminCode.append(new BuildMethod(ollir).getMethod(i)).append("\n");
+
         return jasminCode.toString();
     }
 

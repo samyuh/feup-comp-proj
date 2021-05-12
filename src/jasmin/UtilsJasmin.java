@@ -18,6 +18,7 @@ public class UtilsJasmin {
         Operand operand = (Operand) element;
         return operand.getName();
     }
+    // int a = b;
     public static Descriptor getDescriptor(Element element, HashMap<String, Descriptor> table){
         return table.get(((Operand) element).getName());
     }
