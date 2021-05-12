@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ConstantPropagationVisitor extends AJmmVisitor<HashMap<String, String> , Boolean> {
+    private static int counter = 0;
 
     public ConstantPropagationVisitor(){
         addVisit("Identifier", this::visitIdentifier);
@@ -24,6 +25,8 @@ public class ConstantPropagationVisitor extends AJmmVisitor<HashMap<String, Stri
         addVisit("IfBlock", this::visitBlock);
         addVisit("ElseBlock", this::visitBlock);
         addVisit("WhileBody", this::visitBlock);
+
+        addVisit("ArrayAssignment", this::visitArrayAssignment);
 
         List<String> kinds = new ArrayList(Arrays.asList("Add", "Sub", "Mult", "Div", "Less", "And", "Not"));
         for(String kind: kinds){
@@ -59,6 +62,8 @@ public class ConstantPropagationVisitor extends AJmmVisitor<HashMap<String, Stri
 
             parent.add(new_node, index);
             parent.removeChild(node);
+
+            counter++;
         }
         return true;
     }
@@ -73,6 +78,8 @@ public class ConstantPropagationVisitor extends AJmmVisitor<HashMap<String, Stri
 
     public Boolean visitDot(JmmNode node, HashMap<String, String> constants){
         //System.out.println("Visit dot method: " + node);
+        if(node.getChildren().get(1).getKind().equals("Length")) return true;
+
         JmmNode parameters = node.getChildren().get(1).getChildren().get(1);
 
         for (int i = 0; i < parameters.getNumChildren(); i++) {
@@ -84,7 +91,12 @@ public class ConstantPropagationVisitor extends AJmmVisitor<HashMap<String, Stri
     public Boolean visitArray(JmmNode node, HashMap<String, String> constants)  {
         JmmNode index = node.getChildren().get(1);
         this.visit(index, constants);
+        return true;
+    }
 
+    public Boolean visitArrayAssignment(JmmNode node, HashMap<String, String> constants)  {
+        JmmNode index = node.getChildren().get(1).getChildren().get(0);
+        this.visit(index, constants);
         return true;
     }
 
@@ -133,14 +145,21 @@ public class ConstantPropagationVisitor extends AJmmVisitor<HashMap<String, Stri
                 JmmNode assignmentRight = child.getChildren().get(1);
                 // Constant
                 if(assignmentRight.getKind().equals("Number")) {
-                    constants.put(child.getChildren().get(0).get("name"), assignmentRight.get("value"));
-                    child.delete();
-                    i--;
-                    // TODO: deal with array assignment
+                    if(child.getChildren().get(0).getKind().equals("ArrayAssignment")) {
+                        this.visit(child.getChildren().get(0), constants);
+                    } else {
+                        constants.put(child.getChildren().get(0).get("name"), assignmentRight.get("value"));
+                        child.delete();
+                        i--;
+                    }
                 } else if(assignmentRight.getKind().equals("True") || assignmentRight.getKind().equals("False")) {
-                    constants.put(child.getChildren().get(0).get("name"), assignmentRight.getKind().toLowerCase());
-                    child.delete();
-                    i--;
+                    if(child.getChildren().get(0).getKind().equals("ArrayAssignment")){
+                        this.visit(child.getChildren().get(0), constants);
+                    } else {
+                        constants.put(child.getChildren().get(0).get("name"), assignmentRight.getKind().toLowerCase());
+                        child.delete();
+                        i--;
+                    }
                 }
                 else { // Expression
                     this.visit(assignmentRight, constants);
@@ -152,5 +171,13 @@ public class ConstantPropagationVisitor extends AJmmVisitor<HashMap<String, Stri
         }
 
         return true;
+    }
+
+    public int getCounter(){
+        return this.counter;
+    }
+
+    public void resetCounter(){
+        this.counter = 0;
     }
 }

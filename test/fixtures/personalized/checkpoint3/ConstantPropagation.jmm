@@ -4,27 +4,39 @@ class Fac extends X{
         int a;
         int b;
         int[] c;
+        int f;
+
         boolean d;
         boolean e;
 
         a = 4;
-        d = true;
+        b = a;
+        a = 5 + 7;
+        f = b + 4;
+
+        //d = true;
         // e = !d;
 
+        /*
         while(d && false){
             e = d;
             b = a;
         }
+        */
 
+        /*
         if(d && false){
             e = d;
         }
-        else {}
+        else {
+            c[a] = 3;
+        }
+        */
 
 
         // b = 5;
 
-        // Working Tests
+         // Working Tests
          // b = a;
          // c = a + 5;
          // c = a + 6 + 8;
@@ -41,7 +53,7 @@ class Fac extends X{
          // c = new int[a];
          // To test
          // b = a[3];
-        //c = 3 + b + 9; //run many times to change b eventually
+         //c = 3 + b + 9; //run many times to change b eventually
     }
 
     public int ola(int x){

@@ -43,19 +43,25 @@ public class OptimizationStage implements JmmOptimization {
         ConstantPropagationVisitor constantVisitor = new ConstantPropagationVisitor();
         HashMap<String, String> constants = new HashMap<>();
 
-        for(JmmNode methodNode : methods){
-            JmmNode methodType = methodNode.getChildren().get(0);
 
-            JmmNode methodBody;
-            if(methodType.getKind().equals("MethodMain")){
-                methodBody = methodType.getChildren().get(1);
-            } else { // TODO: In GenericMethods, apply constant propagation also
-                methodBody = methodType.getChildren().get(3);
+        do {
+            constantVisitor.resetCounter();
+
+            for (JmmNode methodNode : methods) {
+                JmmNode methodType = methodNode.getChildren().get(0);
+                JmmNode methodBody;
+                if (methodType.getKind().equals("MethodMain")) {
+                    methodBody = methodType.getChildren().get(1);
+                } else {
+                    methodBody = methodType.getChildren().get(3);
+                }
+
+                // Loop through method body
+                constantVisitor.visit(methodBody, constants);
+
             }
-
-            // Loop through method body
-            constantVisitor.visit(methodBody, constants);
-        }
+            System.out.println("CHANGES: " + constantVisitor.getCounter());
+        } while (constantVisitor.getCounter() != 0);
 
         //System.out.println(semanticsResult.getRootNode().toJson());
         return semanticsResult;
