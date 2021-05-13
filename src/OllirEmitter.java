@@ -157,24 +157,42 @@ public class OllirEmitter {
     }
 
     private void whileStatement(String methodName, JmmNode statement) {
-        String valueNum = "" + whileNum;
-        JmmNode conditionNode = statement.getChildren().get(0);
-        JmmNode bodyBlock = statement.getChildren().get(1);
+        if(false) {
+            String valueNum = "" + whileNum;
+            JmmNode conditionNode = statement.getChildren().get(0);
+            JmmNode bodyBlock = statement.getChildren().get(1);
 
-        int prevIndent = indent;
-        sb.append(prefix()).append("Loop" + valueNum + ":\n");
-        indent++;
-        String condition = buildCondition(methodName, conditionNode);
-        sb.append(prefix()).append("if (" + condition + ") goto Body" + valueNum + ";\n");
-        sb.append(prefix()).append("goto EndLoop" + valueNum + ";\n");
-        indent = prevIndent;
-        sb.append(prefix()).append("Body" + valueNum + ":\n");
-        indent++;
-        visitStatements(methodName, bodyBlock.getChildren());
-        sb.append(prefix()).append("goto Loop" + valueNum + ";\n");
-        indent = prevIndent;
-        sb.append(prefix()).append("EndLoop" + valueNum + ":");
-        indent++;
+            int prevIndent = indent;
+            sb.append(prefix()).append("Loop" + valueNum + ":\n");
+            indent++;
+            String condition = buildCondition(methodName, conditionNode);
+            sb.append(prefix()).append("if (" + condition + ") goto Body" + valueNum + ";\n");
+            sb.append(prefix()).append("goto EndLoop" + valueNum + ";\n");
+            indent = prevIndent;
+            sb.append(prefix()).append("Body" + valueNum + ":\n");
+            indent++;
+            visitStatements(methodName, bodyBlock.getChildren());
+            sb.append(prefix()).append("goto Loop" + valueNum + ";\n");
+            indent = prevIndent;
+            sb.append(prefix()).append("EndLoop" + valueNum + ":");
+            indent++;
+        }
+        else {
+            String valueNum = "" + whileNum;
+            JmmNode conditionNode = statement.getChildren().get(0);
+            JmmNode bodyBlock = statement.getChildren().get(1);
+
+            int prevIndent = indent;
+            sb.append(prefix()).append("Loop" + valueNum + ":\n");
+            indent++;
+            String condition = buildInverseCondition(methodName, conditionNode);
+            sb.append(prefix()).append("if (" + condition + ") goto EndLoop" + valueNum + ";\n");
+            visitStatements(methodName, bodyBlock.getChildren());
+            sb.append(prefix()).append("goto Loop" + valueNum + ";\n");
+            indent = prevIndent;
+            sb.append(prefix()).append("EndLoop" + valueNum + ":");
+            indent++;
+        }
     }
 
     private void ifElseStatement(String methodName, JmmNode statement) {
@@ -200,6 +218,14 @@ public class OllirEmitter {
         indent = prevIndent;
         sb.append(prefix()).append("endif").append(valueNum).append(":");
         indent++;
+    }
+
+    private String buildInverseCondition(String methodName, JmmNode node){
+        String condition;
+        String kind = node.getKind();
+
+        condition = ollirMathBooleanExpression(methodName, node, ".bool", true);
+        return condition;
     }
 
     private String buildCondition(String methodName, JmmNode node){
@@ -339,9 +365,9 @@ public class OllirEmitter {
 
         // Math and Boolean Expressions
         if(Utils.isMathExpression(kind))
-            return ollirMathBooleanExpression(methodName, node, ".i32");
+            return ollirMathBooleanExpression(methodName, node, ".i32",false);
         if(Utils.isBooleanExpression(kind))
-            return ollirMathBooleanExpression(methodName, node, ".bool");
+            return ollirMathBooleanExpression(methodName, node, ".bool",false);
 
         switch(kind){
             case "Identifier":
@@ -636,7 +662,7 @@ public class OllirEmitter {
     }
 
     // Get the ollir expression of a boolean or maths expression
-    public String ollirMathBooleanExpression(String methodName, JmmNode node, String type){
+    public String ollirMathBooleanExpression(String methodName, JmmNode node, String type, boolean inverse){
         JmmNode left = node.getChildren().get(0);
         String operandType = node.getKind().equals("Less") ? ".i32" : type;
 
@@ -657,6 +683,32 @@ public class OllirEmitter {
                 sb.append(newAuxiliarVar(operandType, methodName, right));
                 rightValue = "t" + auxVarNumber + operandType;
             } else rightValue = ollirExpression(methodName, right);
+        }
+
+        // < >=
+        // ! => tirar o not
+        // && => ! (..&&..)
+        // true => false
+        // false => true
+        if(inverse) {
+            // return leftValue + MyOllirUtils.ollirOperator(node) + rightValue;
+            switch (node.getKind()){
+                case "Not":
+                    break;
+                case "Less":
+                    return leftValue + " >=.i32 " + rightValue;
+                case "And":
+                    System.out.println(node);
+                    newAuxiliarVar(operandType, methodName, node);
+                    rightValue = leftValue = "t" + auxVarNumber + operandType;
+                    return leftValue + " !.i32 " + rightValue;
+                case "True":
+                    break;
+                case "False":
+                    break;
+                default:
+                    break;
+            }
         }
 
         return leftValue + MyOllirUtils.ollirOperator(node) + rightValue;

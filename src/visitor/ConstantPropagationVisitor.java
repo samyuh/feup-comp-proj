@@ -24,7 +24,7 @@ public class ConstantPropagationVisitor extends AJmmVisitor<HashMap<String, Stri
         addVisit("MethodBody", this::visitBlock);
         addVisit("IfBlock", this::visitBlock);
         addVisit("ElseBlock", this::visitBlock);
-        addVisit("WhileBody", this::visitBlock);
+        addVisit("WhileBody", this::visitWhileBody);
 
         addVisit("ArrayAssignment", this::visitArrayAssignment);
 
@@ -37,7 +37,7 @@ public class ConstantPropagationVisitor extends AJmmVisitor<HashMap<String, Stri
     }
 
     public Boolean visitIdentifier(JmmNode node, HashMap<String, String> constants) {
-        System.out.println("Visit Identifier: " + node);
+        //System.out.println("Visit Identifier: " + node);
         if(constants.containsKey(node.get("name"))){
             String name = node.get("name");
             JmmNode parent = node.getParent();
@@ -123,9 +123,48 @@ public class ConstantPropagationVisitor extends AJmmVisitor<HashMap<String, Stri
         JmmNode condition = node.getChildren().get(0);
         JmmNode whileBody = node.getChildren().get(1);
 
-        this.visit(condition, constants);
-        this.visit(whileBody, constants);
+        // TODO: resolver asneira
+        //this.visit(whileBody, constants);
+        //this.visit(condition, constants);
 
+        return true;
+    }
+
+    public Boolean visitWhileBody(JmmNode node, HashMap<String, String> constants){
+
+        // Loop through method body
+        for(int i = 0; i < node.getNumChildren(); i++){
+            JmmNode child = node.getChildren().get(i);
+            // Assignment
+            if(child.getKind().equals("Assignment")){
+                JmmNode left = child.getChildren().get(0);
+                JmmNode right = child.getChildren().get(1);
+
+                // Constant
+                if(right.getKind().equals("Number")) {
+                    if(left.getKind().equals("ArrayAssignment")) {
+                        this.visit(left, constants);
+                    } else {
+                        constants.put(left.get("name"), right.get("value"));
+                    }
+                } else if(right.getKind().equals("True") || right.getKind().equals("False")) {
+                    if(left.getKind().equals("ArrayAssignment")){
+                        this.visit(left, constants);
+                    } else {
+                        constants.put(left.get("name"), right.getKind().toLowerCase());
+                    }
+                }
+                else { // Expression
+                    if(left.getKind().equals("Identifier")){
+                        constants.remove(left.get("name"));
+                    }
+                    this.visit(right, constants);
+                }
+            }
+            else { // Other Nodes
+                this.visit(child, constants);
+            }
+        }
         return true;
     }
 
@@ -142,27 +181,28 @@ public class ConstantPropagationVisitor extends AJmmVisitor<HashMap<String, Stri
             JmmNode child = node.getChildren().get(i);
             // Assignment
             if(child.getKind().equals("Assignment")){
-                JmmNode assignmentRight = child.getChildren().get(1);
+                JmmNode left = child.getChildren().get(0);
+                JmmNode right = child.getChildren().get(1);
+
                 // Constant
-                if(assignmentRight.getKind().equals("Number")) {
-                    if(child.getChildren().get(0).getKind().equals("ArrayAssignment")) {
-                        this.visit(child.getChildren().get(0), constants);
+                if(right.getKind().equals("Number")) {
+                    if(left.getKind().equals("ArrayAssignment")) {
+                        this.visit(left, constants);
                     } else {
-                        constants.put(child.getChildren().get(0).get("name"), assignmentRight.get("value"));
-                        child.delete();
-                        i--;
+                        constants.put(left.get("name"), right.get("value"));
                     }
-                } else if(assignmentRight.getKind().equals("True") || assignmentRight.getKind().equals("False")) {
-                    if(child.getChildren().get(0).getKind().equals("ArrayAssignment")){
-                        this.visit(child.getChildren().get(0), constants);
+                } else if(right.getKind().equals("True") || right.getKind().equals("False")) {
+                    if(left.getKind().equals("ArrayAssignment")){
+                        this.visit(left, constants);
                     } else {
-                        constants.put(child.getChildren().get(0).get("name"), assignmentRight.getKind().toLowerCase());
-                        child.delete();
-                        i--;
+                        constants.put(left.get("name"), right.getKind().toLowerCase());
                     }
                 }
                 else { // Expression
-                    this.visit(assignmentRight, constants);
+                    this.visit(right, constants);
+                    if(left.getKind().equals("Identifier")){
+                        constants.remove(left.get("name"));
+                    }
                 }
             }
             else { // Other Nodes

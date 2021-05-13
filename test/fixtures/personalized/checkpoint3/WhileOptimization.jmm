@@ -1,0 +1,56 @@
+import M;
+class Fac {
+    public boolean check(int[] A, int N, int T){
+        int i;
+        int j;
+        int a;
+        boolean b1;
+        boolean b2;
+        int u;
+        // Simple Test
+        i = 0;
+        j= 5;
+        u = 4;
+        //i = 2;
+        //i = 5;
+        //i = i + 1;
+        //i = i + 2;
+        //i = M.getX();
+        //j = i + 2;
+        u = 5;
+        a = 9;
+        // Perguntar scope ao stor
+        /*
+        while(i < j) {
+            i = 5; // scope local
+            i = i + 1;  // substituir pq está na scope local
+            i = i + a;
+            u = u + 4;
+        }
+        */
+
+        b1 = true;
+        b2 = false;
+        while(!b1 && b2){
+            i = i + 1;
+        }
+
+        return true;
+
+        // Complex Test
+        /*
+        i = 0;
+        j = 0;
+        all = false;
+        while((i < N) && (A[i] < T)) {
+            i = i + 1;
+            while( i < 5){
+                j = i + 3;
+            }
+        }
+        if(i < N) all = true;
+        else all = false;
+        return all;
+        */
+    }
+}

@@ -24,4 +24,9 @@ public class OptimizeCheckpoint3Test {
         TestUtils.noErrors(result.getReports());
     }
 
+    @Test
+    public void testWhileOptimization() {
+        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/checkpoint3/WhileOptimization.jmm"));
+        TestUtils.noErrors(result.getReports());
+    }
 }
