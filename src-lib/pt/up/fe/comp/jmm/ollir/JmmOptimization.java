@@ -28,9 +28,22 @@ public interface JmmOptimization {
     OllirResult toOllir(JmmSemanticsResult semanticsResult);
 
     /**
-     * Step 3 (for CP3): optimize code at the OLLIR level
-     *
-     * @param ollirResult
+     * Step 2 (for CP2): convert the AST to the OLLIR format
+     * 
+     * Overload that receives a flag indicating if optimizations are enabled or not.
+     * 
+     * @param semanticsResult
+     * @param optimize
+     * @return
+     */
+    default OllirResult toOllir(JmmSemanticsResult semanticsResult, boolean optimize) {
+        return toOllir(semanticsResult);
+    }
+
+    /**
+     * Step 3 (for CP3): otimize code at the OLLIR level
+     * 
+     * @param semanticsResult
      * @return
      */
     default OllirResult optimize(OllirResult ollirResult) {

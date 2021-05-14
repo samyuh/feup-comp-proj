@@ -96,7 +96,7 @@ public class TestUtils {
                 semanticsResult = optimization.optimize(semanticsResult);
             }
 
-            var ollirResult = optimization.toOllir(semanticsResult);
+            var ollirResult = optimization.toOllir(semanticsResult, optimize);
 
             if (optimize) {
                 ollirResult = optimization.optimize(ollirResult);
