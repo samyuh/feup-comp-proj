@@ -81,6 +81,7 @@ public class JmmNodeImpl implements JmmNode {
 
     public void add(JmmNodeImpl child) {
         children.add(child);
+        child.setParent(this);
     }
 
     @Override
@@ -94,6 +95,7 @@ public class JmmNodeImpl implements JmmNode {
 
     public void add(JmmNodeImpl child, int index) {
         this.children.add(index, child);
+        child.setParent(this);
     }
 
     /**
@@ -144,7 +146,7 @@ public class JmmNodeImpl implements JmmNode {
     }
 
     @Override
-    public JmmNode removeChild(JmmNode node) {
+    public int removeChild(JmmNode node) {
         // Find index of node
         for (int i = 0; i < children.size(); i++) {
             var child = children.get(i);
@@ -155,13 +157,14 @@ public class JmmNodeImpl implements JmmNode {
             }
 
             // Found node
-            return removeChild(i);
+            removeChild(i);
+            return i;
         }
 
         System.out
                 .println("[WARNING] Tried to remove child from node, but could not find it.\nChild:" + node
                         + "\nParent:" + this);
-        return null;
+        return -1;
     }
 
     @Override
