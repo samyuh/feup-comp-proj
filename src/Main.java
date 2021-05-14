@@ -13,8 +13,6 @@ import java.io.StringReader;
 import java.util.List;
 
 public class Main implements JmmParser {
-
-
     public JmmParserResult parse(String jmmCode) {
         List<Report> reportList = new ArrayList<Report>();
         try {

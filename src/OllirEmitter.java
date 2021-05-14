@@ -17,10 +17,12 @@ public class OllirEmitter {
     static int indent;
     SymbolTable symbolTable;
     List<Report> reports;
+    boolean optimize;
     StringBuilder sb;
 
-    public OllirEmitter(SymbolTable symbolTable){
+    public OllirEmitter(SymbolTable symbolTable, boolean optimize) {
         this.symbolTable = symbolTable;
+        this.optimize = optimize;
         reports = new ArrayList<Report>();
         sb = new StringBuilder();
         auxVarNumber = 0;
@@ -158,42 +160,31 @@ public class OllirEmitter {
     }
 
     private void whileStatement(String methodName, JmmNode statement) {
-        if(false) {
-            String valueNum = "" + whileNum;
-            JmmNode conditionNode = statement.getChildren().get(0);
-            JmmNode bodyBlock = statement.getChildren().get(1);
+        String valueNum = "" + whileNum;
+        JmmNode conditionNode = statement.getChildren().get(0);
+        JmmNode bodyBlock = statement.getChildren().get(1);
+        int prevIndent = indent;
+        sb.append(prefix()).append("Loop" + valueNum + ":\n");
+        indent++;
 
-            int prevIndent = indent;
-            sb.append(prefix()).append("Loop" + valueNum + ":\n");
-            indent++;
+        if(!optimize) {
             String condition = buildCondition(methodName, conditionNode);
             sb.append(prefix()).append("if (" + condition + ") goto Body" + valueNum + ";\n");
             sb.append(prefix()).append("goto EndLoop" + valueNum + ";\n");
             indent = prevIndent;
             sb.append(prefix()).append("Body" + valueNum + ":\n");
             indent++;
-            visitStatements(methodName, bodyBlock.getChildren());
-            sb.append(prefix()).append("goto Loop" + valueNum + ";\n");
-            indent = prevIndent;
-            sb.append(prefix()).append("EndLoop" + valueNum + ":");
-            indent++;
         }
         else {
-            String valueNum = "" + whileNum;
-            JmmNode conditionNode = statement.getChildren().get(0);
-            JmmNode bodyBlock = statement.getChildren().get(1);
-
-            int prevIndent = indent;
-            sb.append(prefix()).append("Loop" + valueNum + ":\n");
-            indent++;
             String condition = buildInverseCondition(methodName, conditionNode);
             sb.append(prefix()).append("if (" + condition + ") goto EndLoop" + valueNum + ";\n");
-            visitStatements(methodName, bodyBlock.getChildren());
-            sb.append(prefix()).append("goto Loop" + valueNum + ";\n");
-            indent = prevIndent;
-            sb.append(prefix()).append("EndLoop" + valueNum + ":");
-            indent++;
         }
+
+        visitStatements(methodName, bodyBlock.getChildren());
+        sb.append(prefix()).append("goto Loop" + valueNum + ";\n");
+        indent = prevIndent;
+        sb.append(prefix()).append("EndLoop" + valueNum + ":");
+        indent++;
     }
 
     private void ifElseStatement(String methodName, JmmNode statement) {

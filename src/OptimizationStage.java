@@ -23,13 +23,30 @@ import java.util.List;
 
 public class OptimizationStage implements JmmOptimization {
 
+    /*
+     * Without Optimization - Obsolete method
+     */
     @Override
     public OllirResult toOllir(JmmSemanticsResult semanticsResult) {
-
         JmmNode node = semanticsResult.getRootNode();
 
         // Convert the AST to a String containing the equivalent OLLIR code
-        OllirEmitter ollirEmitter = new OllirEmitter(semanticsResult.getSymbolTable());
+        OllirEmitter ollirEmitter = new OllirEmitter(semanticsResult.getSymbolTable(), false);
+        String ollirCode = ollirEmitter.visit(node); // Convert node ...
+        System.out.println("OLLIR CODE:\n" + ollirCode);
+
+        return new OllirResult(semanticsResult, ollirCode, ollirEmitter.getReports());
+    }
+
+    /*
+     * With Optimization - Checkpoint 3
+     */
+    @Override
+    public OllirResult toOllir(JmmSemanticsResult semanticsResult, boolean optimize) {
+        JmmNode node = semanticsResult.getRootNode();
+
+        // Convert the AST to a String containing the equivalent OLLIR code
+        OllirEmitter ollirEmitter = new OllirEmitter(semanticsResult.getSymbolTable(), optimize);
         String ollirCode = ollirEmitter.visit(node); // Convert node ...
         System.out.println("OLLIR CODE:\n" + ollirCode);
 
