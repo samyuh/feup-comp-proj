@@ -116,7 +116,7 @@ public class TestUtils {
     }
 
     public static OllirResult optimize(String code) {
-        return optimize(code, true);
+        return optimize(code, false);
     }
 
     public static JasminResult backend(OllirResult ollirResult) {

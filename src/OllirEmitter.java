@@ -2,6 +2,7 @@ import pt.up.fe.comp.jmm.JmmNode;
 import pt.up.fe.comp.jmm.analysis.table.Symbol;
 import pt.up.fe.comp.jmm.analysis.table.SymbolTable;
 import pt.up.fe.comp.jmm.analysis.table.Type;
+import pt.up.fe.comp.jmm.ast.JmmNodeImpl;
 import pt.up.fe.comp.jmm.report.Report;
 
 import java.util.ArrayList;
@@ -221,11 +222,61 @@ public class OllirEmitter {
     }
 
     private String buildInverseCondition(String methodName, JmmNode node){
-        String condition;
+        // String condition;
         String kind = node.getKind();
+        String auxVar;
+        List<String> leftRight;
 
-        condition = ollirMathBooleanExpression(methodName, node, ".bool", true);
-        return condition;
+        switch (kind) {
+            case "True":
+                return "0.bool &&.bool 1.bool";
+            case "False":
+                return "1.bool &&.bool 1.bool";
+            case "Not":
+                JmmNode child = node.getChildren().get(0);
+                return buildCondition(methodName, child);
+            case "Less":
+                leftRight = leftRightExpressions(methodName, node, ".i32");
+                return leftRight.get(0) + " >=.i32 " + leftRight.get(1);
+            case "Dot":
+            case "And":
+                sb.append(newAuxiliarVar(".bool", methodName, node));
+                auxVar = "t" + auxVarNumber + ".bool";
+                return auxVar + " !.bool " + auxVar;
+            case "Identifier":
+                if(isField(node)){
+                    sb.append(newAuxiliarVar(".bool", methodName, node));
+                    auxVar = "t" + auxVarNumber + ".bool";
+                    return auxVar + " !.bool " + auxVar;
+                }
+                else {
+                    auxVar = ollirExpression(methodName, node);
+                    return auxVar + " !.bool " + auxVar;
+                }
+            default:
+                reports.add(MyOllirUtils.reportOptimization(node, "Unexpected While Condition."));
+                return "ERROR";
+        }
+    }
+
+    private List<String> leftRightExpressions(String methodName, JmmNode node, String type){
+        List<String> leftRight = new ArrayList<>();
+        JmmNode left = node.getChildren().get(0);
+        JmmNode right = node.getChildren().get(0);
+
+        // Process Left Node
+        if(left.getNumChildren() > 0 || isField(left)){
+            sb.append(newAuxiliarVar(type, methodName, left));
+            leftRight.add("t" + auxVarNumber + type);
+        } else leftRight.add(ollirExpression(methodName, left));
+
+        // Process Right Node
+        if(right.getNumChildren() > 0 || isField(right)){
+            sb.append(newAuxiliarVar(type, methodName, right));
+            leftRight.add("t" + auxVarNumber + type);
+        } else leftRight.add(ollirExpression(methodName, right));
+
+        return leftRight;
     }
 
     private String buildCondition(String methodName, JmmNode node){
@@ -365,9 +416,9 @@ public class OllirEmitter {
 
         // Math and Boolean Expressions
         if(Utils.isMathExpression(kind))
-            return ollirMathBooleanExpression(methodName, node, ".i32",false);
+            return ollirMathBooleanExpression(methodName, node, ".i32");
         if(Utils.isBooleanExpression(kind))
-            return ollirMathBooleanExpression(methodName, node, ".bool",false);
+            return ollirMathBooleanExpression(methodName, node, ".bool");
 
         switch(kind){
             case "Identifier":
@@ -662,7 +713,7 @@ public class OllirEmitter {
     }
 
     // Get the ollir expression of a boolean or maths expression
-    public String ollirMathBooleanExpression(String methodName, JmmNode node, String type, boolean inverse){
+    public String ollirMathBooleanExpression(String methodName, JmmNode node, String type){
         JmmNode left = node.getChildren().get(0);
         String operandType = node.getKind().equals("Less") ? ".i32" : type;
 
@@ -685,34 +736,9 @@ public class OllirEmitter {
             } else rightValue = ollirExpression(methodName, right);
         }
 
-        // < >=
-        // ! => tirar o not
-        // && => ! (..&&..)
-        // true => false
-        // false => true
-        if(inverse) {
-            // return leftValue + MyOllirUtils.ollirOperator(node) + rightValue;
-            switch (node.getKind()){
-                case "Not":
-                    break;
-                case "Less":
-                    return leftValue + " >=.i32 " + rightValue;
-                case "And":
-                    System.out.println(node);
-                    newAuxiliarVar(operandType, methodName, node);
-                    rightValue = leftValue = "t" + auxVarNumber + operandType;
-                    return leftValue + " !.i32 " + rightValue;
-                case "True":
-                    break;
-                case "False":
-                    break;
-                default:
-                    break;
-            }
-        }
-
         return leftValue + MyOllirUtils.ollirOperator(node) + rightValue;
     }
+
 
     // Get the ollir representation for an object initialization
     public String ollirInitObject(String var){

@@ -18,13 +18,11 @@ public class ConstantPropagationVisitor extends AJmmVisitor<HashMap<String, Stri
         addVisit("ArrayAccess", this::visitArray);
         addVisit("NewIntArray", this::visitNewIntArray);
 
-        addVisit("IfElse", this::visitIfExpression);
-        addVisit("WhileStatment", this::visitWhileExpression);
-
         addVisit("MethodBody", this::visitBlock);
-        addVisit("IfBlock", this::visitBlock);
-        addVisit("ElseBlock", this::visitBlock);
-        addVisit("WhileBody", this::visitWhileBody);
+
+        // addVisit("IfElse", this::visitIfExpression);
+        // addVisit("IfBlock", this::visitBlock);
+        // addVisit("ElseBlock", this::visitBlock);
 
         addVisit("ArrayAssignment", this::visitArrayAssignment);
 
@@ -109,62 +107,13 @@ public class ConstantPropagationVisitor extends AJmmVisitor<HashMap<String, Stri
 
     public Boolean visitIfExpression(JmmNode node, HashMap<String, String> constants) {
         JmmNode condition = node.getChildren().get(0);
-        JmmNode ifBlock = node.getChildren().get(1);
-        JmmNode elseBlock = node.getChildren().get(2);
+        //JmmNode ifBlock = node.getChildren().get(1);
+        //JmmNode elseBlock = node.getChildren().get(2);
 
         this.visit(condition, constants);
-        this.visit(ifBlock, constants);
-        this.visit(elseBlock, constants);
+        //this.visit(ifBlock, constants);
+        //this.visit(elseBlock, constants);
 
-        return true;
-    }
-
-    public Boolean visitWhileExpression(JmmNode node, HashMap<String, String> constants) {
-        JmmNode condition = node.getChildren().get(0);
-        JmmNode whileBody = node.getChildren().get(1);
-
-        // TODO: resolver asneira
-        //this.visit(whileBody, constants);
-        //this.visit(condition, constants);
-
-        return true;
-    }
-
-    public Boolean visitWhileBody(JmmNode node, HashMap<String, String> constants){
-
-        // Loop through method body
-        for(int i = 0; i < node.getNumChildren(); i++){
-            JmmNode child = node.getChildren().get(i);
-            // Assignment
-            if(child.getKind().equals("Assignment")){
-                JmmNode left = child.getChildren().get(0);
-                JmmNode right = child.getChildren().get(1);
-
-                // Constant
-                if(right.getKind().equals("Number")) {
-                    if(left.getKind().equals("ArrayAssignment")) {
-                        this.visit(left, constants);
-                    } else {
-                        constants.put(left.get("name"), right.get("value"));
-                    }
-                } else if(right.getKind().equals("True") || right.getKind().equals("False")) {
-                    if(left.getKind().equals("ArrayAssignment")){
-                        this.visit(left, constants);
-                    } else {
-                        constants.put(left.get("name"), right.getKind().toLowerCase());
-                    }
-                }
-                else { // Expression
-                    if(left.getKind().equals("Identifier")){
-                        constants.remove(left.get("name"));
-                    }
-                    this.visit(right, constants);
-                }
-            }
-            else { // Other Nodes
-                this.visit(child, constants);
-            }
-        }
         return true;
     }
 
@@ -185,8 +134,8 @@ public class ConstantPropagationVisitor extends AJmmVisitor<HashMap<String, Stri
                 JmmNode right = child.getChildren().get(1);
 
                 // Constant
-                if(right.getKind().equals("Number")) {
-                    if(left.getKind().equals("ArrayAssignment")) {
+                if (right.getKind().equals("Number")) {
+                    if (left.getKind().equals("ArrayAssignment")) {
                         this.visit(left, constants);
                     } else {
                         constants.put(left.get("name"), right.get("value"));

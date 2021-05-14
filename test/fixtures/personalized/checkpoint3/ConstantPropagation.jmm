@@ -11,14 +11,21 @@ class Fac extends X{
 
         a = 4;
         b = a;
-        a = 5 + 7;
         f = b + 4;
 
         //d = true;
         // e = !d;
+        a = !4;
+
+        while(d && false){
+            i = i + 4;
+            e = d;
+            a = a + 4;
+        }
 
         /*
-        while(d && false){
+        while(){
+            i = i + 4;
             e = d;
             b = a;
         }

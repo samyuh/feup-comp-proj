@@ -1,56 +1,52 @@
 import M;
 class Fac {
+    boolean test;
     public boolean check(int[] A, int N, int T){
-        int i;
-        int j;
-        int a;
         boolean b1;
         boolean b2;
-        int u;
-        // Simple Test
+
+        int i;
         i = 0;
-        j= 5;
-        u = 4;
-        //i = 2;
-        //i = 5;
-        //i = i + 1;
-        //i = i + 2;
-        //i = M.getX();
-        //j = i + 2;
-        u = 5;
-        a = 9;
-        // Perguntar scope ao stor
+        b1 = true;
+        b2 = false;
+
+
+        // Invert Not
         /*
-        while(i < j) {
-            i = 5; // scope local
-            i = i + 1;  // substituir pq está na scope local
-            i = i + a;
-            u = u + 4;
+        while(!b1) {
+            i = i + 1;
         }
         */
 
-        b1 = true;
-        b2 = false;
-        while(!b1 && b2){
+        // Invert And
+        /*
+        while(b1 && b2) {
+            i = i + 1;
+        }
+        */
+
+        // Invert Less
+        /*
+        while(5 < i) {
+            i = i + 1;
+        }*/
+
+        // Invert Dot
+        while(M.getSomething()) {
+            i = i + 1;
+        }
+
+         // Invert True
+        while(true) {
+            i = i + 1;
+        }
+
+         // Invert Identifier
+        while(test) {
             i = i + 1;
         }
 
         return true;
-
-        // Complex Test
-        /*
-        i = 0;
-        j = 0;
-        all = false;
-        while((i < N) && (A[i] < T)) {
-            i = i + 1;
-            while( i < 5){
-                j = i + 3;
-            }
-        }
-        if(i < N) all = true;
-        else all = false;
-        return all;
-        */
     }
+
 }
