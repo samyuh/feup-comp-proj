@@ -67,12 +67,12 @@ public class InstSingleton  {
         return "new " + className + "\n";
     }
 
-    public static String getfield(int classReg, Type type, String fieldName){
-        return aload(classReg) + "getfield " + TranslateType.getJasminType(type) + " " + fieldName + "\n";
+    public static String getfield(String className, String fieldName, String type){
+        return "getfield " + className + "/" + fieldName + " " + type + "\n";
     }
 
-    public static String putfield(String className, String varName, String type){
-        return "putfield " + className + "/" + varName + " " + type + "\n";
+    public static String putfield(String className, String fieldName, String type){
+        return "putfield " + className + "/" + fieldName + " " + type + "\n";
     }
 
 

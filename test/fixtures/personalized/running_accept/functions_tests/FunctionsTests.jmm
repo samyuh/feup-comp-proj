@@ -1,0 +1,21 @@
+import io;
+class ArrayTests {
+
+    public static void main(String[] args){
+        ArrayTests arrTest;
+         arrTest = new ArrayTests();
+        arrTest.getNumber();
+    }
+
+    public int getNumber(){
+        int c;
+        c = 4;
+        c = this.funcao2();
+        io.println(c);
+        return 0;
+    }
+    public int funcao2(){
+        io.println(2);
+        return 3;
+    }
+}

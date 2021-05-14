@@ -11,15 +11,17 @@ public class TranslatePutField {
 
     public static String getJasminInst(PutFieldInstruction putFieldInstruction, HashMap<String, Descriptor> table){
         StringBuilder stringBuilder = new StringBuilder();
-        Element firstArg = putFieldInstruction.getFirstOperand();
-        Element secondArg = putFieldInstruction.getSecondOperand();
-        Element thirdArg = putFieldInstruction.getThirdOperand();
+        Element classElement = putFieldInstruction.getFirstOperand();
+        Element fieldElement = putFieldInstruction.getSecondOperand();
+        Element valueElement = putFieldInstruction.getThirdOperand();
 
-        String className = ((Operand)firstArg).getName();
-        String varName = ((Operand)secondArg).getName();
-        String type = TranslateType.getJasminType(secondArg.getType());
-        stringBuilder.append(TranslateLoadStore.getLoadInst(thirdArg, table));
-        stringBuilder.append(InstSingleton.putfield(className, varName, type));
+        String className = TranslateType.getJasminType(classElement.getType());
+        String fieldName = ((Operand)fieldElement).getName();
+        String type = TranslateType.getJasminType(fieldElement.getType());
+
+        stringBuilder.append(TranslateLoadStore.getLoadInst(classElement, table));
+        stringBuilder.append(TranslateLoadStore.getLoadInst(valueElement, table));
+        stringBuilder.append(InstSingleton.putfield(className, fieldName, type));
 
         return stringBuilder.toString();
     }

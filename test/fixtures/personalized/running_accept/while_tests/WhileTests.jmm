@@ -1,0 +1,30 @@
+import io;
+class ArrayTests {
+
+    public static void main(String[] args){
+        int[] a;
+        int i;
+        boolean b;
+        b = true;
+        a = new int[10];
+        i = 0;
+
+        while(i < 10){
+            a[i] = i;
+            io.println(a[i]);
+            i = i+1;
+        }
+
+        while(b){
+            io.println(1);
+            b = false;
+        }
+
+        b = true;
+        while(b){
+            io.println(1);
+             b = !b;
+        }
+
+    }
+}

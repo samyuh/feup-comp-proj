@@ -42,6 +42,13 @@ public class BackendTest {
         result.run();
     }
 
+    @Test
+    public void FindMaximum() {
+        var result = TestUtils.backend(SpecsIo.getResource("fixtures/public/FindMaximum.jmm"));
+        TestUtils.noErrors(result.getReports());
+        result.run();
+    }
+
 
 
 

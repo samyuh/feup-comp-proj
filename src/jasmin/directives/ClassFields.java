@@ -1,5 +1,6 @@
 package jasmin.directives;
 
+import jasmin.translation.TranslateType;
 import org.specs.comp.ollir.ClassUnit;
 import org.specs.comp.ollir.Field;
 
@@ -27,7 +28,7 @@ public class ClassFields extends JasminDirective {
         // <field-name>
         directiveString.append(field.getFieldName()).append(" ");
         // <description>
-        directiveString.append(field.getFieldType()).append(" ");
+        directiveString.append(TranslateType.getJasminType(field.getFieldType())).append(" ");
         addValue();
         directiveString.append("\n");
     }
