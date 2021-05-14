@@ -1,4 +1,4 @@
-package fixtures.personalized.running_accept.array_tests;
+package fixtures.personalized.jasminExecution.array_tests;
 
 public class ArrayTests {
     public static void main(String[] args){

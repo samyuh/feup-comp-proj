@@ -35,6 +35,15 @@ public class BackendTest {
         result.run();
     }
 
+    @Test
+    public void WhileAndIF() {
+        var result = TestUtils.backend(SpecsIo.getResource("fixtures/public/WhileAndIF.jmm"));
+        TestUtils.noErrors(result.getReports());
+        result.run();
+    }
+
+
+
 
 
 }

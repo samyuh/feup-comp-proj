@@ -3,9 +3,15 @@ class ArrayTests {
 
     public static void main(String[] args){
         int[] a;
+        int b;
         a = new int[10];
 
         a[1] = 2;
-        io.println(a[1]);
+        b = a[1];
+
+        a[2] = a[1];
+        a[2] = 1;
+
+        io.println(a[2]);
     }
 }
