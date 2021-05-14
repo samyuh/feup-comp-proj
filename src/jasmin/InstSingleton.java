@@ -14,6 +14,10 @@ public class InstSingleton  {
         return "istore_" + reg + "\n";
     }
 
+    public static String store2(int number){
+       // if(1);
+        return "istore";
+    }
     public static String astore(int reg){
         if (reg > 3 || reg < 0)
             return "astore " + reg + "\n";
@@ -51,7 +55,7 @@ public class InstSingleton  {
     }
 
     public static String anewarray(int regVar, String type){
-        return iload(regVar) + "anewarray " + type + "\n";
+        return iload(regVar) + "newarray " + "int" + "\n";
 
     }
 
@@ -88,14 +92,16 @@ public class InstSingleton  {
         }
     }
 
-
-
-    public static String getAccessArrayVar(int regArray, int regVar){
-       return aload(regArray) + iload(regVar);
+    public static String iastore(){
+        return "iastore" + "\n";
     }
 
-    public static String getStoreArrayVar(int regArray, int regVar){
-        return aload(regArray) + iload(regVar) + "iastore" + "\n";
+    public static String getAccessArrayVar(int regArray, int regVar){
+       return  aload(regArray) + iload(regVar) +  "iaload" + "\n";
+    }
+
+    public static String getStoreArrayVar(int regArray, int regVar, String rhs){
+        return   aload(regArray) + iload(regVar) + rhs + iastore();
     }
 
     public static String getArrayLength(int arrayReg){

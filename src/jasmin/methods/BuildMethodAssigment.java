@@ -1,5 +1,6 @@
 package jasmin.methods;
 
+import jasmin.InstSingleton;
 import jasmin.translation.TranslateLoadStore;
 import org.specs.comp.ollir.*;
 
@@ -15,9 +16,8 @@ public class BuildMethodAssigment extends JasminMethod{
         Element lhs = assignInstruction.getDest();
         var table = OllirAccesser.getVarTable(method);
 
-        methodString.append(new BuildOperand(ollir, table, lhs).getOperand(rhs));
-        methodString.append(TranslateLoadStore.getJasminStore(lhs, table));
-
+        String rhsString = new BuildOperand(ollir, table, lhs).getOperand(rhs);
+        methodString.append(TranslateLoadStore.getJasminStore(lhs, table, rhsString));
         return this.toString();
     }
 
