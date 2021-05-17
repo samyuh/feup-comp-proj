@@ -13,9 +13,9 @@ import static jasmin.UtilsJasmin.loadElements;
 
 public class TranslateCall {
 
-    public static String getJasminInst(CallInstruction callInstruction, HashMap<String, Descriptor> table){
+    public static String getJasminInst(CallInstruction callInstruction, HashMap<String, Descriptor> table) {
         CallType callType = OllirAccesser.getCallInvocation(callInstruction);
-        switch(callType){
+        switch (callType) {
             case arraylength:
                 Element arrayElement = callInstruction.getFirstArg();
                 int arrayReg = getVirtualReg(arrayElement, table);
@@ -34,64 +34,68 @@ public class TranslateCall {
 
     }
 
-    private static String invokevirtual(CallInstruction callInstruction, HashMap<String, Descriptor> table){
-        String methodCall;
-        String className;
+    private static String invokevirtual(CallInstruction callInstruction, HashMap<String, Descriptor> table) {
         StringBuilder stringBuilder = new StringBuilder();
-
+        ArrayList<Element> operandList = callInstruction.getListOfOperands();
+        Type returnType = callInstruction.getReturnType();
         Element firstArg = callInstruction.getFirstArg();
+        String className = ((ClassType) firstArg.getType()).getName();
+        String methodCall = ((LiteralElement) callInstruction.getSecondArg()).getLiteral();
+
         stringBuilder.append(TranslateLoadStore.getLoadInst(firstArg, table));
-        className = ((ClassType)firstArg.getType()).getName();
+        stringBuilder.append(loadElements(operandList, table));
 
-        methodCall = ((LiteralElement) callInstruction.getSecondArg()).getLiteral();
-        methodCall = UtilsJasmin.getRemovedQuotes(methodCall);
+        updateStackCall(operandList.size() + 1, 0, returnType.getTypeOfElement());
 
-
-        for (Element operand : callInstruction.getListOfOperands())
-            stringBuilder.append(TranslateLoadStore.getLoadInst(operand, table));
-
-
-        stringBuilder.append("invokevirtual ").append(className).append(".").append(methodCall);
-
+        stringBuilder.append("invokevirtual ");
+        stringBuilder.append(className).append(".");
+        stringBuilder.append(UtilsJasmin.getRemovedQuotes(methodCall));
         stringBuilder.append(UtilsJasmin.getArguments(callInstruction.getListOfOperands()));
-        stringBuilder.append(TranslateType.getJasminType(callInstruction.getReturnType()));
+        stringBuilder.append(TranslateType.getJasminType(returnType));
         return stringBuilder.toString() + "\n";
     }
 
-    private static String invokestatic(CallInstruction callInstruction, HashMap<String, Descriptor> table){
+
+    private static String invokestatic(CallInstruction callInstruction, HashMap<String, Descriptor> table) {
         ArrayList<Element> parameters = callInstruction.getListOfOperands();
         StringBuilder stringBuilder = new StringBuilder();
+        Type returnType = callInstruction.getReturnType();
+
+        updateStackCall(parameters.size(), 0, returnType.getTypeOfElement());
 
         stringBuilder.append(loadElements(parameters, table));
 
         stringBuilder.append("invokestatic ");
         stringBuilder.append(UtilsJasmin.getOperandName(callInstruction.getFirstArg())).append(".");
 
-        String methodName = ((LiteralElement)callInstruction.getSecondArg()).getLiteral();
+        String methodName = ((LiteralElement) callInstruction.getSecondArg()).getLiteral();
         stringBuilder.append(UtilsJasmin.getRemovedQuotes(methodName));
         stringBuilder.append(UtilsJasmin.getArguments(parameters));
-        stringBuilder.append(TranslateType.getJasminType(callInstruction.getReturnType()));
+        stringBuilder.append(TranslateType.getJasminType(returnType));
 
         return stringBuilder.toString();
     }
 
-    private static String invokespecial(CallInstruction callInstruction, HashMap<String, Descriptor> table){
+    private static String invokespecial(CallInstruction callInstruction, HashMap<String, Descriptor> table) {
         StringBuilder stringBuilder = new StringBuilder();
         ArrayList<Element> parameters = callInstruction.getListOfOperands();
-        String methodName = UtilsJasmin.getRemovedQuotes(((LiteralElement)callInstruction.getSecondArg()).getLiteral());
-        Element classElement =  callInstruction.getFirstArg();
+        String methodName = UtilsJasmin.getRemovedQuotes(((LiteralElement) callInstruction.getSecondArg()).getLiteral());
+        Element classElement = callInstruction.getFirstArg();
+        Type returnType = callInstruction.getReturnType();
 
-        if ( classElement.getType().getTypeOfElement() != ElementType.THIS){
 
-            String className = ((ClassType)classElement.getType()).getName();
+        if (classElement.getType().getTypeOfElement() != ElementType.THIS) {
+            String className = ((ClassType) classElement.getType()).getName();
             stringBuilder.append(loadElements(parameters, table));
+            updateStackCall(parameters.size(), 0, returnType.getTypeOfElement());
             stringBuilder.append("invokespecial ").append(className).append(".");
-        }
-        else {
+        } else {
             stringBuilder.append(TranslateLoadStore.getLoadInst(classElement, table));
             stringBuilder.append("invokespecial ");
+            updateStackCall(1,0, returnType.getTypeOfElement());
             stringBuilder.append(InstSingleton.extend).append(".");
         }
+
         stringBuilder.append(methodName);
         stringBuilder.append(UtilsJasmin.getArguments(parameters));
         stringBuilder.append(TranslateType.getJasminType(callInstruction.getReturnType()));
@@ -99,18 +103,18 @@ public class TranslateCall {
         return stringBuilder.toString();
     }
 
-    private static String newCall(CallInstruction callInstruction, HashMap<String, Descriptor> table){
+    private static String newCall(CallInstruction callInstruction, HashMap<String, Descriptor> table) {
         StringBuilder instruction = new StringBuilder();
         Type returnType = callInstruction.getReturnType();
         String returnTypeString = TranslateType.getJasminType(returnType);
 
         // It can be new array or new Class.
-        if (returnType.getTypeOfElement()  == ElementType.OBJECTREF){
+        if (returnType.getTypeOfElement() == ElementType.OBJECTREF) {
             instruction.append(InstSingleton.newCall(returnTypeString));
             Instruction nextInstruction = BuildMethod.getNextInstruction();
             if (nextInstruction.getInstType() == InstructionType.CALL && OllirAccesser.getCallInvocation(((CallInstruction) nextInstruction)) == CallType.invokespecial)
-                instruction.append("dup\n");
-            instruction.append(invokespecial((CallInstruction)nextInstruction, table));
+                instruction.append(InstSingleton.dup());
+            instruction.append(invokespecial((CallInstruction) nextInstruction, table));
             BuildMethod.skipNextInstruction();
             instruction.append("\n");
             return instruction.toString();
@@ -127,6 +131,17 @@ public class TranslateCall {
     }
 
 
-
+    /**
+     * If the return type is not VOID, so the number of pushed elements must be summed by 1.
+     *
+     * @param popSize    Number of elements being consumed in the stack.
+     * @param pushSize   Number of elements being added to the stack.
+     * @param returnType
+     */
+    public static void updateStackCall(int popSize, int pushSize, ElementType returnType) {
+        if (ElementType.VOID == returnType)
+            pushSize += 1;
+        BuildMethod.updateMaxStack(popSize, pushSize);
+    }
 
 }

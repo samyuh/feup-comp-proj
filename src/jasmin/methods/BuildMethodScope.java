@@ -12,9 +12,11 @@ import java.util.ArrayList;
 public class BuildMethodScope extends JasminMethod{
 
     Method method;
-    public BuildMethodScope(ClassUnit ollir, Method method) {
+    int maxStackSize;
+    public BuildMethodScope(ClassUnit ollir, Method method, int maxStackSize) {
         super(ollir);
         this.method = method;
+        this.maxStackSize = maxStackSize;
     }
 
     public String getScope() {
@@ -47,7 +49,7 @@ public class BuildMethodScope extends JasminMethod{
         methodString.append(UtilsJasmin.getArguments(method.getParams()));
         methodString.append(TranslateType.getJasminType(method.getReturnType()));
         addEndLine();
-        methodString.append(".limit stack 99");
+        methodString.append(".limit stack ").append(maxStackSize);
         addEndLine();
         methodString.append(".limit locals ").append(getLocalLimit());
         addEndLine();

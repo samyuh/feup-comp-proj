@@ -7,8 +7,6 @@ import jasmin.translation.TranslatePutField;
 import jasmin.translation.TranslateReturn;
 import org.specs.comp.ollir.*;
 
-import javax.lang.model.element.TypeElement;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,41 +18,57 @@ public class BuildMethod extends JasminMethod {
 
     public static int currentIndex = 0;
     public static Method currentMethod;
+    public static int maxStackSize = 0;
+    public static int stackSizeUntilNow = 0;
+
     public BuildMethod(ClassUnit ollir) {
         super(ollir);
     }
 
     /**
      * Get the instructions in the body of a method.
+     *
      * @return Returns the body instructions as a string.
      */
     public String getMethod(int index) {
+        maxStackSize = 0;
+        stackSizeUntilNow = 0;
         currentMethod = ollir.getMethod(index);
-        methodString.append(new BuildMethodScope(ollir, currentMethod).getScope());
+
+        StringBuilder methodScope = new StringBuilder();
+        StringBuilder methodBody = new StringBuilder();
+
         ArrayList<Instruction> instructions = currentMethod.getInstructions();
         Instruction inst = null;
 
         for (currentIndex = 0; currentIndex < instructions.size(); currentIndex++) {
-            methodString.append(getLabels(instructions.get(currentIndex)));
+            methodBody.append(getLabels(instructions.get(currentIndex)));
             inst = instructions.get(currentIndex);
-            methodString.append(getInstruction(inst, currentMethod));
-            addEndLine();
+            methodBody.append(getInstruction(inst, currentMethod));
+            methodBody.append("\n");
         }
 
-        if (inst.getInstType() != InstructionType.RETURN && currentMethod.getReturnType().getTypeOfElement() == ElementType.VOID){
-            methodString.append("return\n");
+
+        if (inst.getInstType() != InstructionType.RETURN && currentMethod.getReturnType().getTypeOfElement() == ElementType.VOID) {
+            methodBody.append("return\n");
         }
 
-        addEnd();
+        methodScope.append(new BuildMethodScope(ollir, currentMethod, maxStackSize).getScope());
+
+        methodString.append(methodScope);
+        methodString.append(methodBody);
+
+        methodString.append(".end method\n");
         return this.toString();
     }
 
 
     /**
      * Calls the right method to translate the instruction
+     *
      * @return Return the instruction as a string.
      */
-    public String getInstruction(Instruction inst, Method method){
+    public String getInstruction(Instruction inst, Method method) {
         var table = OllirAccesser.getVarTable(method);
 
         switch (inst.getInstType()) {
@@ -69,16 +83,16 @@ public class BuildMethod extends JasminMethod {
             case BRANCH:
                 return TranslateBranch.getJasminInst((CondBranchInstruction) inst, table, method) + "\n";
             case GOTO:
-                return InstSingleton.gotoInst(((GotoInstruction)inst).getLabel());
+                return InstSingleton.gotoInst(((GotoInstruction) inst).getLabel());
             default:
                 return inst.getInstType().toString();
         }
     }
 
-    public String getLabels(Instruction instruction){
+    public String getLabels(Instruction instruction) {
         StringBuilder stringBuilder = new StringBuilder();
         var labels = currentMethod.getLabels(instruction);
-        labels.forEach((label)->{
+        labels.forEach((label) -> {
             stringBuilder.append(label).append(":\n");
         });
 
@@ -86,39 +100,43 @@ public class BuildMethod extends JasminMethod {
 
     }
 
-    public void addEnd() {
-        methodString.append(".end method\n");
-    }
 
     /**
      * Sometimes the current instruction needs the next to write the correct logic for the program.
      * This function "looks" to the next, but don't consumes it.
+     *
      * @return returns the next instruction.
      */
-    public static Instruction getNextInstruction(){
+    public static Instruction getNextInstruction() {
         if (currentMethod.getInstructions().size() >= currentIndex + 1)
-            return currentMethod.getInstructions().get(currentIndex+1);
+            return currentMethod.getInstructions().get(currentIndex + 1);
         return null;
     }
 
     /**
      * This method is responsible for returning the label of the next instruction.
+     *
      * @return The name of the next label instruction.
      */
-    public static List<String> getNextInstructionLabels(){
+    public static List<String> getNextInstructionLabels() {
         Instruction nextInstruction = getNextInstruction();
         return currentMethod.getLabels(nextInstruction);
     }
+
     /**
      * Consumes the next instruction.
      */
-    public static void skipNextInstruction(){
-        currentIndex ++;
+    public static void skipNextInstruction() {
+        currentIndex++;
     }
 
-    public static String getCurrentIndex(){
+    public static String getCurrentIndex() {
         return String.valueOf(currentIndex);
     }
 
-
+    public static void updateMaxStack(int popSize, int pushSize) {
+        stackSizeUntilNow -= popSize;
+        stackSizeUntilNow += pushSize;
+        maxStackSize = Math.max(maxStackSize, stackSizeUntilNow);
+    }
 }

@@ -4,33 +4,40 @@ import jasmin.methods.BuildMethod;
 import jasmin.translation.TranslateType;
 import org.specs.comp.ollir.*;
 
-
+/**
+ * The InstSingleton class contains the actual translation of some instructions to string.
+ * But not only that, updates the stackLimit.
+ */
 public class InstSingleton  {
     public static String extend;
 
     public static String istore(int reg){
+        BuildMethod.updateMaxStack(1,1);
         if (reg > 3 || reg < 0)
             return "istore " + reg + "\n";
         return "istore_" + reg + "\n";
     }
 
     public static String store2(int number){
-       // if(1);
         return "istore";
     }
+
     public static String astore(int reg){
+        BuildMethod.updateMaxStack(2,1);
         if (reg > 3 || reg < 0)
             return "astore " + reg + "\n";
         return "astore_" + reg + "\n";
     }
 
     public static String iload(int reg){
+        BuildMethod.updateMaxStack(0,1);
         if (reg > 3 || reg < 0)
             return "iload " + reg + "\n";
         return "iload_" + reg + "\n";
     }
 
     public static String iconst(String number){
+        BuildMethod.updateMaxStack(0,1);
         int constant = Integer.parseInt(number);
         if (constant == -1)
             return "iconst_m1\n";
@@ -45,6 +52,7 @@ public class InstSingleton  {
 
 
     public static String aload(int reg){
+        BuildMethod.updateMaxStack(0,1);
         if (reg > 3 || reg < 0)
             return "aload " + reg + "\n";
         return "aload_"+ reg + "\n";
@@ -55,8 +63,8 @@ public class InstSingleton  {
     }
 
     public static String anewarray(int regVar, String type){
+        // Stack size does not change.
         return iload(regVar) + "newarray " + "int" + "\n";
-
     }
 
     public static String gotoInst(String label){
@@ -64,20 +72,22 @@ public class InstSingleton  {
     }
 
     public static String newCall(String className){
+        BuildMethod.updateMaxStack(0,1);
         return "new " + className + "\n";
     }
 
     public static String getfield(String className, String fieldName, String type){
+        // Stack limit does not change.
         return "getfield " + className + "/" + fieldName + " " + type + "\n";
     }
 
     public static String putfield(String className, String fieldName, String type){
+        BuildMethod.updateMaxStack(2,0);
         return "putfield " + className + "/" + fieldName + " " + type + "\n";
     }
 
-
-
     public static String getOp(OperationType opType){
+        BuildMethod.updateMaxStack(2,1);
         switch (opType) {
             case MUL:
                 return "imul \n";
@@ -92,11 +102,18 @@ public class InstSingleton  {
         }
     }
 
+    public static String dup(){
+        BuildMethod.updateMaxStack(1, 2);
+        return "dup" + "\n";
+    }
+
     public static String iastore(){
+        BuildMethod.updateMaxStack(3, 0);
         return "iastore" + "\n";
     }
 
     public static String getAccessArrayVar(int regArray, int regVar){
+        BuildMethod.updateMaxStack(2,1);
        return  aload(regArray) + iload(regVar) +  "iaload" + "\n";
     }
 
@@ -105,6 +122,7 @@ public class InstSingleton  {
     }
 
     public static String getArrayLength(int arrayReg){
+        BuildMethod.updateMaxStack(1,1);
         return aload(arrayReg) + "arraylength \n";
     }
 
