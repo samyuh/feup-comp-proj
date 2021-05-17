@@ -49,8 +49,17 @@ public class BuildMethodScope extends JasminMethod{
         addEndLine();
         methodString.append(".limit stack 99");
         addEndLine();
-        methodString.append(".limit locals 99");
+        methodString.append(".limit locals ").append(getLocalLimit());
         addEndLine();
+    }
+
+    /**
+     * The local limit is this + arguments + local variables.
+     */
+    public int getLocalLimit(){
+        // Elements in the varTable + this.
+        var varTable = method.getVarTable();
+        return varTable.size() + 1;
     }
 
     public void addScopeConstructor() {

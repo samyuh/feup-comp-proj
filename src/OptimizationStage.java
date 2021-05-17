@@ -2,6 +2,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import analysis.MySymbolTable;
+import org.specs.comp.ollir.ClassUnit;
+import org.specs.comp.ollir.Method;
+import org.specs.comp.ollir.Ollir;
+import org.specs.comp.ollir.OllirAccesser;
 import pt.up.fe.comp.jmm.JmmNode;
 import pt.up.fe.comp.jmm.analysis.JmmSemanticsResult;
 import pt.up.fe.comp.jmm.analysis.table.SymbolTable;
@@ -50,8 +54,9 @@ public class OptimizationStage implements JmmOptimization {
     // Which register each variable must have.
     @Override
     public OllirResult optimize(OllirResult ollirResult) {
-        // Get var table. We can modify the vartable.
         // THIS IS JUST FOR CHECKPOINT 3
         return ollirResult;
     }
+
+
 }

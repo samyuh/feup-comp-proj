@@ -33,6 +33,7 @@ public class BuildMethod extends JasminMethod {
         methodString.append(new BuildMethodScope(ollir, currentMethod).getScope());
         ArrayList<Instruction> instructions = currentMethod.getInstructions();
         Instruction inst = null;
+
         for (currentIndex = 0; currentIndex < instructions.size(); currentIndex++) {
             methodString.append(getLabels(instructions.get(currentIndex)));
             inst = instructions.get(currentIndex);
@@ -47,6 +48,7 @@ public class BuildMethod extends JasminMethod {
         addEnd();
         return this.toString();
     }
+
 
     /**
      * Calls the right method to translate the instruction
