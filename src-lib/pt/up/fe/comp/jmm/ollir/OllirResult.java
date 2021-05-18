@@ -14,11 +14,13 @@ import pt.up.fe.specs.util.SpecsCollections;
  */
 public class OllirResult {
 
+    private final String ollirCode;
     private final ClassUnit ollirClass;
     private final SymbolTable symbolTable;
     private final List<Report> reports;
 
-    public OllirResult(ClassUnit ollirClass, SymbolTable symbolTable, List<Report> reports) {
+    private OllirResult(String ollirCode, ClassUnit ollirClass, SymbolTable symbolTable, List<Report> reports) {
+        this.ollirCode = ollirCode;
         this.ollirClass = ollirClass;
         this.symbolTable = symbolTable;
         this.reports = reports;
@@ -32,8 +34,12 @@ public class OllirResult {
      * @param reports
      */
     public OllirResult(JmmSemanticsResult semanticsResult, String ollirCode, List<Report> reports) {
-        this(OllirUtils.parse(ollirCode), semanticsResult.getSymbolTable(),
+        this(ollirCode, OllirUtils.parse(ollirCode), semanticsResult.getSymbolTable(),
                 SpecsCollections.concat(semanticsResult.getReports(), reports));
+    }
+
+    public String getOllirCode() {
+        return ollirCode;
     }
 
     public ClassUnit getOllirClass() {
