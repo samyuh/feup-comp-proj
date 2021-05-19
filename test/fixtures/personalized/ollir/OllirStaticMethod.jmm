@@ -1,0 +1,19 @@
+import MathUtils;
+
+class T {
+    public boolean beLazy(int[] L) {
+        int _allowedNameL;
+        int _allowedNameI;
+        int rand;
+        _allowedNameL = L.length;
+
+        _allowedNameI = 0;
+        while (_allowedNameI < _allowedNameL/2) {
+            L[_allowedNameI] = MathUtils.random(0, 10);
+
+            _allowedNameI = _allowedNameI + 1;
+        }
+
+        return true;
+    }
+}

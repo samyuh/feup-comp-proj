@@ -355,7 +355,14 @@ public class OllirEmitter {
         String assignmentType = MyOllirUtils.ollirType(type).split("\\.")[2];
 
         String leftSide = ollirArrayAccess(methodName,arrayIdentifier,indexNode);
-        String rightSide = ollirExpression(methodName, rightNode);
+        String rightSide;
+        String kind = rightNode.getKind();
+        if(kind.equals("Dot")){
+            rightSide = ollirDotMethod(methodName, rightNode, "."+ assignmentType);
+        }
+        else {
+            rightSide = ollirExpression(methodName, rightNode);
+        }
 
         sb.append(prefix()).append(leftSide).append(" :=.").append(assignmentType).append(" ").append(rightSide).append(";");
     }
