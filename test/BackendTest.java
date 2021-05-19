@@ -50,6 +50,25 @@ public class BackendTest {
 
 
 
+    @Test
+    public void LazySort() {
+        var result = TestUtils.backend(SpecsIo.getResource("fixtures/public/LazySort.jmm"));
+        TestUtils.noErrors(result.getReports());
+        result.run();
+    }
 
+    @Test
+    public void Life() {
+        var result = TestUtils.backend(SpecsIo.getResource("fixtures/public/Life.jmm"));
+        TestUtils.noErrors(result.getReports());
+        result.run();
+    }
+
+    @Test
+    public void MonteCarloPi() {
+        var result = TestUtils.backend(SpecsIo.getResource("fixtures/public/MonteCarloPi.jmm"));
+        TestUtils.noErrors(result.getReports());
+        result.run();
+    }
 
 }

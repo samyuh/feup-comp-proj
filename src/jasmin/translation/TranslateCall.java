@@ -50,7 +50,7 @@ public class TranslateCall {
         stringBuilder.append("invokevirtual ");
         stringBuilder.append(className).append(".");
         stringBuilder.append(UtilsJasmin.getRemovedQuotes(methodCall));
-        stringBuilder.append(UtilsJasmin.getArguments(callInstruction.getListOfOperands()));
+        stringBuilder.append(UtilsJasmin.getArguments(callInstruction.getListOfOperands())).append(" ");
         stringBuilder.append(TranslateType.getJasminType(returnType));
         return stringBuilder.toString() + "\n";
     }
@@ -72,7 +72,7 @@ public class TranslateCall {
         stringBuilder.append(UtilsJasmin.getRemovedQuotes(methodName));
         stringBuilder.append(UtilsJasmin.getArguments(parameters));
         stringBuilder.append(TranslateType.getJasminType(returnType));
-
+        stringBuilder.append("\n");
         return stringBuilder.toString();
     }
 

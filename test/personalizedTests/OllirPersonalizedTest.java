@@ -120,7 +120,8 @@ public class OllirPersonalizedTest {
         TestUtils.noErrors(result.getReports());
     }
 
-    /*
+
+
     @Test
     // Note: needs sanitizer because there is a variable staring with $ and in ollir it is not allowed
     // For checkpoint 3
@@ -128,16 +129,16 @@ public class OllirPersonalizedTest {
         var result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/Lazysort.jmm"));
         TestUtils.noErrors(result.getReports());
     }
-    */
 
-   /* @Test
+
+    @Test
     // Note: needs sanitizer because there is a variable 'ret' and in ollir it is a special word
     // For checkpoint 3
     public void testLife(){
         var result = TestUtils.optimize(SpecsIo.getResource("fixtures/public/Life.jmm"));
         TestUtils.noErrors(result.getReports());
     }
-    */
+
 
     /*
     @Test

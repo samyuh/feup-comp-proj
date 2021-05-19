@@ -22,11 +22,16 @@ public class ClassFields extends JasminDirective {
 
     public void buildField(int index){
         this.field = ollir.getField(index);
+        String fieldName = field.getFieldName();
+
+        if (fieldName.equals("field")){
+            fieldName = "'field'";
+        }
 
         directiveString.append(".field ");
         addAccessSpec();
         // <field-name>
-        directiveString.append(field.getFieldName()).append(" ");
+        directiveString.append(fieldName).append(" ");
         // <description>
         directiveString.append(TranslateType.getJasminType(field.getFieldType())).append(" ");
         addValue();
