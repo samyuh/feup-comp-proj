@@ -13,8 +13,6 @@ import java.io.StringReader;
 import java.util.List;
 
 public class Main implements JmmParser {
-
-
     public JmmParserResult parse(String jmmCode) {
         List<Report> reportList = new ArrayList<Report>();
         try {
@@ -25,7 +23,7 @@ public class Main implements JmmParser {
 
 
            if (!grammar.getHasError()){
-                //root.dump("");
+                root.dump("");
            }
 
             return new JmmParserResult(root, reportList);
@@ -45,6 +43,7 @@ public class Main implements JmmParser {
 
         var result = TestUtils.backend(SpecsIo.read(fileName));
         TestUtils.noErrors(result.getReports());
+
         result.run();
     }
 

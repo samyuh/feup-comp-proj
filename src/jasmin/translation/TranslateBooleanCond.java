@@ -27,7 +27,7 @@ public class TranslateBooleanCond {
 
         // Check if the element is 0.
         stringBuilder.append(rightInst);
-        stringBuilder.append("ifeq ").append(nextInstLabel).append("\n");
+        stringBuilder.append("ifne ").append(nextInstLabel).append("\n");
         // Case not 0.
         stringBuilder.append(InstSingleton.gotoInst(label));
 

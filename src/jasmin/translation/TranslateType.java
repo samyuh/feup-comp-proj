@@ -1,6 +1,7 @@
 package jasmin.translation;
 
 
+import jasmin.BuildJasmin;
 import org.specs.comp.ollir.*;
 
 public class TranslateType {
@@ -9,9 +10,8 @@ public class TranslateType {
         switch (type.getTypeOfElement()) {
             case ARRAYREF:
                 return getJasminTypeArray((ArrayType) type);
-            case CLASS:
-                System.out.println("To implement");
-                return "";
+            case THIS:
+                return BuildJasmin.ollir.getClassName();
             case OBJECTREF:
                 return ((ClassType)type).getName();
             default:

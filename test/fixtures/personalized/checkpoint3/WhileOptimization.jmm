@@ -1,0 +1,52 @@
+import M;
+class Fac {
+    boolean test;
+    public boolean check(int[] A, int N, int T){
+        boolean b1;
+        boolean b2;
+
+        int i;
+        i = 0;
+        b1 = true;
+        b2 = false;
+
+
+        // Invert Not
+        /*
+        while(!b1) {
+            i = i + 1;
+        }
+        */
+
+        // Invert And
+        /*
+        while(b1 && b2) {
+            i = i + 1;
+        }
+        */
+
+        // Invert Less
+        /*
+        while(5 < i) {
+            i = i + 1;
+        }*/
+
+        // Invert Dot
+        while(M.getSomething()) {
+            i = i + 1;
+        }
+
+         // Invert True
+        while(true) {
+            i = i + 1;
+        }
+
+         // Invert Identifier
+        while(test) {
+            i = i + 1;
+        }
+
+        return true;
+    }
+
+}

@@ -23,7 +23,6 @@ class Life {
             l.update();
             unused = io.read();
         }
-
     }
 
     public boolean init() {

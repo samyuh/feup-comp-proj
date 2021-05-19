@@ -1,0 +1,18 @@
+import io;
+class ArrayTests {
+
+    public static void main(String[] args){
+        ArrayTests arrTest;
+        int[] arr;
+
+        arrTest = new ArrayTests();
+        arr = new int[2];
+
+        arrTest.getNumber(arr);
+    }
+
+    public boolean getNumber(int[] arr){
+        return false;
+    }
+
+}

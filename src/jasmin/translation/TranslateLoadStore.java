@@ -47,20 +47,20 @@ public class TranslateLoadStore {
      *
      * @return Get the store instruction as a string.
      */
-    public static String getJasminStore(Element element, HashMap<String, Descriptor> table) {
+    public static String getJasminStore(Element element, HashMap<String, Descriptor> table, String rhs) {
         ElementType elementType = element.getType().getTypeOfElement();
 
        if (elementType == ElementType.INT32 || elementType == ElementType.STRING || elementType == ElementType.BOOLEAN) {
             ElementType typeVar = table.get(((Operand) element).getName()).getVarType().getTypeOfElement();
             if (typeVar == ElementType.ARRAYREF)
-                return getStoreArrayAccess(element, table);
+                return getStoreArrayAccess(element, table, rhs);
             else {
                 int register = UtilsJasmin.getVirtualReg(element, table);
-                return InstSingleton.istore(register);
+                return rhs + InstSingleton.istore(register);
             }
         } else if (elementType == ElementType.OBJECTREF || elementType == ElementType.THIS || elementType == ElementType.ARRAYREF) {
             int register = UtilsJasmin.getVirtualReg(element, table);
-            return InstSingleton.astore(register);
+            return rhs + InstSingleton.astore(register);
         }
         return element.toString();
     }
@@ -72,16 +72,17 @@ public class TranslateLoadStore {
         int virtualRegIndex = UtilsJasmin.getVirtualRegIndex(arrayElement, table);
         int virtualRegArray = UtilsJasmin.getVirtualReg(arrayElement, table);
 
+
         return InstSingleton.getAccessArrayVar(virtualRegArray, virtualRegIndex);
     }
 
     /**
      * Get the store instruction for an array access.
      */
-    public static String getStoreArrayAccess(Element arrayElement, HashMap<String, Descriptor> table) {
+    public static String getStoreArrayAccess(Element arrayElement, HashMap<String, Descriptor> table, String rhs) {
         int arrayReg = UtilsJasmin.getVirtualReg(arrayElement, table);
         int indexReg = UtilsJasmin.getVirtualRegIndex(arrayElement, table);
-        return InstSingleton.getStoreArrayVar(arrayReg, indexReg);
+        return InstSingleton.getStoreArrayVar(arrayReg, indexReg, rhs);
     }
 
 

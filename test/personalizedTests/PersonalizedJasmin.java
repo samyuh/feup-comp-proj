@@ -1,143 +1,81 @@
 package personalizedTests;
 
+
 import org.junit.Test;
 import pt.up.fe.comp.TestUtils;
-import pt.up.fe.comp.jmm.ollir.OllirResult;
-import pt.up.fe.comp.jmm.ollir.OllirUtils;
+import pt.up.fe.comp.jmm.jasmin.JasminResult;
+import pt.up.fe.comp.jmm.report.Report;
 import pt.up.fe.specs.util.SpecsIo;
 
 import java.util.ArrayList;
+import java.util.List;
 
+
+/**
+ * These are tests to check if the Jasmin some parts of code correctly.
+ */
 public class PersonalizedJasmin {
-
-    @Test
-    public void ArraysAndSimpleVar() {
-
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir_to_convert/ArraysAndSimpleVars.ollir"))
-                , null, new ArrayList<>()));
+    /**
+     * This function gets the path to the jasmin code and run it.
+     * Used for debugging reasons.
+     * @param path Path to the jasmin code.
+     */
+    public void runJasmin(String path){
+        List<Report> reportList = new ArrayList<>();
+        var jasminCode = SpecsIo.getResource(path);
+        JasminResult jasminResult = new JasminResult("ArrayTests", jasminCode, reportList);
+        jasminResult.run();
     }
 
-    // OK
-    @Test
-    public void DotMethod() {
-
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir_to_convert/DotMethod.ollir"))
-                , null, new ArrayList<>()));
-
-    }
-
-
-    @Test
-    public void DotMethod2() {
-
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir_to_convert/DotMethod2.ollir"))
-                , null, new ArrayList<>()));
-
+    public void runOllirJasmin(String path){
+        var result = TestUtils.backend(SpecsIo.getResource(path));
+        TestUtils.noErrors(result.getReports());
+        result.run();
     }
 
     @Test
-    public void Fac() {
-
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir_to_convert/Fac.ollir"))
-                , null, new ArrayList<>()));
-
+    public void ArrayTests() {
+        var result = TestUtils.backend(SpecsIo.getResource("fixtures/personalized/running_accept/array_tests/ArrayTests.jmm"));
+        TestUtils.noErrors(result.getReports());
+        result.run();
     }
 
     @Test
-    public void FindMaximum() {
-
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir_to_convert/FindMaximum.ollir"))
-                , null, new ArrayList<>()));
-
-    }
-
-
-    @Test
-    public void IfElse() {
-
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir_to_convert/IfElse.ollir"))
-                , null, new ArrayList<>()));
-
+    public void IfCondition(){
+        var result = TestUtils.backend(SpecsIo.getResource("fixtures/personalized/running_accept/if_tests/ifTests.jmm"));
+        TestUtils.noErrors(result.getReports());
+        result.run();
     }
 
     @Test
-    public void InvokeVirtualTest() {
-
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir_to_convert/InvokeVirtualTest.ollir"))
-                , null, new ArrayList<>()));
-
+    public void WhileTests(){
+        var result = TestUtils.backend(SpecsIo.getResource("fixtures/personalized/running_accept/while_tests/WhileTests.jmm"));
+        TestUtils.noErrors(result.getReports());
+        result.run();
     }
 
     @Test
-    public void MonteCarloPi() {
-
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir_to_convert/MonteCarloPi.ollir"))
-                , null, new ArrayList<>()));
-
+    public void FunctionsTests(){
+        var result = TestUtils.backend(SpecsIo.getResource("fixtures/personalized/running_accept/functions_tests/FunctionsTests.jmm"));
+        TestUtils.noErrors(result.getReports());
+        result.run();
     }
 
     @Test
-    public void MyClass() {
-
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir_to_convert/MyClass.ollir"))
-                , null, new ArrayList<>()));
-
+    public void FunctionTestsJasmin(){
+        runJasmin("fixtures/personalized/running_accept/functions_tests/FunctionTests.j");
     }
 
     @Test
-    public void MyClass2() {
-
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir_to_convert/MyClass2.ollir"))
-                , null, new ArrayList<>()));
-
+    public void FindMaximum(){
+        runOllirJasmin("fixtures/personalized/running_accept/debugFindMaximum/FindMaximum.jmm");
     }
 
     @Test
-    public void MyClass3() {
-
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir_to_convert/MyClass3.ollir"))
-                , null, new ArrayList<>()));
-
-    }
-
-    @Test
-    public void MyClass4() {
-
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir_to_convert/MyClass4.ollir"))
-                , null, new ArrayList<>()));
-
-    }
-
-    @Test
-    public void NotTest() {
-
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir_to_convert/NotTest.ollir"))
-                , null, new ArrayList<>()));
-
-    }
-
-    @Test
-    public void RecursionInAssigments() {
-
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir_to_convert/RecursionInAssigments.ollir"))
-                , null, new ArrayList<>()));
-
+    public void FindMaximumJasmin(){
+        runJasmin("fixtures/personalized/running_accept/debugFindMaximum/FindMaximum.j");
     }
 
 
-    @Test
-    public void While() {
 
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir_to_convert/While.ollir"))
-                , null, new ArrayList<>()));
-
-    }
-
-    @Test
-    public void WhileAndIf() {
-
-        TestUtils.backend(new OllirResult(OllirUtils.parse(SpecsIo.getResource("fixtures/personalized/ollir_to_convert/WhileAndIf.ollir"))
-                , null, new ArrayList<>()));
-
-    }
 }

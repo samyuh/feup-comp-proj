@@ -1,0 +1,52 @@
+import io;
+class ArrayTests {
+    // Only ones must appear.
+    public static void main(String[] args){
+        boolean a;
+        int b;
+        int c;
+
+        a = false;
+        b = 1;
+        c = 2;
+
+        // With booleans.
+        if (a){
+            io.println(0);
+        }else{
+            // result.
+            io.println(1);
+        }
+
+        // With expressions less than
+        if (b < c){
+            // result.
+            io.println(1);
+        }else{
+            io.println(0);
+        }
+
+        // With expressions negation
+        if (!true){
+            io.println(0);
+        }else{
+            io.println(1);
+        }
+
+        // With expression and
+        if (true && false){
+            io.println(0);
+        }else{
+            // result.
+            io.println(1);
+        }
+
+        if (true && true){
+            // result.
+            io.println(1);
+        }else{
+            io.println(0);
+        }
+
+    }
+}

@@ -12,22 +12,16 @@
  * specific language governing permissions and limitations under the License. under the License.
  */
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
 
 import pt.up.fe.comp.TestUtils;
-import pt.up.fe.comp.jmm.ollir.OllirResult;
-import pt.up.fe.comp.jmm.ollir.OllirUtils;
 import pt.up.fe.specs.util.SpecsIo;
 
-import java.util.ArrayList;
 
 public class BackendTest {
 
     @Test
     public void HelloWorld() {
-
         var result = TestUtils.backend(SpecsIo.getResource("fixtures/public/HelloWorld.jmm"));
         TestUtils.noErrors(result.getReports());
          result.run();
@@ -40,5 +34,40 @@ public class BackendTest {
         result.run();
     }
 
+    @Test
+    public void WhileAndIF() {
+        var result = TestUtils.backend(SpecsIo.getResource("fixtures/public/WhileAndIF.jmm"));
+        TestUtils.noErrors(result.getReports());
+        result.run();
+    }
+
+    @Test
+    public void FindMaximum() {
+        var result = TestUtils.backend(SpecsIo.getResource("fixtures/public/FindMaximum.jmm"));
+        TestUtils.noErrors(result.getReports());
+        result.run();
+    }
+
+
+    @Test
+    public void LazySort() {
+        var result = TestUtils.backend(SpecsIo.getResource("fixtures/public/Lazysort.jmm"));
+        TestUtils.noErrors(result.getReports());
+        result.run();
+    }
+
+    @Test
+    public void Life() {
+        var result = TestUtils.backend(SpecsIo.getResource("fixtures/public/Life.jmm"));
+        TestUtils.noErrors(result.getReports());
+        result.run("1\n");
+    }
+
+    @Test
+    public void MonteCarloPi() {
+        var result = TestUtils.backend(SpecsIo.getResource("fixtures/public/MonteCarloPi.jmm"));
+        TestUtils.noErrors(result.getReports());
+        result.run("1000\n34");
+    }
 
 }

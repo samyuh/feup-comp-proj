@@ -62,7 +62,7 @@ public class BuildOperand extends JasminMethod {
     }
 
     public void addCall(CallInstruction callInstruction){
-        methodString.append(TranslateCall.getJasminInst(callInstruction, table));
+        methodString.append(TranslateCall.getJasminInst(callInstruction, table, true));
     }
 
     public void addGetField(GetFieldInstruction inst){
