@@ -51,7 +51,7 @@ public class BackendTest {
 
     @Test
     public void LazySort() {
-        var result = TestUtils.backend(SpecsIo.getResource("fixtures/public/LazySort.jmm"));
+        var result = TestUtils.backend(SpecsIo.getResource("fixtures/public/Lazysort.jmm"));
         TestUtils.noErrors(result.getReports());
         result.run();
     }
