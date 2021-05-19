@@ -21,8 +21,6 @@ public class AcceptTest {
         JmmParserResult jmmParser = TestUtils.parse(jmmCode);
         TestUtils.noErrors(jmmParser.getReports());
         System.out.println(jmmParser.getRootNode().toJson());
-
-
     }
 
     @Test
@@ -88,7 +86,6 @@ public class AcceptTest {
         JmmParserResult jmmParser = TestUtils.parse(jmmCode);
         TestUtils.noErrors(jmmParser.getReports());
         System.out.println(jmmParser.getRootNode().toJson());
-
     }
 
 

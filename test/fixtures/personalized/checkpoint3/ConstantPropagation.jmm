@@ -1,0 +1,69 @@
+import X;
+class Fac extends X{
+    public static void main(String[] args){
+        int a;
+        int b;
+        int[] c;
+        int f;
+
+        boolean d;
+        boolean e;
+
+        a = 4;
+        b = a;
+        f = b + 4;
+
+        //d = true;
+        // e = !d;
+        a = !4;
+
+        while(d && false){
+            i = i + 4;
+            e = d;
+            a = a + 4;
+        }
+
+        /*
+        while(){
+            i = i + 4;
+            e = d;
+            b = a;
+        }
+        */
+
+        /*
+        if(d && false){
+            e = d;
+        }
+        else {
+            c[a] = 3;
+        }
+        */
+
+
+        // b = 5;
+
+         // Working Tests
+         // b = a;
+         // c = a + 5;
+         // c = a + 6 + 8;
+         // a = 5 - a / a;
+         // c = a + 4;
+         // a = 2;
+         // b = a + 3;
+         // b = X.getAnInt(a);
+         // b = X.getAnInt(this.ola(a), a);
+         // X.getAnInt(a);
+         //b = c[a];
+         //b = c[3+5/a+(8+a)];
+
+         // c = new int[a];
+         // To test
+         // b = a[3];
+         //c = 3 + b + 9; //run many times to change b eventually
+    }
+
+    public int ola(int x){
+        return 2;
+    }
+}

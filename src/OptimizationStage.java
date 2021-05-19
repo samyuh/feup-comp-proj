@@ -1,18 +1,12 @@
-import java.util.ArrayList;
-import java.util.List;
-
-import analysis.MySymbolTable;
-import org.specs.comp.ollir.ClassUnit;
-import org.specs.comp.ollir.Method;
-import org.specs.comp.ollir.Ollir;
-import org.specs.comp.ollir.OllirAccesser;
 import pt.up.fe.comp.jmm.JmmNode;
 import pt.up.fe.comp.jmm.analysis.JmmSemanticsResult;
 import pt.up.fe.comp.jmm.analysis.table.SymbolTable;
 import pt.up.fe.comp.jmm.ollir.JmmOptimization;
 import pt.up.fe.comp.jmm.ollir.OllirResult;
-import pt.up.fe.comp.jmm.report.Report;
-import pt.up.fe.specs.util.SpecsIo;
+import visitor.ConstantPropagationVisitor;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Copyright 2021 SPeCS.
@@ -29,13 +23,30 @@ import pt.up.fe.specs.util.SpecsIo;
 
 public class OptimizationStage implements JmmOptimization {
 
+    /*
+     * Without Optimization - Obsolete method
+     */
     @Override
     public OllirResult toOllir(JmmSemanticsResult semanticsResult) {
-
         JmmNode node = semanticsResult.getRootNode();
 
         // Convert the AST to a String containing the equivalent OLLIR code
-        OllirEmitter ollirEmitter = new OllirEmitter(semanticsResult.getSymbolTable());
+        OllirEmitter ollirEmitter = new OllirEmitter(semanticsResult.getSymbolTable(), false);
+        String ollirCode = ollirEmitter.visit(node); // Convert node ...
+        System.out.println("OLLIR CODE:\n" + ollirCode);
+
+        return new OllirResult(semanticsResult, ollirCode, ollirEmitter.getReports());
+    }
+
+    /*
+     * With Optimization - Checkpoint 3
+     */
+    @Override
+    public OllirResult toOllir(JmmSemanticsResult semanticsResult, boolean optimize) {
+        JmmNode node = semanticsResult.getRootNode();
+
+        // Convert the AST to a String containing the equivalent OLLIR code
+        OllirEmitter ollirEmitter = new OllirEmitter(semanticsResult.getSymbolTable(), optimize);
         String ollirCode = ollirEmitter.visit(node); // Convert node ...
         System.out.println("OLLIR CODE:\n" + ollirCode);
 
@@ -45,7 +56,32 @@ public class OptimizationStage implements JmmOptimization {
     // Before toOllir
     @Override
     public JmmSemanticsResult optimize(JmmSemanticsResult semanticsResult) {
-        // THIS IS JUST FOR CHECKPOINT 3
+        List<JmmNode> classNodeChildren = semanticsResult.getRootNode().getChildren().get(1).getChildren();
+        List<JmmNode> methods = classNodeChildren.subList(2, classNodeChildren.size());
+        ConstantPropagationVisitor constantVisitor = new ConstantPropagationVisitor();
+        HashMap<String, String> constants = new HashMap<>();
+
+
+        do {
+            constantVisitor.resetCounter();
+
+            for (JmmNode methodNode : methods) {
+                JmmNode methodType = methodNode.getChildren().get(0);
+                JmmNode methodBody;
+                if (methodType.getKind().equals("MethodMain")) {
+                    methodBody = methodType.getChildren().get(1);
+                } else {
+                    methodBody = methodType.getChildren().get(3);
+                }
+
+                // Loop through method body
+                constantVisitor.visit(methodBody, constants);
+
+            }
+            System.out.println("CHANGES: " + constantVisitor.getCounter());
+        } while (constantVisitor.getCounter() != 0);
+
+        //System.out.println(semanticsResult.getRootNode().toJson());
         return semanticsResult;
     }
 
