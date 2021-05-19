@@ -3,23 +3,16 @@ class ArrayTests {
 
     public static void main(String[] args){
         ArrayTests arrTest;
-         arrTest = new ArrayTests();
-        arrTest.getNumber();
-        arrTest.getNumber();
-        arrTest.getNumber();
-        arrTest.funcao2();
-        arrTest.funcao2();
+        int[] arr;
+
+        arrTest = new ArrayTests();
+        arr = new int[2];
+
+        arrTest.getNumber(arr);
     }
 
-    public int getNumber(){
-        int c;
-        c = 4;
-        c = this.funcao2();
-        io.println(c);
-        return 0;
+    public boolean getNumber(int[] arr){
+        return false;
     }
-    public int funcao2(){
-        io.println(2);
-        return 3;
-    }
+
 }
