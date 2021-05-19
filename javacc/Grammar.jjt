@@ -215,22 +215,22 @@ void Type(): {Token t; }
 
 void AndExpression() #void : {}
 {
-   LessExpression() [<AND> AndExpression() #And(2)]
+   LessExpression() (<AND> LessExpression() #And(2))*
 }
 
 void LessExpression() #void : {}
 {
-    AddSubExpression() [<LESS> LessExpression() #Less(2)]
+    AddSubExpression() (<LESS> AddSubExpression() #Less(2))*
 }
 
 void AddSubExpression() #void : {}
 {
-    MultDivExpression() [(<SUM> AddSubExpression() #Add(2) | <SUB> AddSubExpression() #Sub(2))]
+    MultDivExpression() ((<SUM> MultDivExpression() #Add(2) | <SUB> MultDivExpression() #Sub(2)))*
 }
 
 void MultDivExpression() #void : {}
 {
-    NotExpression() [(<MULT> MultDivExpression() #Mult(2) | <DIV> MultDivExpression() #Div(2))]
+    NotExpression() ((<MULT> NotExpression() #Mult(2) | <DIV> NotExpression() #Div(2)))*
 }
 
 void NotExpression() #void : {}
