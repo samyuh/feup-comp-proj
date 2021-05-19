@@ -5,6 +5,7 @@ import jasmin.UtilsJasmin;
 import jasmin.methods.BuildMethod;
 import org.specs.comp.ollir.*;
 
+import java.io.CharArrayReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -13,7 +14,7 @@ import static jasmin.UtilsJasmin.loadElements;
 
 public class TranslateCall {
 
-    public static String getJasminInst(CallInstruction callInstruction, HashMap<String, Descriptor> table) {
+    public static String getJasminInst(CallInstruction callInstruction, HashMap<String, Descriptor> table, boolean isAssign) {
         CallType callType = OllirAccesser.getCallInvocation(callInstruction);
         switch (callType) {
             case arraylength:
@@ -23,9 +24,9 @@ public class TranslateCall {
             case NEW:
                 return newCall(callInstruction, table);
             case invokevirtual:
-                return invokevirtual(callInstruction, table);
+                return invokevirtual(callInstruction, table, isAssign);
             case invokestatic:
-                return invokestatic(callInstruction, table);
+                return invokestatic(callInstruction, table, isAssign);
             case invokespecial:
                 return invokespecial(callInstruction, table);
             default:
@@ -34,7 +35,7 @@ public class TranslateCall {
 
     }
 
-    private static String invokevirtual(CallInstruction callInstruction, HashMap<String, Descriptor> table) {
+    private static String invokevirtual(CallInstruction callInstruction, HashMap<String, Descriptor> table, boolean isAssign) {
         StringBuilder stringBuilder = new StringBuilder();
         ArrayList<Element> operandList = callInstruction.getListOfOperands();
         Type returnType = callInstruction.getReturnType();
@@ -50,13 +51,18 @@ public class TranslateCall {
         stringBuilder.append("invokevirtual ");
         stringBuilder.append(className).append(".");
         stringBuilder.append(UtilsJasmin.getRemovedQuotes(methodCall));
-        stringBuilder.append(UtilsJasmin.getArguments(callInstruction.getListOfOperands())).append(" ");
+        stringBuilder.append(UtilsJasmin.getArguments(callInstruction.getListOfOperands()));
         stringBuilder.append(TranslateType.getJasminType(returnType));
+        stringBuilder.append("\n");
+
+        if (!isAssign && returnType.getTypeOfElement() != ElementType.VOID)
+            stringBuilder.append(InstSingleton.pop());
+
         return stringBuilder.toString() + "\n";
     }
 
 
-    private static String invokestatic(CallInstruction callInstruction, HashMap<String, Descriptor> table) {
+    private static String invokestatic(CallInstruction callInstruction, HashMap<String, Descriptor> table, boolean isAssign) {
         ArrayList<Element> parameters = callInstruction.getListOfOperands();
         StringBuilder stringBuilder = new StringBuilder();
         Type returnType = callInstruction.getReturnType();
@@ -73,6 +79,10 @@ public class TranslateCall {
         stringBuilder.append(UtilsJasmin.getArguments(parameters));
         stringBuilder.append(TranslateType.getJasminType(returnType));
         stringBuilder.append("\n");
+
+        if (!isAssign && returnType.getTypeOfElement() != ElementType.VOID)
+            stringBuilder.append(InstSingleton.pop());
+
         return stringBuilder.toString();
     }
 
@@ -143,5 +153,7 @@ public class TranslateCall {
             pushSize += 1;
         BuildMethod.updateMaxStack(popSize, pushSize);
     }
+
+
 
 }

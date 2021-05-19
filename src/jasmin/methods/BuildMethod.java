@@ -75,7 +75,7 @@ public class BuildMethod extends JasminMethod {
             case ASSIGN:
                 return new BuildMethodAssigment(ollir, method).getInstructionAssign((AssignInstruction) inst);
             case CALL:
-                return TranslateCall.getJasminInst((CallInstruction) inst, table) + "\n";
+                return TranslateCall.getJasminInst((CallInstruction) inst, table, false) + "\n";
             case PUTFIELD:
                 return TranslatePutField.getJasminInst((PutFieldInstruction) inst, table) + "\n";
             case RETURN:
@@ -100,7 +100,6 @@ public class BuildMethod extends JasminMethod {
 
     }
 
-
     /**
      * Sometimes the current instruction needs the next to write the correct logic for the program.
      * This function "looks" to the next, but don't consumes it.
@@ -108,7 +107,7 @@ public class BuildMethod extends JasminMethod {
      * @return returns the next instruction.
      */
     public static Instruction getNextInstruction() {
-        if (currentMethod.getInstructions().size() >= currentIndex + 1)
+        if (currentMethod.getInstructions().size() > currentIndex + 1)
             return currentMethod.getInstructions().get(currentIndex + 1);
         return null;
     }

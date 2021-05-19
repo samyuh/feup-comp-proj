@@ -62,6 +62,11 @@ public class InstSingleton  {
         return label + ":" + "\n";
     }
 
+    public static String pop(){
+        BuildMethod.updateMaxStack(1, 0);
+        return "pop" + "\n";
+    }
+
     public static String anewarray(int regVar, String type){
         // Stack size does not change.
         return iload(regVar) + "newarray " + "int" + "\n";

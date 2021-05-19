@@ -5,6 +5,10 @@ class ArrayTests {
         ArrayTests arrTest;
          arrTest = new ArrayTests();
         arrTest.getNumber();
+        arrTest.getNumber();
+        arrTest.getNumber();
+        arrTest.funcao2();
+        arrTest.funcao2();
     }
 
     public int getNumber(){

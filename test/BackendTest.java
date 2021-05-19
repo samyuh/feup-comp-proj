@@ -61,14 +61,14 @@ public class BackendTest {
     public void Life() {
         var result = TestUtils.backend(SpecsIo.getResource("fixtures/public/Life.jmm"));
         TestUtils.noErrors(result.getReports());
-        result.run();
+        result.run("1\n");
     }
 
     @Test
     public void MonteCarloPi() {
         var result = TestUtils.backend(SpecsIo.getResource("fixtures/public/MonteCarloPi.jmm"));
         TestUtils.noErrors(result.getReports());
-        result.run();
+        result.run("1000\n34");
     }
 
 }

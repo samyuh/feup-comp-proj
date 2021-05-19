@@ -49,9 +49,9 @@ public class BuildMethodScope extends JasminMethod{
         methodString.append(UtilsJasmin.getArguments(method.getParams()));
         methodString.append(TranslateType.getJasminType(method.getReturnType()));
         addEndLine();
-        methodString.append(".limit stack ").append(99);
+        methodString.append(".limit stack ").append(maxStackSize);
         addEndLine();
-        methodString.append(".limit locals ").append(99);
+        methodString.append(".limit locals ").append(getLocalLimit());
         addEndLine();
     }
 
