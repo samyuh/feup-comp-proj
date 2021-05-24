@@ -70,4 +70,11 @@ public class BackendTest {
         result.run("1000\n34");
     }
 
+    @Test
+    public void TicTacToe() {
+        var result = TestUtils.backend(SpecsIo.getResource("fixtures/public/TicTacToe.jmm"));
+        TestUtils.noErrors(result.getReports());
+        result.run("0\n1\n0\n2\n0\n0\n1\n0\n1\n1\n2\n1\n0\n2\n2\n1\n2\n2");
+    }
+
 }
