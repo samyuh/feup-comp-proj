@@ -17,6 +17,7 @@ public class TranslateBooleanCond {
         if (opType == OperationType.LTH) stringBuilder.append(lthInst(leftInst, rightInst, label));
         else if (opType == OperationType.ANDB) stringBuilder.append(andInst(leftInst, rightInst, label));
         else if (opType == OperationType.NOTB) stringBuilder.append(notInst(rightInst, label));
+        else if (opType == OperationType.GTE) stringBuilder.append(geInst(leftInst, rightInst, label));
 
         return stringBuilder.toString();
     }
@@ -68,6 +69,20 @@ public class TranslateBooleanCond {
 
         // In case of success jump.
         stringBuilder.append("if_icmplt ").append(label).append("\n");
+
+
+        return stringBuilder.toString();
+    }
+
+    public static String geInst(String leftInst, String rightInst, String label){
+        StringBuilder stringBuilder = new StringBuilder();
+
+        // Load elements
+        stringBuilder.append(leftInst);
+        stringBuilder.append(rightInst);
+
+        // In case of success jump.
+        stringBuilder.append("if_icmpge ").append(label).append("\n");
 
 
         return stringBuilder.toString();

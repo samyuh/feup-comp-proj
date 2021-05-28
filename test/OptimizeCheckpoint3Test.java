@@ -26,7 +26,7 @@ public class OptimizeCheckpoint3Test {
 
     @Test
     public void testWhileOptimization() {
-        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/checkpoint3/WhileOptimization.jmm"), false);
+        var result = TestUtils.optimize(SpecsIo.getResource("fixtures/personalized/checkpoint3/WhileOptimization.jmm"), true);
         TestUtils.noErrors(result.getReports());
     }
 }

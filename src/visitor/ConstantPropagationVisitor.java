@@ -20,9 +20,7 @@ public class ConstantPropagationVisitor extends AJmmVisitor<HashMap<String, Stri
 
         addVisit("MethodBody", this::visitBlock);
 
-        // addVisit("IfElse", this::visitIfExpression);
-        // addVisit("IfBlock", this::visitBlock);
-        // addVisit("ElseBlock", this::visitBlock);
+        addVisit("IfElse", this::visitIfExpression);
 
         addVisit("ArrayAssignment", this::visitArrayAssignment);
 
@@ -35,7 +33,6 @@ public class ConstantPropagationVisitor extends AJmmVisitor<HashMap<String, Stri
     }
 
     public Boolean visitIdentifier(JmmNode node, HashMap<String, String> constants) {
-        //System.out.println("Visit Identifier: " + node);
         if(constants.containsKey(node.get("name"))){
             String name = node.get("name");
             JmmNode parent = node.getParent();
@@ -67,7 +64,6 @@ public class ConstantPropagationVisitor extends AJmmVisitor<HashMap<String, Stri
     }
 
     public Boolean visitExpression(JmmNode node, HashMap<String, String> constants){
-        //System.out.println("Visit Expression: " + node);
         for (int i = 0; i < node.getNumChildren(); i++) {
             this.visit(node.getChildren().get(i), constants);
         }
@@ -75,7 +71,6 @@ public class ConstantPropagationVisitor extends AJmmVisitor<HashMap<String, Stri
     }
 
     public Boolean visitDot(JmmNode node, HashMap<String, String> constants){
-        //System.out.println("Visit dot method: " + node);
         if(node.getChildren().get(1).getKind().equals("Length")) return true;
 
         JmmNode parameters = node.getChildren().get(1).getChildren().get(1);
@@ -107,18 +102,11 @@ public class ConstantPropagationVisitor extends AJmmVisitor<HashMap<String, Stri
 
     public Boolean visitIfExpression(JmmNode node, HashMap<String, String> constants) {
         JmmNode condition = node.getChildren().get(0);
-        //JmmNode ifBlock = node.getChildren().get(1);
-        //JmmNode elseBlock = node.getChildren().get(2);
-
         this.visit(condition, constants);
-        //this.visit(ifBlock, constants);
-        //this.visit(elseBlock, constants);
-
         return true;
     }
 
     private Boolean defaultVisit(JmmNode node, HashMap<String, String> constants) {
-        //System.out.println("Visit default: " + node);
         return true;
     }
 
