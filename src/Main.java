@@ -1,10 +1,8 @@
 
-import pt.up.fe.comp.TestUtils;
 import pt.up.fe.comp.jmm.JmmParser;
 import pt.up.fe.comp.jmm.JmmParserResult;
 import pt.up.fe.comp.jmm.analysis.JmmSemanticsResult;
 import pt.up.fe.comp.jmm.jasmin.JasminResult;
-import pt.up.fe.comp.jmm.ollir.JmmOptimization;
 import pt.up.fe.comp.jmm.ollir.OllirResult;
 import pt.up.fe.comp.jmm.report.Report;
 import pt.up.fe.comp.jmm.report.ReportType;
@@ -72,9 +70,11 @@ public class Main implements JmmParser {
         }
 
         // Backend
+
         BackendStage backend = new BackendStage();
         JasminResult jasminResult = backend.toJasmin(ollirResult);
 
         jasminResult.run();
+
     }
 }

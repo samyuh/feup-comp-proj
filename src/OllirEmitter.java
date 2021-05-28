@@ -253,7 +253,7 @@ public class OllirEmitter {
     private List<String> leftRightExpressions(String methodName, JmmNode node, String type){
         List<String> leftRight = new ArrayList<>();
         JmmNode left = node.getChildren().get(0);
-        JmmNode right = node.getChildren().get(0);
+        JmmNode right = node.getChildren().get(1);
 
         // Process Left Node
         if(left.getNumChildren() > 0 || isField(left)){
