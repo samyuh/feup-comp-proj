@@ -51,12 +51,15 @@ public class Main implements JmmParser {
         boolean optimizeR = options.contains("-r");
         boolean optimizeO = options.contains("-o");
 
+        // Parse results
         JmmParser parser = new Main();
         JmmParserResult jmmParserResult = parser.parse(SpecsIo.read(fileName));
 
+        // Semantic Analysis
         AnalysisStage analysis = new AnalysisStage();
         JmmSemanticsResult semanticsResult = analysis.semanticAnalysis(jmmParserResult);
 
+        // Optimization
         OptimizationStage optimization = new OptimizationStage();
         if (optimizeO) {
             semanticsResult = optimization.optimize(semanticsResult);
@@ -68,6 +71,7 @@ public class Main implements JmmParser {
             ollirResult = optimization.optimize(ollirResult);
         }
 
+        // Backend
         BackendStage backend = new BackendStage();
         JasminResult jasminResult = backend.toJasmin(ollirResult);
 
