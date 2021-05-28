@@ -27,7 +27,6 @@ public class MainAnalysis implements JmmAnalysis { // }, JmmOptimization, Jasmin
 
         // for CP2: symbol table generation and semantic analysis
         var analysis = new MainAnalysis();
-
         analysis.semanticAnalysis(parserResult);
     }
 

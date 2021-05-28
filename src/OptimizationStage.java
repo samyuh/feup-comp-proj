@@ -22,7 +22,6 @@ import java.util.List;
  */
 
 public class OptimizationStage implements JmmOptimization {
-
     /*
      * Without Optimization - Obsolete method
      */
