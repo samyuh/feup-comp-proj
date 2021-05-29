@@ -1,10 +1,9 @@
 import ioPlus;
 class FindMaximum {
-	int[] test_arr;
+	int test_arr;
 
 	public int build_test_arr() {
-		test_arr = new int[5];
-		test_arr[0] = 14;
+		test_arr = 14;
 		return 0;
 	}
 

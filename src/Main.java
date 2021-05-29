@@ -24,11 +24,6 @@ public class Main implements JmmParser {
 
             reportList  = grammar.getReportList();
 
-
-           if (!grammar.getHasError()){
-                root.dump("");
-           }
-
             return new JmmParserResult(root, reportList);
         } catch (ParseException e) {
             int lineError = e.getStackTrace()[0].getLineNumber();
