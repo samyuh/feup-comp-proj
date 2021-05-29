@@ -1,8 +1,9 @@
-package RegisterAllocation;
+package registerAllocation;
 
 import org.specs.comp.ollir.ClassUnit;
 import org.specs.comp.ollir.Method;
 import pt.up.fe.comp.jmm.ollir.OllirResult;
+import registerAllocation.dataflow.DataflowAnalysis;
 
 public class AllocateRegister {
     OllirResult ollirResult;

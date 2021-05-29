@@ -1,6 +1,6 @@
 package personalizedTests;
 
-import RegisterAllocation.AllocateRegister;
+import registerAllocation.AllocateRegister;
 import org.junit.Test;
 import pt.up.fe.comp.TestUtils;
 import pt.up.fe.specs.util.SpecsIo;

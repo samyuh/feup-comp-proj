@@ -1,8 +1,6 @@
-package RegisterAllocation;
+package registerAllocation.dataflow;
 
 import org.specs.comp.ollir.*;
-
-import java.util.ArrayList;
 
 /**
  * This method is responsible for building the DataAnalysis and
@@ -30,7 +28,6 @@ public class DataflowAnalysis {
             currentInst = currentInst.getSucc1();
             getUsedDefVariables(currentInst);
         } while (currentInst.getSucc1().getNodeType() != NodeType.END);
-        printMatrix(def);
     }
 
     /**
@@ -59,6 +56,10 @@ public class DataflowAnalysis {
         def[index] = new String[]{dest.getName()};
     }
 
+    /**
+     * Helper function to print a matrix.
+     * @param mat Matrix.
+     */
     public void printMatrix(String[][] mat) {
         System.out.print("[");
         for (int i = 0; i < mat.length; i++) {
