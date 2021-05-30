@@ -52,24 +52,6 @@ public class UsedVariables {
         return used.toArray(new String[0]);
     }
 
-    public String[] getUsedBranch(CondBranchInstruction instruction) {
-        List<String> used = new ArrayList<>();
-
-        if (instruction.getCondOperation().getOpType() == OperationType.NOTB) {
-            used.addAll(getOperandUses(instruction.getRightOperand()));
-        } else {
-            used.addAll(getOperandUses(instruction.getLeftOperand()));
-            used.addAll(getOperandUses(instruction.getRightOperand()));
-        }
-        return used.toArray(new String[0]);
-    }
-
-    public String[] getUsedReturn(ReturnInstruction instruction){
-        if (instruction.hasReturnValue())
-            return getOperandUses(instruction.getOperand()).toArray(new String[0]);
-        return new String[]{};
-    }
-
     public String[] getUsedCall(CallInstruction instruction) {
         List<String> used = new ArrayList<>();
         ArrayList<Element> elements = instruction.getListOfOperands();
@@ -78,7 +60,6 @@ public class UsedVariables {
         }
         return used.toArray(new String[0]);
     }
-
 
     public String[] getUsedPutField(PutFieldInstruction instruction) {
         List<String> used = new ArrayList<>();
@@ -100,11 +81,29 @@ public class UsedVariables {
         return used.toArray(new String[0]);
     }
 
-
     public String[] getUsedNoper(SingleOpInstruction instruction) {
         Element element = instruction.getSingleOperand();
         return getOperandUses(element).toArray(new String[0]);
     }
+
+    public String[] getUsedBranch(CondBranchInstruction instruction) {
+        List<String> used = new ArrayList<>();
+
+        if (instruction.getCondOperation().getOpType() == OperationType.NOTB) {
+            used.addAll(getOperandUses(instruction.getRightOperand()));
+        } else {
+            used.addAll(getOperandUses(instruction.getLeftOperand()));
+            used.addAll(getOperandUses(instruction.getRightOperand()));
+        }
+        return used.toArray(new String[0]);
+    }
+
+    public String[] getUsedReturn(ReturnInstruction instruction){
+        if (instruction.hasReturnValue())
+            return getOperandUses(instruction.getOperand()).toArray(new String[0]);
+        return new String[]{};
+    }
+
 
     public List<String> getOperandUses(Element element) {
         List<String> elementsName = new ArrayList<>();

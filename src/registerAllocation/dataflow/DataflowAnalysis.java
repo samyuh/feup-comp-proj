@@ -2,6 +2,7 @@ package registerAllocation.dataflow;
 
 import org.specs.comp.ollir.*;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -14,20 +15,32 @@ public class DataflowAnalysis {
     String[][] def;
     Integer[][] next;
 
+    String[][] in;
+    String[][] out;
+
+    HashSet<String> variables;
+
     public DataflowAnalysis(Method method) {
         this.method = method;
         this.method.buildCFG();
         this.use = new String[method.getInstructions().size()][];
         this.def = new String[method.getInstructions().size()][];
         this.next = new Integer[method.getInstructions().size()][];
-        method.show();
+        this.variables = new HashSet<>();
+
+        this.in = new String[method.getInstructions().size()][];
+        this.out = new String[method.getInstructions().size()][];
     }
 
     public void build() {
-        //prepareDataflowAnalysis();
         prepareDataflowAnalysis(method.getBeginNode().getSucc1());
-        printMatrix(use);
+        processDataflow();
+        Utils.printMatrix(out);
+        // TODO: calculate live range.
+        // TODO: build interception graph.
+        // TODO: coloring graph.
     }
+    // BUILD -------------------------------------------------------------
 
     /**
      * This method is responsible for building the
@@ -35,7 +48,7 @@ public class DataflowAnalysis {
      * Dataflow Analysis
      */
     public void prepareDataflowAnalysis(Node node) {
-        if (node == null || node.getNodeType() == NodeType.END || next[node.getId() -1] != null)
+        if (node == null || node.getNodeType() == NodeType.END || next[node.getId() - 1] != null)
             return;
 
         storeDefined(node);
@@ -44,7 +57,6 @@ public class DataflowAnalysis {
         prepareDataflowAnalysis(node.getSucc1());
         prepareDataflowAnalysis(node.getSucc2());
     }
-
 
     /**
      * Stores the defined variable in the def instruction.
@@ -58,8 +70,10 @@ public class DataflowAnalysis {
             Operand dest = (Operand) instruction.getDest();
             if (dest instanceof ArrayOperand)
                 def[index] = new String[]{};
-            else
+            else {
                 def[index] = new String[]{dest.getName()};
+                variables.add(dest.getName());
+            }
         }
 
     }
@@ -67,7 +81,7 @@ public class DataflowAnalysis {
     /**
      * Stores the used variable in the array structure.
      */
-    public void storeUsed(Node node){
+    public void storeUsed(Node node) {
         int index = node.getId() - 1;
         Instruction instruction = method.getInstr(index);
         String[] usedVariables = new UsedVariables(instruction).getUsed();
@@ -93,19 +107,41 @@ public class DataflowAnalysis {
         next[node.getId() - 1] = nextNodes.toArray(new Integer[0]);
     }
 
-    /**
-     * Helper function to print a matrix.
-     *
-     * @param mat Matrix.
-     */
-    public void printMatrix(Object[][] mat) {
-        System.out.print("[");
-        for (int i = 0; i < mat.length; i++) {
-            System.out.print("[ ");
-            for (int j = 0; j < mat[i].length; j++)
-                System.out.print(mat[i][j] + " ");
-            System.out.print("]");
-        }
-        System.out.print("]");
+    // PROCESS ------------------------------------------------------------
+    public void processDataflow() {
+        String[][] previousOut;
+        String[][] previousIn;
+
+        do {
+            previousOut = Utils.deepCopyMatrix(out);
+            previousIn = Utils.deepCopyMatrix(in);
+            for (int i = use.length - 1; i >= 0; i--) {
+                // Remove null elements.
+                if (out[i] == null) out[i] = new String[]{};
+                if (in[i] == null) in[i] = new String[]{};
+
+                out[i] = getOut(i);
+                in[i] = getIn(i);
+            }
+        } while (!Utils.compareMatrix(out, previousOut) || !Utils.compareMatrix(in, previousIn));
     }
+
+    public String[] getOut(int index) {
+        HashSet<String> out = new HashSet<>();
+        for (int i = 0; i < next[index].length; i++) {
+            int instId = next[index][i];
+            if (instId < 0) continue;
+            if (in[instId] == null) in[instId] = new String[]{};
+            out.addAll(Arrays.asList(in[instId]));
+        }
+        return out.toArray(new String[0]);
+    }
+
+    public String[] getIn(int index) {
+        HashSet<String> in = new HashSet<>(Arrays.asList(this.out[index]));
+        in.removeAll(Arrays.asList(this.def[index]));
+        in.addAll(Arrays.asList(this.use[index]));
+        return in.toArray(new String[0]);
+    }
+
 }
