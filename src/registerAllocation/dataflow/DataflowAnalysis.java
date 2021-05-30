@@ -2,8 +2,7 @@ package registerAllocation.dataflow;
 
 import org.specs.comp.ollir.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * This method is responsible for building the DataAnalysis and
@@ -26,7 +25,7 @@ public class DataflowAnalysis {
     public void build() {
         //prepareDataflowAnalysis();
         prepareDataflowAnalysis(method.getBeginNode().getSucc1());
-        printMatrix(next);
+        printMatrix(use);
     }
 
     /**
@@ -40,6 +39,7 @@ public class DataflowAnalysis {
 
         storeDefined(node);
         storeNext(node);
+        storeUsed(node);
         prepareDataflowAnalysis(node.getSucc1());
         prepareDataflowAnalysis(node.getSucc2());
     }
@@ -55,19 +55,23 @@ public class DataflowAnalysis {
         } else {
             AssignInstruction instruction = (AssignInstruction) method.getInstr(index);
             Operand dest = (Operand) instruction.getDest();
-            def[index] = new String[]{dest.getName()};
+            if (dest instanceof ArrayOperand)
+                def[index] = new String[]{};
+            else
+                def[index] = new String[]{dest.getName()};
         }
     }
 
     /**
      * Stores the used variable in the array structure.
      */
-    /*public void storeUsed(Node node){
+    public void storeUsed(Node node){
         int index = node.getId() - 1;
         Instruction instruction = method.getInstr(index);
         String[] usedVariables = new UsedVariables(instruction).getUsed();
-        use[index] = usedVariables;
-    }*/
+        Set<String> set = new HashSet<>(Arrays.asList(usedVariables));  // Remove repeated instances.
+        use[index] = set.toArray(new String[0]);
+    }
 
     /**
      * Stores the next instruction for the current node.
@@ -80,7 +84,6 @@ public class DataflowAnalysis {
 
         if (nextNode1 != null) {
             nextNodes.add(nextNode1.getId() - 1);
-            System.out.println(node.getId());
         }
         if (nextNode2 != null)
             nextNodes.add(nextNode2.getId() - 1);
