@@ -13,9 +13,11 @@ import java.util.HashMap;
 public class AllocateRegister {
     OllirResult ollirResult;
     ClassUnit classUnit;
-    public AllocateRegister(OllirResult ollirResult){
+    int k;
+    public AllocateRegister(OllirResult ollirResult, int k){
         this.ollirResult = ollirResult;
         classUnit = ollirResult.getOllirClass();
+        this.k = k;
     }
 
     /**
@@ -32,15 +34,20 @@ public class AllocateRegister {
      * with graph coloring.
      * @param method Method for the allocation.
      */
-    public void allocateRegisterMethod(Method method){
+    public Boolean allocateRegisterMethod(Method method){
         DataflowAnalysis dataflowAnalysis = new DataflowAnalysis(method);
         dataflowAnalysis.build();
         HashMap<String, ArrayList<String>> analysisInterference = dataflowAnalysis.getInterference();
         InterferenceGraph interferenceGraph = new InterferenceGraph(analysisInterference);
-        GraphColoring graphColoring = new GraphColoring(3, interferenceGraph);
+        GraphColoring graphColoring = new GraphColoring(k, interferenceGraph);
         graphColoring.buildStack();
-        System.out.println("REGISTER");
-        graphColoring.printStack();
+        if (!graphColoring.coloring())
+            return false;
 
+        var varTable = method.getVarTable();
+        for (var node: interferenceGraph.getNodeList())
+            varTable.get(node.getValue()).setVirtualReg(node.getRegister());
+
+        return true;
     }
 }

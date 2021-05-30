@@ -10,20 +10,20 @@ public class PersonalizedAllocateRegister {
     public void Simple(){
         var jmmCode = SpecsIo.getResource("fixtures/public/Simple.jmm");
         var ollirCode = TestUtils.optimize(jmmCode);
-        new AllocateRegister(ollirCode).allocateRegistersClass();
+        new AllocateRegister(ollirCode, 4).allocateRegistersClass();
     }
 
     @Test
     public void dataflow(){
         var jmmCode = SpecsIo.getResource("fixtures/personalized/dataflow/test1.jmm");
         var ollirCode = TestUtils.optimize(jmmCode);
-        new AllocateRegister(ollirCode).allocateRegistersClass();
+        new AllocateRegister(ollirCode, 4).allocateRegistersClass();
     }
 
     @Test
     public void putFieldUsed(){
         var jmmCode = SpecsIo.getResource("fixtures/personalized/dataflow/field.jmm");
         var ollirCode = TestUtils.optimize(jmmCode);
-        new AllocateRegister(ollirCode).allocateRegistersClass();
+        new AllocateRegister(ollirCode, 4).allocateRegistersClass();
     }
 }

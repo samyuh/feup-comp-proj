@@ -27,4 +27,12 @@ public class NodeInterference {
     public ArrayList<NodeInterference> getEdges(){
         return edges;
     }
+
+    public int getRegister(){
+        return register;
+    }
+
+    public void setRegister(int register){
+        this.register = register;
+    }
 }

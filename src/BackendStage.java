@@ -12,6 +12,7 @@ import pt.up.fe.comp.jmm.ollir.OllirResult;
 import pt.up.fe.comp.jmm.report.Report;
 import pt.up.fe.comp.jmm.report.Stage;
 import pt.up.fe.specs.util.SpecsIo;
+import registerAllocation.AllocateRegister;
 
 /**
  * Copyright 2021 SPeCS.
@@ -27,6 +28,11 @@ import pt.up.fe.specs.util.SpecsIo;
  */
 
 public class BackendStage implements JasminBackend {
+    public boolean optimizeR = false;
+
+    public void setOptimizeR(boolean optimizeR) {
+        this.optimizeR = optimizeR;
+    }
 
     @Override
     public JasminResult toJasmin(OllirResult ollirResult) {
@@ -39,6 +45,10 @@ public class BackendStage implements JasminBackend {
             ollirClass.buildCFGs(); // build the CFG of each method
             ollirClass.outputCFGs(); // output to .dot files the CFGs, one per method
             ollirClass.buildVarTables(); // build the table of variables for each method
+            if (optimizeR){
+                new AllocateRegister(ollirResult, 4).allocateRegistersClass();
+            }
+
             ollirClass.show(); // print to console main information about the input OLLIR
 
             // Convert the OLLIR to a String containing the equivalent Jasmin code

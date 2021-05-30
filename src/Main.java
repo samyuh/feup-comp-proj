@@ -67,6 +67,7 @@ public class Main implements JmmParser {
         // Backend
 
         BackendStage backend = new BackendStage();
+        backend.setOptimizeR(optimizeR);
         JasminResult jasminResult = backend.toJasmin(ollirResult);
 
         jasminResult.run();
