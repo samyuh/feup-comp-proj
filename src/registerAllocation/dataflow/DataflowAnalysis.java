@@ -18,7 +18,7 @@ public class DataflowAnalysis {
     String[][] in;
     String[][] out;
 
-
+    HashMap<String, ArrayList<Integer>> liveRange;
     HashSet<String> variables;
 
     public DataflowAnalysis(Method method) {
@@ -31,16 +31,16 @@ public class DataflowAnalysis {
 
         this.in = new String[method.getInstructions().size()][];
         this.out = new String[method.getInstructions().size()][];
+        this.liveRange = new HashMap<>();
     }
 
     public void build() {
         prepareDataflowAnalysis(method.getBeginNode().getSucc1());
         processDataflow();
+        calculateLiveRange();
         method.show();
         this.show();
-        // TODO: calculate live range.
-        // TODO: build interception graph.
-        // TODO: coloring graph.
+        this.showLiveRange();
     }
     // BUILD -------------------------------------------------------------
 
@@ -166,6 +166,37 @@ public class DataflowAnalysis {
         return temp.toArray(new String[0]);
     }
 
+
+    public void calculateLiveRange(){
+        for (var varName: variables){
+            ArrayList<Integer> varLiveRange = new ArrayList<>();
+            Integer lastIn = getLastIn(varName);
+            Integer firstOut = getFirstOut(varName);
+            if (lastIn == null || firstOut == null)
+                continue;
+            varLiveRange.add(firstOut);
+            varLiveRange.add(lastIn);
+            liveRange.put(varName, varLiveRange);
+        }
+    }
+
+    public Integer getLastIn(String varName){
+        for (int i = in.length-1 ; i >= 0; i--){
+            ArrayList<String> inTemp = new ArrayList<>(Arrays.asList(in[i]));
+            if (inTemp.contains(varName)) return i;
+        }
+        return null;
+    }
+
+    public Integer getFirstOut(String varName){
+        for (int i = 0 ; i < out.length; i++){
+            ArrayList<String> outTemp = new ArrayList<>(Arrays.asList(out[i]));
+            if (outTemp.contains(varName)) return i;
+        }
+        return null;
+    }
+
+
     public void show(){
         System.out.println("DEF");
         Utils.printMatrix(def);
@@ -175,6 +206,17 @@ public class DataflowAnalysis {
         Utils.printMatrix(in);
         System.out.println("\nOUT");
         Utils.printMatrix(out);
+        System.out.println("\nVARIABLES");
+        Utils.printArray(variables.toArray());
+    }
+
+    public void showLiveRange(){
+        liveRange.forEach((key, value)->{
+            System.out.print("\n{" + key + " - ");
+            System.out.print("[" + value.get(0) + ", " + value.get(1) + "]");
+            System.out.print("}\n");
+
+        });
     }
 
 }
