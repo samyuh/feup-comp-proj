@@ -20,6 +20,7 @@ public class DataflowAnalysis {
         this.use = new String[method.getInstructions().size()][];
         this.def = new String[method.getInstructions().size()][];
         this.next = new Integer[method.getInstructions().size()][];
+        method.show();
     }
 
     public void build() {
@@ -60,6 +61,7 @@ public class DataflowAnalysis {
             else
                 def[index] = new String[]{dest.getName()};
         }
+
     }
 
     /**

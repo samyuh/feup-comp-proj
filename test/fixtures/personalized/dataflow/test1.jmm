@@ -9,6 +9,7 @@ class ArrayTests {
         a = new int[10];
         i = 0;
 
+        b = !b;
         while(i < 10){
             a[i] = i;
             io.println(a[i]);

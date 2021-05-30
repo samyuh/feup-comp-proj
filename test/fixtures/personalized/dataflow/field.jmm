@@ -1,0 +1,19 @@
+import ioPlus;
+class FindMaximum {
+	int test_arr;
+	public int build_test_arr() {
+	    int j;
+	    j = 1;
+		test_arr = j;
+		j = test_arr;
+		return 0;
+	}
+
+
+	public static void main(String[] args) {
+		FindMaximum fm;
+		int max;
+		fm = new FindMaximum();
+		fm.build_test_arr();
+	}
+}
