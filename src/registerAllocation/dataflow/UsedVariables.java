@@ -53,8 +53,21 @@ public class UsedVariables {
     }
 
     public String[] getUsedCall(CallInstruction instruction) {
+
         List<String> used = new ArrayList<>();
         ArrayList<Element> elements = instruction.getListOfOperands();
+        Operand firstArg = (Operand) instruction.getFirstArg();
+
+        // Classes does not have register.
+        if (firstArg.getType().getTypeOfElement() == ElementType.CLASS) return used.toArray(new String[0]);
+        if (instruction.getSecondArg() == null) return used.toArray(new String[0]);
+        // If it's an initialization does not store.
+        if (instruction.getSecondArg().isLiteral() && ((LiteralElement) instruction.getSecondArg()).getLiteral().equals("<init>")) {
+            System.out.println(((LiteralElement) instruction.getSecondArg()).getLiteral());
+            return used.toArray(new String[0]);
+        }
+
+        used.addAll(getOperandUses(instruction.getFirstArg()));
         for (var element : elements) {
             used.addAll(getOperandUses(element));
         }
