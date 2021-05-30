@@ -13,7 +13,7 @@ public class UsedVariables {
     public UsedVariables(Instruction instruction){
         this.instruction = instruction;
     }
-
+/*
     public String[] getUsed(){
         switch(instruction.getInstType()){
             case CALL:
@@ -48,5 +48,5 @@ public class UsedVariables {
 
     public String[] getUsedNoper(){
 
-    }
+    }*/
 }
