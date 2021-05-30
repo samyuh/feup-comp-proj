@@ -50,6 +50,10 @@ public class DataflowAnalysis {
         this.showLiveRange();
         this.showInterference();
     }
+
+    public HashMap<String, ArrayList<String>> getInterference(){
+        return this.interference;
+    }
     // BUILD -------------------------------------------------------------
 
     /**
@@ -81,7 +85,6 @@ public class DataflowAnalysis {
             if (dest instanceof ArrayOperand)
                 def[index] = new String[]{};
             else {
-                System.out.println(dest.getName());
                 def[index] = new String[]{dest.getName()};
                 variables.add(dest.getName());
             }

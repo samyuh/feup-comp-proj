@@ -21,13 +21,16 @@ class Simple {
 
     public int constInstr(){
         int c;
+        int s;
         c = 0;
         c = 4;
         c = 8;
         c = 14;
         c = 250;
         c = 400;
+        s = 10;
         c = 1000;
+        io.println(s);
         c = 100474650;
 		c = 10;
         return c;
