@@ -2,8 +2,11 @@ package registerAllocation.dataflow;
 
 import org.specs.comp.ollir.*;
 
+import java.awt.image.AreaAveragingScaleFilter;
 import java.lang.reflect.Array;
 import java.util.*;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * This method is responsible for building the DataAnalysis and
@@ -18,8 +21,10 @@ public class DataflowAnalysis {
     String[][] in;
     String[][] out;
 
-    HashMap<String, ArrayList<Integer>> liveRange;
+    HashMap<String, int[]> liveRange;
     HashSet<String> variables;
+
+    HashMap<String, ArrayList<String>> interference;
 
     public DataflowAnalysis(Method method) {
         this.method = method;
@@ -32,15 +37,18 @@ public class DataflowAnalysis {
         this.in = new String[method.getInstructions().size()][];
         this.out = new String[method.getInstructions().size()][];
         this.liveRange = new HashMap<>();
+        this.interference = new HashMap<>();
     }
 
     public void build() {
         prepareDataflowAnalysis(method.getBeginNode().getSucc1());
         processDataflow();
         calculateLiveRange();
+        calculateInterference();
         method.show();
         this.show();
         this.showLiveRange();
+        this.showInterference();
     }
     // BUILD -------------------------------------------------------------
 
@@ -137,7 +145,6 @@ public class DataflowAnalysis {
 
             if (instId < 0) continue;
             out.addAll(Arrays.asList(in[instId]));
-
         }
         return out.toArray(new String[0]);
     }
@@ -152,12 +159,12 @@ public class DataflowAnalysis {
     /**
      * Remove the parameters from the array.
      */
-    public String[] removeParameters(String[] array){
+    public String[] removeParameters(String[] array) {
 
         ArrayList<Element> parameters = method.getParams();
         ArrayList<String> parametersName = new ArrayList<>();
 
-        for (int i = 0 ; i < parameters.size(); i++){
+        for (int i = 0; i < parameters.size(); i++) {
             parametersName.add(((Operand) parameters.get(i)).getName());
         }
         ArrayList<String> temp = new ArrayList<>(Arrays.asList(array));
@@ -166,38 +173,59 @@ public class DataflowAnalysis {
         return temp.toArray(new String[0]);
     }
 
-
-    public void calculateLiveRange(){
-        for (var varName: variables){
-            ArrayList<Integer> varLiveRange = new ArrayList<>();
+    // LIVE RANGE -----------------------------------------------------------
+    public void calculateLiveRange() {
+        for (var varName : variables) {
             Integer lastIn = getLastIn(varName);
-            Integer firstOut = getFirstOut(varName);
-            if (lastIn == null || firstOut == null)
+            Integer firstDef = getFirstDef(varName);
+            if (lastIn == null || firstDef == null)
                 continue;
-            varLiveRange.add(firstOut);
-            varLiveRange.add(lastIn);
+            int[] varLiveRange = IntStream.range(firstDef, lastIn).toArray();
             liveRange.put(varName, varLiveRange);
         }
     }
 
-    public Integer getLastIn(String varName){
-        for (int i = in.length-1 ; i >= 0; i--){
+    public Integer getLastIn(String varName) {
+        for (int i = in.length - 1; i >= 0; i--) {
             ArrayList<String> inTemp = new ArrayList<>(Arrays.asList(in[i]));
             if (inTemp.contains(varName)) return i;
         }
         return null;
     }
 
-    public Integer getFirstOut(String varName){
-        for (int i = 0 ; i < out.length; i++){
-            ArrayList<String> outTemp = new ArrayList<>(Arrays.asList(out[i]));
-            if (outTemp.contains(varName)) return i;
+    public Integer getFirstDef(String varName) {
+        for (int i = 0; i < def.length; i++) {
+            ArrayList<String> defTemp = new ArrayList<>(Arrays.asList(def[i]));
+            if (defTemp.contains(varName)) return i;
         }
         return null;
     }
 
+    // INTERFERENCE --------------------------------------------------------------
+    public void calculateInterference() {
 
-    public void show(){
+        for (var variable : liveRange.keySet()) {
+            ArrayList<String> temp = new ArrayList<>();
+            if (!liveRange.containsKey(variable)) continue;
+            for (var variableCompare : liveRange.keySet()) {
+                if (variableCompare.equals(variable)) continue;
+                if (haveConflict(liveRange.get(variable), liveRange.get(variableCompare))) {
+                    temp.add(variableCompare);
+                }
+            }
+               interference.put(variable, temp);
+        }
+    }
+
+    public Boolean haveConflict(int[] arr1, int[] arr2) {
+        return Arrays.stream(arr1)
+                .distinct()
+                .filter(x -> Arrays.stream(arr2).anyMatch(y -> y == x))
+                .toArray().length != 0;
+    }
+
+    // SHOW ----------------------------------------------------------------------
+    public void show() {
         System.out.println("DEF");
         Utils.printMatrix(def);
         System.out.println("\nUSE");
@@ -206,17 +234,31 @@ public class DataflowAnalysis {
         Utils.printMatrix(in);
         System.out.println("\nOUT");
         Utils.printMatrix(out);
+        System.out.println("\nNEXT");
+        Utils.printMatrix(next);
         System.out.println("\nVARIABLES");
         Utils.printArray(variables.toArray());
     }
 
-    public void showLiveRange(){
-        liveRange.forEach((key, value)->{
-            System.out.print("\n{" + key + " - ");
-            System.out.print("[" + value.get(0) + ", " + value.get(1) + "]");
+    public void showLiveRange() {
+        liveRange.forEach((key, value) -> {
+            System.out.print("{" + key + " - ");
+            Stream.of(value).forEach(e -> System.out.print(Arrays.toString(e)));
+            System.out.print("}\n");
+
+        });
+
+    }
+
+    public void showInterference() {
+        System.out.println("INTERFERENCE");
+        interference.forEach((key, value) -> {
+            System.out.print("{" + key + " - ");
+            System.out.print(value);
             System.out.print("}\n");
 
         });
     }
+
 
 }
