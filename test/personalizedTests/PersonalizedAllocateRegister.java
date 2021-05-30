@@ -12,4 +12,11 @@ public class PersonalizedAllocateRegister {
         var ollirCode = TestUtils.optimize(jmmCode);
         new AllocateRegister(ollirCode).allocateRegistersClass();
     }
+
+    @Test
+    public void dataflow(){
+        var jmmCode = SpecsIo.getResource("fixtures/personalized/dataflow/test1.jmm");
+        var ollirCode = TestUtils.optimize(jmmCode);
+        new AllocateRegister(ollirCode).allocateRegistersClass();
+    }
 }

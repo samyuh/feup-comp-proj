@@ -20,11 +20,13 @@ public class DataflowAnalysis {
         this.method.buildCFG();
         this.use = new String[method.getInstructions().size()][];
         this.def = new String[method.getInstructions().size()][];
-        this.next= new Integer[method.getInstructions().size()][];
+        this.next = new Integer[method.getInstructions().size()][];
     }
 
     public void build() {
-        prepareDataflowAnalysis();
+        //prepareDataflowAnalysis();
+        prepareDataflowAnalysis(method.getBeginNode().getSucc1());
+        printMatrix(next);
     }
 
     /**
@@ -32,17 +34,14 @@ public class DataflowAnalysis {
      * next, in, out, def and use parameters for the
      * Dataflow Analysis
      */
-    public void prepareDataflowAnalysis() {
-        method.show();
-        Node currentNode = method.getBeginNode();
-        do {
-            currentNode = currentNode.getSucc1();
+    public void prepareDataflowAnalysis(Node node) {
+        if (node == null || node.getNodeType() == NodeType.END || next[node.getId() -1] != null)
+            return;
 
-            storeDefined(currentNode);
-            //storeUsed(currentNode);
-            storeNext(currentNode);
-        } while (currentNode.getSucc1().getNodeType() != NodeType.END);
-        printMatrix(next);
+        storeDefined(node);
+        storeNext(node);
+        prepareDataflowAnalysis(node.getSucc1());
+        prepareDataflowAnalysis(node.getSucc2());
     }
 
 
@@ -50,10 +49,10 @@ public class DataflowAnalysis {
      * Stores the defined variable in the def instruction.
      */
     public void storeDefined(Node node) {
-        int index = node.getId() -1;
+        int index = node.getId() - 1;
         if (method.getInstr(index).getInstType() != InstructionType.ASSIGN) {
             def[index] = new String[]{};
-        }else {
+        } else {
             AssignInstruction instruction = (AssignInstruction) method.getInstr(index);
             Operand dest = (Operand) instruction.getDest();
             def[index] = new String[]{dest.getName()};
@@ -73,7 +72,7 @@ public class DataflowAnalysis {
     /**
      * Stores the next instruction for the current node.
      */
-    public void storeNext(Node node){
+    public void storeNext(Node node) {
         List<Integer> nextNodes = new ArrayList<>();
 
         Node nextNode1 = node.getSucc1();
@@ -88,8 +87,10 @@ public class DataflowAnalysis {
 
         next[node.getId() - 1] = nextNodes.toArray(new Integer[0]);
     }
+
     /**
      * Helper function to print a matrix.
+     *
      * @param mat Matrix.
      */
     public void printMatrix(Object[][] mat) {
@@ -97,7 +98,7 @@ public class DataflowAnalysis {
         for (int i = 0; i < mat.length; i++) {
             System.out.print("[ ");
             for (int j = 0; j < mat[i].length; j++)
-                System.out.print(mat[i][j]+ " ");
+                System.out.print(mat[i][j] + " ");
             System.out.print("]");
         }
         System.out.print("]");
