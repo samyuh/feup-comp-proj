@@ -1,5 +1,6 @@
 
 import pt.up.fe.comp.jmm.JmmParser;
+import pt.up.fe.comp.jmm.JmmNode;
 import pt.up.fe.comp.jmm.JmmParserResult;
 import pt.up.fe.comp.jmm.analysis.JmmSemanticsResult;
 import pt.up.fe.comp.jmm.jasmin.JasminResult;
@@ -8,6 +9,7 @@ import pt.up.fe.comp.jmm.report.Report;
 import pt.up.fe.comp.jmm.report.ReportType;
 import pt.up.fe.comp.jmm.report.Stage;
 import pt.up.fe.specs.util.SpecsIo;
+import pt.up.fe.comp.jmm.jasmin.JasminUtils;
 
 import java.io.*;
 import java.util.Arrays;
@@ -56,10 +58,14 @@ public class Main implements JmmParser {
         // Parse results
         JmmParser parser = new Main();
         JmmParserResult jmmParserResult = parser.parse(SpecsIo.read(fileName));
+        write( fileName, "json", jmmParserResult.getRootNode().toJson());
 
         // Semantic Analysis
         AnalysisStage analysis = new AnalysisStage();
         JmmSemanticsResult semanticsResult = analysis.semanticAnalysis(jmmParserResult);
+
+        System.out.println(semanticsResult.getSymbolTable().print());
+        write( fileName, "symbols.txt", semanticsResult.getSymbolTable().print());
 
         // Optimization
         OptimizationStage optimization = new OptimizationStage();
@@ -77,6 +83,8 @@ public class Main implements JmmParser {
             Logger.SUC("Main", "-r Optimization applied!");
         }
 
+        write( fileName, "ollir", ollirResult.getOllirCode());
+
         // Backend
         BackendStage backend = new BackendStage();
         backend.setOptimizeR(optimizeR);
@@ -90,26 +98,15 @@ public class Main implements JmmParser {
             return;
         }
 
-        write(fileName +".j", jasminResult.getJasminCode());
+        File jasminFile = write(fileName, "j",  jasminResult.getJasminCode());
+        JasminUtils.assemble(jasminFile, new File("./"));
     }
 
-    private static void write(String fileName, String data) {
-        OutputStream os = null;
+    public static File write(String fileName, String ext, String content){
         String[] fileNameSplit = fileName.split("/");
         fileName = fileNameSplit[fileNameSplit.length -1].split("\\.")[0];
-        var fileNameJ = "out/" + fileName + ".j";
-        try {
-            os = new FileOutputStream(new File(fileNameJ));
-            os.write(data.getBytes(), 0, data.length());
-            Logger.SUC("Main", fileNameJ + " saved with success!");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally{
-            try {
-                os.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        File jasminFile = new File( fileName + "." + ext);
+        SpecsIo.write(jasminFile, content);
+        return jasminFile;
     }
 }

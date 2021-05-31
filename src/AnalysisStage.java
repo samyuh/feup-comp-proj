@@ -42,11 +42,6 @@ public class AnalysisStage implements JmmAnalysis {
         new VerifyBoolOperatorVisitor().visit(node, analysis);
         new WhileIfVisitorCondition().visit(node, analysis);
 
-        System.out.println("\nReports:");
-        for(Report report: analysis.getReports()){
-            System.out.println(report);
-        }
-
         return new JmmSemanticsResult(parserResult, analysis.getSymbolTable(), analysis.getReports());
 
     }
