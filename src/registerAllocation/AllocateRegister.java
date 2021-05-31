@@ -13,17 +13,17 @@ import java.util.HashMap;
 public class AllocateRegister {
     OllirResult ollirResult;
     ClassUnit classUnit;
-    int k;
-    public AllocateRegister(OllirResult ollirResult, int k){
+    int maxRegisters;
+    public AllocateRegister(OllirResult ollirResult, int maxRegisters){
         this.ollirResult = ollirResult;
         classUnit = ollirResult.getOllirClass();
-        this.k = k;
+        this.maxRegisters = maxRegisters;
     }
 
     /**
      * This method will build the var table for all the methods.
      */
-    public void allocateRegistersClass(){
+    public void allocateRegistersClass() throws OptimizeException {
         for (var method: classUnit.getMethods()) {
             allocateRegisterMethod(method);
         }
@@ -34,20 +34,24 @@ public class AllocateRegister {
      * with graph coloring.
      * @param method Method for the allocation.
      */
-    public Boolean allocateRegisterMethod(Method method){
+    public Boolean allocateRegisterMethod(Method method) throws OptimizeException {
         DataflowAnalysis dataflowAnalysis = new DataflowAnalysis(method);
         dataflowAnalysis.build();
         HashMap<String, ArrayList<String>> analysisInterference = dataflowAnalysis.getInterference();
         InterferenceGraph interferenceGraph = new InterferenceGraph(analysisInterference);
-        GraphColoring graphColoring = new GraphColoring(k, interferenceGraph);
+        GraphColoring graphColoring = new GraphColoring(maxRegisters, interferenceGraph);
         graphColoring.buildStack();
         if (!graphColoring.coloring())
-            return false;
+            throw new OptimizeException("Not possible to allocate registers");
 
         var varTable = method.getVarTable();
-        for (var node: interferenceGraph.getNodeList())
-            varTable.get(node.getValue()).setVirtualReg(node.getRegister());
-
+        System.out.println("REGISTERS");
+        System.out.println(method.getParams().size());
+        for (var node: interferenceGraph.getNodeList()) {
+            varTable.get(node.getValue()).setVirtualReg(node.getRegister() + method.getParams().size());
+            System.out.print(node.getValue() + "-" + (node.getRegister() + method.getParams().size()) +"\n" );
+        }
+        System.out.println();
         return true;
     }
 }

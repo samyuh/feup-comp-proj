@@ -48,7 +48,6 @@ public class DataflowAnalysis {
         method.show();
         this.show();
         this.showLiveRange();
-        this.showInterference();
     }
 
     public HashMap<String, ArrayList<String>> getInterference(){
@@ -147,6 +146,7 @@ public class DataflowAnalysis {
             int instId = next[index][i];
 
             if (instId < 0) continue;
+            if (in[instId] == null) in[instId] = new String[]{};
             out.addAll(Arrays.asList(in[instId]));
         }
         return out.toArray(new String[0]);
@@ -206,10 +206,15 @@ public class DataflowAnalysis {
 
     // INTERFERENCE --------------------------------------------------------------
     public void calculateInterference() {
-
-        for (var variable : liveRange.keySet()) {
+        System.out.println("VARIABLES");
+        Utils.printArray(variables.toArray());
+        for (var variable : variables) {
+            System.out.println("VARIABLE - " + variable);
             ArrayList<String> temp = new ArrayList<>();
-            if (!liveRange.containsKey(variable)) continue;
+            if (!liveRange.containsKey(variable)) {
+                interference.put(variable, temp);
+                continue;
+            }
             for (var variableCompare : liveRange.keySet()) {
                 if (variableCompare.equals(variable)) continue;
                 if (haveConflict(liveRange.get(variable), liveRange.get(variableCompare))) {

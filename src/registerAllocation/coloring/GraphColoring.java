@@ -2,10 +2,6 @@ package registerAllocation.coloring;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.IntStream;
 
 public class GraphColoring {
 
@@ -14,7 +10,7 @@ public class GraphColoring {
     int k;
 
     public GraphColoring(int k, InterferenceGraph interferenceGraph) {
-        stackVisited = new ArrayList<NodeInterference>();
+        stackVisited = new ArrayList<>();
         this.interferenceGraph = interferenceGraph;
         this.k = k;
     }

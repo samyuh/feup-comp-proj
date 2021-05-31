@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.io.StringReader;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class Main implements JmmParser {
     public JmmParserResult parse(String jmmCode) {
@@ -41,8 +42,15 @@ public class Main implements JmmParser {
         List<String> options = new ArrayList<>();
         Collections.addAll(options, args);
 
-        boolean optimizeR = options.contains("-r");
+        boolean optimizeR = false;
+        int maxRegisters = -1;
         boolean optimizeO = options.contains("-o");
+        // Get optmization
+        int index = IntStream.range(0, args.length).filter(i-> args[i].startsWith("-r=")).findFirst().orElse(-1);
+        if (index != -1){
+            optimizeR = true;
+            maxRegisters = Integer.parseInt(args[index].split("=")[1]);
+        }
 
         // Parse results
         JmmParser parser = new Main();
@@ -68,8 +76,15 @@ public class Main implements JmmParser {
 
         BackendStage backend = new BackendStage();
         backend.setOptimizeR(optimizeR);
-        JasminResult jasminResult = backend.toJasmin(ollirResult);
+        backend.setMaxRegisters(maxRegisters);
 
+        JasminResult jasminResult = backend.toJasmin(ollirResult);
+        if (jasminResult.getReports().size() != 0){
+            for (var report: jasminResult.getReports()){
+                System.out.println(report.toString());
+            }
+            return;
+        }
         jasminResult.run();
 
     }
