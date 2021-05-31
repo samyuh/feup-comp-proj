@@ -1,6 +1,7 @@
 package pt.up.fe.comp.jmm.analysis.table;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public interface SymbolTable {
 
@@ -51,5 +52,44 @@ public interface SymbolTable {
      * @return a list of local variables declared in the given method
      */
     List<Symbol> getLocalVariables(String methodName);
+
+    default String print() {
+        var builder = new StringBuilder();
+
+        builder.append("Class: " + getClassName() + "\n");
+        var superClass = getSuper() != null ? getSuper() : "java.lang.Object";
+        builder.append("Super: " + superClass + "\n");
+        builder.append("\nImports:");
+        var imports = getImports();
+
+        if (imports.isEmpty()) {
+            builder.append(" <no imports>\n");
+        } else {
+            builder.append("\n");
+            imports.forEach(fullImport -> builder.append(" - " + fullImport + "\n"));
+        }
+
+        var fields = getFields();
+        builder.append("\nFields:");
+        if (fields.isEmpty()) {
+            builder.append(" <no fields>\n");
+        } else {
+            builder.append("\n");
+            fields.forEach(field -> builder.append(" - " + field.print() + "\n"));
+        }
+
+        var methods = getMethods();
+        builder.append("\nMethods: " + methods.size() + "\n");
+
+        for (var method : methods) {
+            var returnType = getReturnType(method);
+            var params = getParameters(method);
+            builder.append(" - " + returnType.print() + " " + method + "(");
+            var paramsString = params.stream().map(Symbol::print).collect(Collectors.joining(", "));
+            builder.append(paramsString + ")\n");
+        }
+
+        return builder.toString();
+    }
 
 }
