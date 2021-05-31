@@ -45,9 +45,6 @@ public class DataflowAnalysis {
         processDataflow();
         calculateLiveRange();
         calculateInterference();
-        method.show();
-        this.show();
-        this.showLiveRange();
     }
 
     public HashMap<String, ArrayList<String>> getInterference(){
@@ -206,10 +203,7 @@ public class DataflowAnalysis {
 
     // INTERFERENCE --------------------------------------------------------------
     public void calculateInterference() {
-        System.out.println("VARIABLES");
-        Utils.printArray(variables.toArray());
         for (var variable : variables) {
-            System.out.println("VARIABLE - " + variable);
             ArrayList<String> temp = new ArrayList<>();
             if (!liveRange.containsKey(variable)) {
                 interference.put(variable, temp);

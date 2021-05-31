@@ -45,13 +45,9 @@ public class AllocateRegister {
             throw new OptimizeException("Not possible to allocate registers");
 
         var varTable = method.getVarTable();
-        System.out.println("REGISTERS");
-        System.out.println(method.getParams().size());
         for (var node: interferenceGraph.getNodeList()) {
             varTable.get(node.getValue()).setVirtualReg(node.getRegister() + method.getParams().size());
-            System.out.print(node.getValue() + "-" + (node.getRegister() + method.getParams().size()) +"\n" );
         }
-        System.out.println();
         return true;
     }
 }
