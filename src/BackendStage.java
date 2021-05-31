@@ -10,8 +10,11 @@ import pt.up.fe.comp.jmm.jasmin.JasminBackend;
 import pt.up.fe.comp.jmm.jasmin.JasminResult;
 import pt.up.fe.comp.jmm.ollir.OllirResult;
 import pt.up.fe.comp.jmm.report.Report;
+import pt.up.fe.comp.jmm.report.ReportType;
 import pt.up.fe.comp.jmm.report.Stage;
 import pt.up.fe.specs.util.SpecsIo;
+import registerAllocation.AllocateRegister;
+import registerAllocation.OptimizeException;
 
 /**
  * Copyright 2021 SPeCS.
@@ -27,6 +30,15 @@ import pt.up.fe.specs.util.SpecsIo;
  */
 
 public class BackendStage implements JasminBackend {
+    private boolean optimizeR = false;
+    public int maxRegisters = -1;
+    public void setOptimizeR(boolean optimizeR) {
+        this.optimizeR = optimizeR;
+    }
+
+    public void setMaxRegisters(int maxRegisters){
+        this.maxRegisters = maxRegisters;
+    }
 
     @Override
     public JasminResult toJasmin(OllirResult ollirResult) {
@@ -39,20 +51,24 @@ public class BackendStage implements JasminBackend {
             ollirClass.buildCFGs(); // build the CFG of each method
             ollirClass.outputCFGs(); // output to .dot files the CFGs, one per method
             ollirClass.buildVarTables(); // build the table of variables for each method
-            ollirClass.show(); // print to console main information about the input OLLIR
+
+            // More reports from this stage
+            List<Report> reports = new ArrayList<>();
+            if (optimizeR){
+                new AllocateRegister(ollirResult, maxRegisters).allocateRegistersClass();
+            }
 
             // Convert the OLLIR to a String containing the equivalent Jasmin code
             String jasminCode = new BuildJasmin(ollirClass).build(); // Convert node ...
-
-            System.out.println(jasminCode);
-            // More reports from this stage
-            List<Report> reports = new ArrayList<>();
 
             return new JasminResult(ollirResult, jasminCode, reports);
 
         } catch (OllirErrorException e) {
             return new JasminResult(ollirClass.getClassName(), null,
                     Arrays.asList(Report.newError(Stage.GENERATION, -1, -1, "Exception during Jasmin generation", e)));
+        } catch(OptimizeException e){
+            return new JasminResult(ollirClass.getClassName(), null,
+                    Arrays.asList(new Report(ReportType.ERROR, Stage.OPTIMIZATION, -1, "Not possible to allocate registers.")));
         }
 
     }

@@ -40,8 +40,7 @@ public class OptimizationStage implements JmmOptimization {
         // Convert the AST to a String containing the equivalent OLLIR code
         OllirEmitter ollirEmitter = new OllirEmitter(semanticsResult.getSymbolTable(), optimize);
         String ollirCode = ollirEmitter.visit(node); // Convert node ...
-        System.out.println("OLLIR CODE:\n" + ollirCode);
-
+        System.out.println(ollirCode);
         return new OllirResult(semanticsResult, ollirCode, ollirEmitter.getReports());
     }
 
@@ -67,10 +66,10 @@ public class OptimizationStage implements JmmOptimization {
                 }
 
                 // Loop through method body
+
                 constantVisitor.visit(methodBody, constants);
 
             }
-            System.out.println("CHANGES: " + constantVisitor.getCounter());
         } while (constantVisitor.getCounter() != 0);
 
         //System.out.println(semanticsResult.getRootNode().toJson());
@@ -85,6 +84,9 @@ public class OptimizationStage implements JmmOptimization {
         // THIS IS JUST FOR CHECKPOINT 3
         return ollirResult;
     }
+
+
+
 
 
 }

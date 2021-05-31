@@ -1,0 +1,26 @@
+import io;
+class ArrayTests {
+
+    public static void main(String[] args){
+        int[] a;
+        int i;
+        boolean b;
+        b = true;
+        a = new int[10];
+        i = 0;
+
+        b = !b;
+        while(i < 10){
+            a[i] = i;
+            io.println(a[i]);
+            i = i+1;
+        }
+
+        if (true){
+            io.println(1);
+        }else{
+            io.println(0);
+        }
+
+    }
+}
