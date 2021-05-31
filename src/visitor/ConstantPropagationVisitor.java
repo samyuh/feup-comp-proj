@@ -144,6 +144,7 @@ public class ConstantPropagationVisitor extends AJmmVisitor<HashMap<String, Stri
             }
             else { // Other Nodes
                 this.visit(child, constants);
+                if(child.getKind().equals("IfElse") || child.getKind().equals("WhileStatment")) break;
             }
         }
 

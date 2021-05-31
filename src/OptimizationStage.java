@@ -69,7 +69,6 @@ public class OptimizationStage implements JmmOptimization {
                 constantVisitor.visit(methodBody, constants);
 
             }
-            System.out.println("CHANGES: " + constantVisitor.getCounter());
         } while (constantVisitor.getCounter() != 0);
 
         //System.out.println(semanticsResult.getRootNode().toJson());
