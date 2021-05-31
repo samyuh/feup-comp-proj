@@ -8,6 +8,7 @@ public class GraphColoring {
     ArrayList<NodeInterference> stackVisited;
     InterferenceGraph interferenceGraph;
     int k;
+    int allocated = 0;
 
     public GraphColoring(int k, InterferenceGraph interferenceGraph) {
         stackVisited = new ArrayList<>();

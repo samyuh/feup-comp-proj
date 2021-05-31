@@ -176,11 +176,14 @@ public class DataflowAnalysis {
     // LIVE RANGE -----------------------------------------------------------
     public void calculateLiveRange() {
         for (var varName : variables) {
+            int[] varLiveRange = new int[]{};
             Integer lastIn = getLastIn(varName);
             Integer firstDef = getFirstDef(varName);
-            if (lastIn == null || firstDef == null)
-                continue;
-            int[] varLiveRange = IntStream.range(firstDef, lastIn).toArray();
+            if (lastIn == null && firstDef != null) {
+                varLiveRange = IntStream.range(firstDef, in.length).toArray();
+            } else {
+                varLiveRange = IntStream.range(firstDef, lastIn).toArray();
+            }
             liveRange.put(varName, varLiveRange);
         }
     }

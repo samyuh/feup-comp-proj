@@ -40,7 +40,7 @@ public class OptimizationStage implements JmmOptimization {
         // Convert the AST to a String containing the equivalent OLLIR code
         OllirEmitter ollirEmitter = new OllirEmitter(semanticsResult.getSymbolTable(), optimize);
         String ollirCode = ollirEmitter.visit(node); // Convert node ...
-
+        System.out.println(ollirCode);
         return new OllirResult(semanticsResult, ollirCode, ollirEmitter.getReports());
     }
 
@@ -66,6 +66,7 @@ public class OptimizationStage implements JmmOptimization {
                 }
 
                 // Loop through method body
+
                 constantVisitor.visit(methodBody, constants);
 
             }

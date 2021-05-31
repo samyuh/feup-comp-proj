@@ -40,7 +40,8 @@ public class AllocateRegister {
         HashMap<String, ArrayList<String>> analysisInterference = dataflowAnalysis.getInterference();
         InterferenceGraph interferenceGraph = new InterferenceGraph(analysisInterference);
         GraphColoring graphColoring = new GraphColoring(maxRegisters, interferenceGraph);
-        graphColoring.buildStack();
+        if (!graphColoring.buildStack())
+            throw new OptimizeException("Not possible to allocate registers");
         if (!graphColoring.coloring())
             throw new OptimizeException("Not possible to allocate registers");
 
@@ -48,6 +49,7 @@ public class AllocateRegister {
         for (var node: interferenceGraph.getNodeList()) {
             varTable.get(node.getValue()).setVirtualReg(node.getRegister() + method.getParams().size());
         }
+
         return true;
     }
 }

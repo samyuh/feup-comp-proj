@@ -91,7 +91,6 @@ public class Main implements JmmParser {
         }
 
         write(fileName +".j", jasminResult.getJasminCode());
-
     }
 
     private static void write(String fileName, String data) {
